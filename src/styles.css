@@ -1,0 +1,254 @@
+/* You can add global styles to this file, and also import other style files */
+/* You can add global styles to this file, and also import other style files */
+* {
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+body {
+  font-size: var(--font-size-base);
+}
+
+
+.tag {
+  background: #e5e7eb;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.tag.ok {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  min-width: 300px;
+}
+
+:root {
+  --bg: #ffffff;
+  --card-bg: #ffffff;
+  --text: #111827;
+  --text-muted: #6b7280;
+  --border: #e5e7eb;
+  --primary: #3b82f6;
+  --font-size-base: 16px;
+}
+
+.dark-mode {
+  --bg: #0f172a;
+  --card-bg: #1e293b;
+  --text: #f8fafc;
+  --text-muted: #cbd5f5;
+  --border: #334155;
+}
+
+.cb {
+  filter: contrast(1.2) saturate(1.1);
+}
+
+
+.msg-text .table-wrapper {
+  overflow-x: auto;
+  margin: 8px 0;
+  border-radius: 5px;
+}
+
+/* TABLA PRINCIPAL */
+.msg-text table.data-table {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 100%;
+  margin: 6px 0;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08);
+  font-size: 12px;
+  border: 1px solid #dee2e6;
+
+  table-layout: auto;
+}
+
+/* HEADER */
+.msg-text table.data-table thead tr {
+  background: linear-gradient(135deg,#1a1a1a 0%,#2d2d2d 100%);
+}
+
+.msg-text table.data-table thead tr th {
+  background: transparent;
+  color: #ffffff;
+  padding: 6px 10px;
+  text-align: left;
+  font-weight: 600;
+  text-transform: capitalize;
+  border: 1px solid #dee2e6;
+  border-bottom: 3px solid #00d1ff;
+  font-size: 11px;
+
+  white-space: nowrap;
+  writing-mode: horizontal-tb;
+}
+
+/* FILAS */
+.msg-text table.data-table tbody tr {
+  background: #ffffff;
+  transition: background-color .15s ease;
+  border: 1px solid #dee2e6;
+}
+
+.msg-text table.data-table tbody tr:nth-child(even) {
+  background: #f8f9fa;
+}
+
+.msg-text table.data-table tbody tr:hover {
+  background: #e3f2fd;
+}
+
+/* CELDAS */
+.msg-text table.data-table td {
+  padding: 9px 14px;
+  border: 1px solid #dee2e6;
+  color: #333333;
+  vertical-align: middle;
+  font-size: 12px;
+
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+
+  writing-mode: horizontal-tb;
+}
+
+/* PRIMERA COLUMNA (categoría) */
+.msg-text table.data-table td:nth-child(1),
+.msg-text table.data-table th:nth-child(1) {
+
+  color: #6c757d;
+  font-size: 11px;
+  text-align: center;
+  background: #f8f9fa;
+  font-weight: 500;
+
+  /* ancho flexible en lugar de fijo */
+  min-width: 125px;
+  max-width: 145px;
+
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: normal;
+}
+
+/* ============================================
+   TABLETAS RESPONSIVE - Diseño Cards en móvil
+   ============================================ */
+@media (max-width: 768px) {
+  .msg-text .table-wrapper {
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    margin: 8px 0;
+  }
+
+  .msg-text table.data-table {
+    border: none;
+    box-shadow: none;
+    font-size: 13px;
+  }
+
+  .msg-text table.data-table thead {
+    display: none;
+  }
+
+  .msg-text table.data-table,
+  .msg-text table.data-table tbody,
+  .msg-text table.data-table tr,
+  .msg-text table.data-table td {
+    display: block;
+    width: 100%;
+    border: none;
+  }
+
+  .msg-text table.data-table tbody tr {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    padding: 10px 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+
+  .msg-text table.data-table tbody tr:nth-child(even) {
+    background: #f8f9fa;
+  }
+
+  .msg-text table.data-table tbody tr:hover {
+    background: #e3f2fd;
+  }
+
+  .msg-text table.data-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 8px;
+    border: none;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+    font-size: 13px;
+  }
+
+  .msg-text table.data-table td:last-child {
+    border-bottom: none;
+  }
+
+  .msg-text table.data-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #555;
+    font-size: 11px;
+    text-transform: uppercase;
+    min-width: 80px;
+    margin-right: 8px;
+  }
+
+  .msg-text table.data-table td:nth-child(1)::before {
+    content: none;
+  }
+
+  .msg-text table.data-table td:nth-child(1) {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    color: #fff;
+    font-weight: 600;
+    border-radius: 6px;
+    padding: 8px 10px;
+    margin: -10px -12px 10px -12px;
+    width: calc(100% + 24px);
+    justify-content: center;
+    text-align: center;
+    font-size: 12px;
+  }
+
+  .msg-text table.data-table td:nth-child(1) span {
+    text-align: center;
+    justify-content: center;
+    display: flex;
+  }
+}

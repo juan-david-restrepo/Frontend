@@ -1,0 +1,126 @@
+<app-nav></app-nav>
+<div class="contenedor">
+  <div class="registro-wrapper">
+    <div class="registro-info">
+      <img src="assets/images/LogoNuevo2.png" alt="Registro" />
+      <h2>¡Bienvenido a Reportelo Ya!</h2>
+      <p>Ayúdanos a mejorar tu ciudad reportando infracciones de tránsito.</p>
+    </div>
+    <div class="registro-container">
+      <h2>REGÍSTRATE</h2>
+
+      <form [formGroup]="registroForm" (ngSubmit)="onSubmit()">
+
+  <div class="input-group">
+    <i class="fa-solid fa-id-card"></i>
+    <select formControlName="tipoDocumento" required (change)="onTipoDocumentoChange()">
+      <option value="">Escoge Una Opción</option>
+      <option value="CC">Cédula De Ciudadanía</option>
+      <option value="PASAPORTE">Pasaporte</option>
+    </select>
+  </div>
+  <div class="error-message" *ngIf="getErrorMessage('tipoDocumento')">{{ getErrorMessage('tipoDocumento') }}</div>
+
+  <div class="input-group">
+    <i class="fa-solid fa-hashtag"></i>
+    <input type="text" formControlName="numeroDocumento" [placeholder]="placeholderDocumento" required />
+  </div>
+  <div class="error-message" *ngIf="getErrorMessage('numeroDocumento')">{{ getErrorMessage('numeroDocumento') }}</div>
+
+  <div class="input-group">
+    <i class="fa-solid fa-user"></i>
+    <input type="text" formControlName="nombre" placeholder="Nombre completo" required />
+  </div>
+  <div class="error-message" *ngIf="getErrorMessage('nombre')">{{ getErrorMessage('nombre') }}</div>
+
+  <div class="input-group">
+    <i class="fa-solid fa-envelope"></i>
+    <input type="email" formControlName="correo" placeholder="correo@ejemplo.com" required />
+  </div>
+  <div class="error-message" *ngIf="getErrorMessage('correo')">{{ getErrorMessage('correo') }}</div>
+
+  <div class="input-group">
+    <i class="fa-solid fa-lock"></i>
+    <input 
+      [type]="mostrarContrasena ? 'text' : 'password'" 
+      formControlName="contrasena" 
+      placeholder="********" 
+      required 
+      (input)="onContrasenaChange()"
+      [class.input-segura]="contrasenaSegura"
+    />
+    <i 
+      class="fa-solid toggle-password" 
+      [class.fa-eye]="!mostrarContrasena" 
+      [class.fa-eye-slash]="mostrarContrasena"
+      (click)="toggleMostrarContrasena()"
+    ></i>
+  </div>
+  <div class="error-message" *ngIf="getErrorMessage('contrasena')">{{ getErrorMessage('contrasena') }}</div>
+
+  <div class="input-group">
+    <i class="fa-solid fa-lock"></i>
+    <input 
+      [type]="mostrarConfirmarContrasena ? 'text' : 'password'" 
+      formControlName="confirmarContrasena" 
+      placeholder="Confirmar contraseña" 
+      required 
+    />
+    <i 
+      class="fa-solid toggle-password" 
+      [class.fa-eye]="!mostrarConfirmarContrasena" 
+      [class.fa-eye-slash]="mostrarConfirmarContrasena"
+      (click)="toggleMostrarConfirmarContrasena()"
+    ></i>
+  </div>
+  <div class="error-message" *ngIf="getErrorMessage('confirmarContrasena')">{{ getErrorMessage('confirmarContrasena') }}</div>
+
+  <div class="requisitos-contrasena" *ngIf="registroForm.get('contrasena')?.value">
+    <p [class.cumple]="requisitosContrasena.longitud">
+      <i [class]="requisitosContrasena.longitud ? 'fa-solid fa-check' : 'fa-solid fa-xmark'"></i>
+      Mínimo 8 caracteres
+    </p>
+    <p [class.cumple]="requisitosContrasena.mayuscula">
+      <i [class]="requisitosContrasena.mayuscula ? 'fa-solid fa-check' : 'fa-solid fa-xmark'"></i>
+      Una letra mayúscula
+    </p>
+    <p [class.cumple]="requisitosContrasena.minuscula">
+      <i [class]="requisitosContrasena.minuscula ? 'fa-solid fa-check' : 'fa-solid fa-xmark'"></i>
+      Una letra minúscula
+    </p>
+    <p [class.cumple]="requisitosContrasena.numero">
+      <i [class]="requisitosContrasena.numero ? 'fa-solid fa-check' : 'fa-solid fa-xmark'"></i>
+      Un número
+    </p>
+    <p [class.cumple]="requisitosContrasena.especial">
+      <i [class]="requisitosContrasena.especial ? 'fa-solid fa-check' : 'fa-solid fa-xmark'"></i>
+      Un carácter especial (@$!%*?&)
+    </p>
+  </div>
+
+  <div class="terminos-container">
+    <label class="terminos-label">
+      <input 
+        type="checkbox" 
+        [checked]="terminosAceptados"
+        (change)="onCheckboxChange()"
+      />
+      <span>Acepto los <a routerLink="/terminos-servicio" (click)="$event.preventDefault()">términos y condiciones</a></span>
+    </label>
+  </div>
+
+  <button type="submit" class="btn-secundary">
+    Crear cuenta
+  </button>
+
+</form>
+
+
+
+
+      <div class="login-link">
+        ¿Ya tienes una cuenta? <a routerLink="/login">Iniciar sesión</a>
+      </div>
+    </div>
+  </div>
+</div>

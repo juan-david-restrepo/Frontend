@@ -1,0 +1,188 @@
+<div
+  class="app-container"
+  [class.dark]="config.modoNoche"
+  [class.cb]="config.daltonismo"
+>
+  <app-sidebar-agente
+    class="sidebar-wrapper"
+    [class.mobile-open]="sidebarAbierto"
+    [vistaActual]="vistaActual"
+    (vistaChange)="cambiarVista($event); cerrarSidebar()"
+    (logout)="cerrarSesion()"
+  >
+  </app-sidebar-agente>
+
+  <div
+  class="overlay"
+  *ngIf="sidebarAbierto"
+  (click)="cerrarSidebar()"
+  ></div>
+
+  <main class="main-content" [style.font-size.px]="config.fontSize">
+    <header class="top-header">
+
+      <button class="hamburger" (click)="toggleSidebar()">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
+      <div class="header-title">
+        <h1>{{ vistaActual | titlecase }}</h1>
+      </div>
+
+      <div class="notif-estado">
+        <div class="estado-wrapper">
+          <span class="estado-label">Estado</span>
+
+          <div
+            class="estado-card"
+            [class.disponible]="estadoAgente === 'DISPONIBLE'"
+            [class.ocupado]="estadoAgente === 'OCUPADO'"
+            [class.off]="estadoAgente === 'FUERA_SERVICIO'"
+          >
+            <i
+              class="fa-solid"
+              [ngClass]="{
+                'fa-circle-check': estadoAgente === 'DISPONIBLE',
+                'fa-circle-pause': estadoAgente === 'OCUPADO',
+                'fa-circle-xmark': estadoAgente === 'FUERA_SERVICIO',
+              }"
+            >
+            </i>
+
+            <span class="estado-text">
+              {{
+                estadoAgente === "FUERA_SERVICIO"
+                  ? "FUERA_SERVICIO"
+                  : estadoAgente === "OCUPADO"
+                    ? "Ocupado"
+                    : "Disponible"
+              }}
+            </span>
+          </div>
+        </div>
+
+        <div class="notif-wrapper">
+          <div
+            class="notif-icon"
+            (click)="toggleNotificaciones()"
+            [class.ring]="notificacionesNoLeidas > 0"
+          >
+            <i class="fa-solid fa-bell"></i>
+
+            <div class="notif-badges" *ngIf="notificacionesNoLeidas > 0">
+              <span class="notif-count reporte-count" *ngIf="reportesNoLeidos > 0">
+                {{ reportesNoLeidos }}
+              </span>
+              <span class="notif-count tarea-count" *ngIf="tareasNoLeidas > 0">
+                {{ tareasNoLeidas }}
+              </span>
+            </div>
+          </div>
+
+          <div class="notif-dropdown" *ngIf="mostrarNotificaciones">
+            <div class="notif-header">
+              <span>Notificaciones</span>
+              <button class="notif-clear" (click)="notificaciones = []; $event.stopPropagation()">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+            <div class="notif-list">
+              <div
+                class="notif-item"
+                [class.no-leida]="!n.leida"
+                *ngFor="let n of notificaciones"
+                (click)="abrirNotif(n)"
+              >
+                <div class="notif-icon-tipo">
+                  <i class="fa-solid" [class.fa-flag]="n.tipo === 'TAREA'" [class.fa-bell]="n.tipo === 'REPORTE'" [class.tarea-icon]="n.tipo === 'TAREA'" [class.reporte-icon]="n.tipo === 'REPORTE'"></i>
+                </div>
+                <div class="notif-content">
+                  <strong>{{ n.tipo }}</strong>
+                  <p>{{ n.texto }}</p>
+                  <span class="notif-hora">{{ n.hora }}</span>
+                </div>
+                <div class="notif-unread-dot" *ngIf="!n.leida"></div>
+              </div>
+              <div class="notif-empty" *ngIf="notificaciones.length === 0">
+                <i class="fa-solid fa-bell-slash"></i>
+                <p>Sin notificaciones</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <hr />
+
+    <!-- VISTAS -->
+    <app-dashboard
+      *ngIf="vistaActual === 'dashboard'"
+      [estadoAgente]="estadoAgente"
+      [tiempoActivo]="tiempoActivoFormateado"
+      [reiniciarCronometro$]="reiniciarCronometroSignal"
+      [tareas]="tareasAdmin"
+      (irHistorial)="abrirHistorial()"
+      (irReportes)="cambiarVista('reportes')"
+      (irResueltos)="abrirHistorialResueltos()"
+      (irRechazados)="abrirHistorialRechazados()"
+      (irActividad)="navegarAActividad($event)"
+    >
+    </app-dashboard>
+
+    <app-reportes
+      *ngIf="vistaActual === 'reportes'"
+      [reportes]="reportesEntrantes"
+      [hayEnProceso]="hayEnProceso"
+      [reporteInicial]="reporteDesdeHistorial"
+      [modoLectura]="reporteDesdeHistorial !== null"
+      [origen]="origenDetalle"
+      [puedeAccion]="puedeAceptarReportes"
+      [perfilAgenteNombre]="perfilAgente.nombre"
+      [perfilAgentePlaca]="perfilAgente.placa"
+      (volver)="volverDesdeDetalle($event)"
+      (aceptar)="aceptarReporte($event)"
+      (rechazar)="rechazarReporte($event)"
+      (finalizar)="finalizarReporte($event)"
+    >
+    </app-reportes>
+
+    <app-historial
+      *ngIf="vistaActual === 'historial'"
+      [historial]="historialReportes"
+      [filtroInicial]="filtroHistorial"
+      [perfilAgenteNombre]="perfilAgente.nombre"
+      [perfilAgentePlaca]="perfilAgente.placa"
+      (verDetalle)="verDetalleHist($event)"
+    >
+    </app-historial>
+
+    <app-tareas
+      *ngIf="vistaActual === 'tareas'"
+      [tareas]="tareasAdmin"
+      [puedeAccion]="puedeComenzarTarea"
+      [filtroInicial]="filtroTareas"
+      (comenzar)="comenzarTarea($event)"
+      (finalizar)="finalizarTarea($event)"
+    >
+    </app-tareas>
+
+    <app-perfil-agente
+      *ngIf="vistaActual === 'perfil'"
+      [agente]="perfilAgente"
+      [estadoAgente]="estadoAgente"
+      [bloquearCambioEstado]="estadoAgente === 'OCUPADO' || hayEnProceso"
+      (estadoChange)="toggleServicio($event)"
+    >
+    </app-perfil-agente>
+
+    <app-configuracion
+      *ngIf="vistaActual === 'configuracion'"
+      [(config)]="config"
+      (configChange)="updateConfig($event)"
+    >
+    </app-configuracion>
+
+    
+  </main>
+</div>

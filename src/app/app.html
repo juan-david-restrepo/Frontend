@@ -1,0 +1,16 @@
+<app-splash-screen *ngIf="showSplash"></app-splash-screen>
+<router-outlet></router-outlet>
+<app-floating-actions></app-floating-actions>
+
+<div *ngIf="showIdleModal" class="modal-backdrop">
+
+  <div class="modal">
+    <h2>¿Sigues ahí?</h2>
+    <p>Llevas 10 minutos sin actividad.</p>
+
+    <button (click)="showIdleModal = false">
+      Continuar sesión
+    </button>
+  </div>
+
+</div>

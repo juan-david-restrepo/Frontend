@@ -1,0 +1,83 @@
+<div class="filtro-h2">
+  <h2>Mi historial</h2>
+
+  <div class="filtros">
+    <button
+      class="btn-filtro"
+      (click)="cambiarFiltro('TODOS')"
+      [ngClass]="{ activo: filtroActivo === 'TODOS' }">
+      Todos
+    </button>
+
+    <button
+      class="btn-filtro"
+      (click)="cambiarFiltro('ACEPTADOS')"
+      [ngClass]="{ activo: filtroActivo === 'ACEPTADOS' }">
+      Atendidos
+    </button>
+
+    <button
+      class="btn-filtro"
+      (click)="cambiarFiltro('RECHAZADOS')"
+      [ngClass]="{ activo: filtroActivo === 'RECHAZADOS' }">
+      Rechazados
+    </button>
+  </div>
+</div>
+
+<div class="historial-scroll">
+  <!-- Lista vacía -->
+  <div *ngIf="historialFiltrado.length === 0" class="historial-vacio">
+    <i class="fa-solid fa-folder-open"></i>
+    <p>No hay registros en el historial</p>
+  </div>
+
+  <!-- Cards -->
+  <div
+    class="card historial-card"
+    *ngFor="let h of historialFiltrado"
+    (click)="abrir(h)"
+  >
+    <div class="hist-info">
+      <b>{{ h.tipoInfraccion }}</b>
+      <p class="hist-dir">{{ h.direccion }}</p>
+
+      <!-- ✅ Mostrar si fue con compañero o solo -->
+      <p class="hist-companero" *ngIf="h.acompanado">
+        <i class="fa-solid fa-user-group"></i>
+        Acompañado por: {{ h.esCompanero ? (h.placaAgente | uppercase) : (h.nombreCompanero || h.placaCompanero) }}
+      </p>
+      <p class="hist-companero" *ngIf="!h.acompanado">
+        <i class="fa-solid fa-user"></i>
+        En solitario
+      </p>
+    </div>
+
+    <div class="hist-meta">
+      <span class="hist-fecha">{{ getFechaDisplay(h) }}</span>
+
+      <span
+        class="tag"
+        [ngClass]="{
+          ok: h.estado === EstadoReporte.FINALIZADO,
+          no: h.estado === EstadoReporte.RECHAZADO
+        }"
+      >
+        {{ h.estado === EstadoReporte.FINALIZADO ? 'Atendido'  :
+          h.estado === EstadoReporte.RECHAZADO  ? 'Rechazado' : '' }}
+      </span>
+    </div>
+
+    <!-- Botón descargar PDF -->
+    <button 
+      class="btn-pdf" 
+      *ngIf="h.estado === EstadoReporte.FINALIZADO"
+      (click)="descargarPdf(h, $event)"
+      title="Descargar PDF del operativo"
+    >
+      <i class="fa-solid fa-file-pdf"></i> PDF
+    </button>
+  </div>
+
+</div>
+

@@ -1,0 +1,160 @@
+<app-nav></app-nav>
+
+<div class="perfil-wrapper">
+  <div class="perfil-card">
+
+    <!-- SIDEBAR -->
+    <aside class="perfil-sidebar" [style.background]="selectedBackground">
+      <div class="avatar-section">
+        <div class="avatar-wrapper">
+          <img [src]="avatar" alt="avatar" class="avatar-img" />
+          <label class="avatar-edit" (click)="openAvatarModal()">
+            <i class="fa fa-pencil"></i>
+          </label>
+        </div>
+
+        <!-- Llamada al modal standalone que ya tienes -->
+        <app-avatar-modal
+          [(isOpen)]="isModalOpen"
+          (avatarSelected)="onAvatarSelected($event)">
+        </app-avatar-modal>
+
+        <h3>{{ user.name }} {{ user.lastname }}</h3>
+        <p class="user-email">
+          <i class="fa-solid fa-envelope"></i> {{ user.email }}
+        </p>
+      </div>
+
+      <div class="stats-card">  
+        <div class="stat-item">
+        <i class="fa-solid fa-flag"></i>
+        <div>
+            <span>Reportes: </span>
+            <strong>{{ totalReportes }}</strong>
+        </div>
+        </div>
+        <br><hr><br>
+        <div class="stat-item">
+          <i class="fas fa-bell"></i>
+          <div>
+            <span>Notificaciones sin leer: </span>
+            <strong>{{ notificacionesNoLeidas }}</strong>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- BOTÓN INTERRUPTOR -->
+    <button class="edit-toggle" (click)="toggleEdit()">
+      <span class="switch" [class.active]="isEditing"></span>
+      {{ isEditing ? 'Editar: ON' : 'Editar: OFF' }}
+    </button>
+
+    <!-- PERFIL -->
+    <section class="perfil-content">
+      <div class="content-header">
+        <h2>
+          <i class="fa-solid" [ngClass]="isEditing ? 'fa-user-pen' : 'fa-user'"></i>
+          {{ isEditing ? 'Editar Perfil' : 'Perfil' }}
+        </h2>
+      </div>
+
+      <form class="perfil-form">
+        <div class="form-grid">
+          <!-- Nombre -->
+          <div class="input-group">
+            <i class="fa-solid fa-user"></i>
+            <input type="text" placeholder="Nombre" [(ngModel)]="user.name" name="name" [disabled]="!isEditing">
+          </div>
+
+          <!-- Apellido -->
+          <div class="input-group">
+            <i class="fa-solid fa-user"></i>
+            <input type="text" placeholder="Apellido" [(ngModel)]="user.lastname" name="lastname" [disabled]="!isEditing">
+          </div>
+
+          <!-- Email -->
+          <div class="input-group full">
+            <i class="fa-solid fa-envelope"></i>
+            <input type="email" placeholder="Correo electrónico" [(ngModel)]="user.email" name="email" [disabled]="!isEditing">
+          </div>
+
+          <!-- Teléfono -->
+          <div class="input-group">
+            <i class="fa-solid fa-phone"></i>
+            <input type="text" placeholder="Teléfono" name="phone" [disabled]="!isEditing">
+          </div>
+
+          <!-- Dirección -->
+          <div class="input-group">
+            <i class="fa-solid fa-city"></i>
+            <input type="text" placeholder="Dirección" name="address" [disabled]="!isEditing">
+          </div>
+
+          <!-- Cambio de contraseña solo en edición -->
+          <ng-container *ngIf="isEditing">
+            <p>Cambio de Contraseña</p>
+            <div class="input-group">
+              <i class="fa-solid fa-lock"></i>
+              <input type="password" placeholder="Contraseña" name="password" [(ngModel)]="user.password">
+            </div>
+
+            <div class="input-group">
+              <i class="fa-solid fa-lock"></i>
+              <input type="password" placeholder="Confirmar contraseña" name="password2" [(ngModel)]="user.password2">
+            </div>
+          </ng-container>
+        </div>
+
+        <!-- Botones solo en edición -->
+        <div class="form-actions" *ngIf="isEditing">
+          <button class="btn-save" type="button" (click)="saveProfile()">
+            <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
+          </button>
+
+          <button class="btn-reset" type="reset">
+            <i class="fa-solid fa-rotate-left"></i> Limpiar
+          </button>
+        </div>
+
+      </form>
+
+      <!-- ACTIVIDADES RECIENTES - Solo para ciudadanos -->
+      <div class="actividades-section" *ngIf="esCiudadano">
+        <div class="actividades-header">
+          <h2>
+            <i class="fa-solid fa-clock-rotate-left"></i> Actividades Recientes
+          </h2>
+          <button class="btn-limpiar-actividades" (click)="limpiarActividades()" *ngIf="actividades.length > 0">
+            <i class="fa-solid fa-trash-can"></i> Limpiar
+          </button>
+        </div>
+
+        <div class="actividades-grid" *ngIf="actividades.length > 0">
+          <div class="actividad-card" *ngFor="let actividad of actividades" [style.border-left-color]="actividad.color">
+            <div class="actividad-icono" [style.background]="actividad.color + '20'" [style.color]="actividad.color">
+              <i [class]="actividad.icono"></i>
+            </div>
+            <div class="actividad-info">
+              <div class="actividad-descripcion">{{ actividad.descripcion }}</div>
+              <div class="actividad-meta">
+                <span><i class="fa-regular fa-calendar"></i> {{ actividad.fecha }}</span>
+                <span><i class="fa-regular fa-clock"></i> {{ actividad.hora }}</span>
+              </div>
+              <span class="actividad-modulo">{{ actividad.modulo }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="actividades-vacias" *ngIf="actividades.length === 0">
+          <i class="fa-regular fa-clock"></i>
+          <p>No hay actividades recientes</p>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+</div>
+
+<app-footer></app-footer>

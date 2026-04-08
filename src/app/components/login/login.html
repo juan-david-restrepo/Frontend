@@ -1,0 +1,58 @@
+<app-nav></app-nav>
+
+<div class="container-todo">
+  <div class="container-login">
+    <div class="left">
+      <h1>REPORTELO YA!</h1>
+
+<form [formGroup]="formLogin" (ngSubmit)="onSubmit()">
+
+  <label for="emailLogin">Correo electrónico</label>
+  <div class="input-group">
+    <i class="fa-solid fa-envelope"></i>
+    <input type="email" id="emailLogin"
+      placeholder="correo@ejemplo.com"
+      formControlName="email" required />
+  </div>
+  <div class="error-message" *ngIf="getErrorMessage('email')">{{ getErrorMessage('email') }}</div>
+
+  <label for="passwordLogin">Contraseña</label>
+  <div class="input-group">
+    <i class="fa-solid fa-lock"></i>
+    <input [type]="mostrarPassword ? 'text' : 'password'" id="passwordLogin"
+      placeholder="********"
+      formControlName="password" required />
+    <i 
+      class="fa-solid toggle-password" 
+      [class.fa-eye]="!mostrarPassword" 
+      [class.fa-eye-slash]="mostrarPassword"
+      (click)="toggleMostrarPassword()"
+    ></i>
+  </div>
+  <div class="error-message" *ngIf="getErrorMessage('password')">{{ getErrorMessage('password') }}</div>
+
+  <a class="recuperar" routerLink="/recuperar">
+    ¿Olvidaste tu Contraseña?
+  </a>
+
+  <button type="submit" class="btn">
+    Iniciar Sesión <i class="fa-solid fa-arrow-right-to-bracket"></i>
+  </button>
+
+</form>
+
+      
+    
+
+      <div class="register-link">
+        ¿Aún no tienes cuenta? <a routerLink="/registro">Regístrate aquí</a>
+      </div>
+    </div>
+
+    <div class="right">
+      <img class="logo" src="assets/images/LogoNuevo2.png" alt="Logo Repórtelo Ya" />
+      <h2>¡Bienvenido a Reportelo Ya!</h2>
+      <p>¡Haz parte del cambio! Reporta y ayuda a tener una ciudad más segura.</p>
+    </div>
+  </div>
+</div>
