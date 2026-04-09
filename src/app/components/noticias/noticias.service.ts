@@ -12,11 +12,11 @@ export class NoticiasService {
   constructor(private http: HttpClient) {}
 
   obtenerNoticias(start: number) {
-    return this.http.get<any[]>(`${this.API}/noticias?start=${start}`);
+    return this.http.get<any[]>(`${this.API}/api/noticias?start=${start}`);
   }
 
   obtenerDetalle(url: string) {
-    return this.http.get<any>(`${this.API}/noticia-detalle?url=${encodeURIComponent(url)}`);
+    return this.http.get<any>(`${this.API}/api/noticia-detalle?url=${encodeURIComponent(url)}`);
   }
 }
 

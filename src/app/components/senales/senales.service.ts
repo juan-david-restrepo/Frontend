@@ -20,6 +20,6 @@ export class SenalesService {
   constructor(private http: HttpClient) {}
 
   obtenerSenales(): Observable<Senal[]> {
-    return this.http.get<Senal[]>(`${this.API}/senales`);
+    return this.http.get<Senal[]>(`${this.API}/api/senales`);
   }
 }
