@@ -8,6 +8,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { AuthService } from '../../service/auth.service';
 import Swal from 'sweetalert2';
 import { VoiceChatBotComponent } from '../voice-chat-bot/voice-chat-bot';
+import { environment } from '../../../environments/environment';
 
 interface Mensaje {
   tipo: 'user' | 'bot';
@@ -241,10 +242,10 @@ export class ChatBotComponent implements OnInit {
   // -----------------------------
   // URLS API
   // -----------------------------
-  readonly API_URL = "http://127.0.0.1:8000/chat";
-  readonly CONVERSATIONS_URL = "http://127.0.0.1:8000/conversations";
-  readonly MESSAGES_URL = "http://127.0.0.1:8000/conversations";
-  readonly UPDATE_TITLE_URL = "http://127.0.0.1:8000/conversations";
+  readonly API_URL = environment.apiIA + "/chat";
+  readonly CONVERSATIONS_URL = environment.apiIA + "/conversations";
+  readonly MESSAGES_URL = environment.apiIA + "/conversations";
+  readonly UPDATE_TITLE_URL = environment.apiIA + "/conversations";
   userId: string | null = localStorage.getItem('userId') || null;
 
   constructor(private router: Router, private avatarService: Avatar, private sanitizer: DomSanitizer, private authService: AuthService) {}

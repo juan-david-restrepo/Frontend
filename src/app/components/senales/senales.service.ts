@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface Senal {
   tipo: string;
@@ -14,7 +15,7 @@ export interface Senal {
 })
 export class SenalesService {
 
-  private API = 'http://localhost:3001/api'; // backend Node
+  private API = environment.apiScrappi;
 
   constructor(private http: HttpClient) {}
 

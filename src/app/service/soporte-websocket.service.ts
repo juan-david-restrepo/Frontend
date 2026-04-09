@@ -3,6 +3,7 @@ import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
 import { Subject, Observable } from 'rxjs';
 import { TicketSoporte, NotificacionSoporte } from '../models/soporte.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,7 @@ export class SoporteWebSocketService implements OnDestroy {
     }
 
     this.userId = userId;
-    const socket = new SockJS('http://localhost:8080/ws');
+    const socket = new SockJS(environment.apiBackend + '/ws');
     
     this.stompClient = new Client({
       webSocketFactory: () => socket as any,
@@ -63,7 +64,7 @@ export class SoporteWebSocketService implements OnDestroy {
       return;
     }
 
-    const socket = new SockJS('http://localhost:8080/ws');
+    const socket = new SockJS(environment.apiBackend + '/ws');
     
     this.stompClient = new Client({
       webSocketFactory: () => socket as any,

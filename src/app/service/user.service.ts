@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface Usuario {
   nombreCompleto: string;
@@ -14,7 +15,7 @@ export interface Usuario {
 export class UserService {
 
   // API apuntando solo a ciudadano
-  private apiUrl = 'http://localhost:8080/api/ciudadano';
+  private apiUrl = environment.apiBackend + '/api/ciudadano';
 
   constructor(private http: HttpClient) {}
 

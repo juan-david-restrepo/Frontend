@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Client } from '@stomp/stompjs';
 import { Subject } from 'rxjs';
 import SockJS from 'sockjs-client';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -38,7 +39,7 @@ export class WebsocketService {
       return;
     }
 
-    const socket = new SockJS('http://localhost:8080/ws');
+    const socket = new SockJS(environment.apiBackend + '/ws');
 
     this.stompClient = new Client({
       webSocketFactory: () => socket,

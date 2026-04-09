@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface Usuario {
   id: number;
@@ -31,8 +32,8 @@ export interface AgenteDisponible {
 })
 export class AgenteServiceTs {
 
-  private apiAgente = 'http://localhost:8080/agente';
-  private apiReportes = 'http://localhost:8080/api/reportes';
+  private apiAgente = environment.apiBackend + '/agente';
+  private apiReportes = environment.apiBackend + '/api/reportes';
 
   constructor(private http: HttpClient) {}
 
@@ -137,7 +138,7 @@ export class AgenteServiceTs {
   // TAREAS DEL AGENTE
   // =============================
   getTareasAgente(): Observable<any> {
-    return this.http.get('http://localhost:8080/agente/tareas', { withCredentials: true });
+    return this.http.get(environment.apiBackend + '/agente/tareas', { withCredentials: true });
   }
 
   // =============================
@@ -145,7 +146,7 @@ export class AgenteServiceTs {
   // =============================
   actualizarEstado(estado: string): Observable<any> {
     return this.http.post(
-      'http://localhost:8080/agente/estado',
+      environment.apiBackend + '/agente/estado',
       { estado },
       { withCredentials: true }
     );
@@ -212,7 +213,7 @@ export class AgenteServiceTs {
   }
 
   generarPdfOperativo(reporte: any): Observable<Blob> {
-    return this.http.post('http://localhost:3000/api/operativo-pdf', reporte, {
+    return this.http.post(environment.apiNoticias + '/operativo-pdf', reporte, {
       responseType: 'blob'
     });
   }

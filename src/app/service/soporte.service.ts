@@ -9,12 +9,13 @@ import {
   ResponderTicketRequest,
   ContadorTickets
 } from '../models/soporte.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SoporteService {
-  private apiUrl = 'http://localhost:8080/api/soporte';
+  private apiUrl = environment.apiBackend + '/api/soporte';
 
   constructor(private http: HttpClient) {}
 

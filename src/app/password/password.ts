@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import Swal from 'sweetalert2';
 import { Nav } from '../shared/nav/nav';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-password',
@@ -24,7 +25,7 @@ export class Password implements OnInit, OnDestroy {
   contadorTexto = '';
   private intervalId!: ReturnType<typeof setInterval>;
 
-  private readonly API_URL = 'http://localhost:8080/api/password/reset';
+  private readonly API_URL = environment.apiBackend + '/api/password/reset';
 
   // indicadores de validación
   validLength = false;

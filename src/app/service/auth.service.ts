@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 export interface AuthUser {
   userId: string;
@@ -11,7 +12,7 @@ export interface AuthUser {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private apiUrl = 'http://localhost:8080/api/auth';
+  private apiUrl = environment.apiBackend + '/api/auth';
 
   // 🔹 Estado de autenticación global
   private authState = new BehaviorSubject<boolean>(false);

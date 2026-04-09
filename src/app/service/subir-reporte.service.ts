@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface ReporteRequest {
   descripcion: string;
@@ -17,7 +18,7 @@ export interface ReporteRequest {
   providedIn: 'root',
 })
 export class SubirReporteService {
-  private apiUrl = 'http://localhost:8080/api/reportes/crear';
+  private apiUrl = environment.apiBackend + '/api/reportes/crear';
 
   constructor(private http: HttpClient) {}
 

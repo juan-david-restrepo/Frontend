@@ -32,7 +32,7 @@
     const messagesDiv = document.getElementById('messages');
 
     // Cambia esto si tu backend es HTTPS
-    const WS_URL = 'wss://localhost:8080/ws';
+    const WS_URL = window.location.protocol === 'https:' ? 'wss://nombre-backend-latest.onrender.com/ws' : 'ws://localhost:8080/ws';
 
     // Función para mostrar mensajes en el div
     function addMessage(text) {

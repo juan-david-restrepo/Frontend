@@ -4,6 +4,7 @@ import { Nav } from '../../shared/nav/nav';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import Swal from 'sweetalert2';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-recuperar',
@@ -17,7 +18,7 @@ export class Recuperar {
   form!: FormGroup;
   loading = false;
 
-  private readonly API_URL = 'http://localhost:8080/api/password/reset-request';
+  private readonly API_URL = environment.apiBackend + '/api/password/reset-request';
 
   constructor(private fb: FormBuilder, private http: HttpClient) {
     this.form = this.fb.group({

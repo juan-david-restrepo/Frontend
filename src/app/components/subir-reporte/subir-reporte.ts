@@ -22,6 +22,7 @@ import Swal from 'sweetalert2';
 import * as L from 'leaflet';
 import Tesseract from 'tesseract.js';
 import { Nav } from '../../shared/nav/nav';
+import { environment } from '../../../environments/environment';
 
 
 /*------------------ INTERFAZ INCIDENTE ------------------
@@ -598,7 +599,7 @@ export class SubirReporteComponent implements OnInit, OnDestroy {
       }
 
       // Envía la petición al servidor
-      const response = await fetch('http://localhost:8080/api/reportes/crear', {
+      const response = await fetch(environment.apiBackend + '/api/reportes/crear', {
         method: 'POST',
         body: formData,
         credentials: 'include',

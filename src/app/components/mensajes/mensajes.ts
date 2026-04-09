@@ -7,6 +7,7 @@ import { Footer } from '../../shared/footer/footer';
 import { AuthService, AuthUser } from '../../service/auth.service';
 import { WebsocketService } from '../../service/websocket.service';
 import { Subscription } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 interface Notificacion {
   id: number;
@@ -77,7 +78,7 @@ export class Mensajes implements OnInit, OnDestroy {
 
     this.isLoading = true;
     this.httpSubscription?.unsubscribe();
-    this.http.get<Notificacion[]>('http://localhost:8080/api/ciudadano/notificaciones').subscribe({
+    this.http.get<Notificacion[]>(environment.apiBackend + '/api/ciudadano/notificaciones').subscribe({
       next: (notifs) => {
         this.notificaciones = notifs;
         this.isLoading = false;
@@ -123,7 +124,7 @@ export class Mensajes implements OnInit, OnDestroy {
   marcarLeida(notif: Notificacion) {
     if (!notif.leida) {
       notif.leida = true;
-      this.http.put(`http://localhost:8080/api/ciudadano/notificaciones/${notif.id}/leida`, {}).subscribe({
+      this.http.put(environment.apiBackend + `/api/ciudadano/notificaciones/${notif.id}/leida`, {}).subscribe({
         error: (err) => console.error('Error marcando notificación:', err)
       });
     }
@@ -131,7 +132,7 @@ export class Mensajes implements OnInit, OnDestroy {
 
   marcarTodasLeidas() {
     this.notificaciones.forEach(n => n.leida = true);
-    this.http.put('http://localhost:8080/api/ciudadano/notificaciones/leer-todas', {}).subscribe({
+    this.http.put(environment.apiBackend + '/api/ciudadano/notificaciones/leer-todas', {}).subscribe({
       error: (err) => console.error('Error:', err)
     });
   }
