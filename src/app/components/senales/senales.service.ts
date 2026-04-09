@@ -15,7 +15,7 @@ export interface Senal {
 })
 export class SenalesService {
 
-  private API = environment.apiScrappi;
+  private API = environment.apiSenales;
 
   constructor(private http: HttpClient) {}
 
