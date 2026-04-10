@@ -68,9 +68,9 @@
 
 .menu-item.active,
 .menu-item:hover {
-    background: rgb(237, 234, 234);
-    color: black;
-    border-radius: 20px;
+  background: rgb(237, 234, 234);
+  color: #333333;
+  border-radius: 20px;
 }
 
 .menu-item i {
@@ -317,8 +317,8 @@
 }
 
 .menu-item:hover {
-  background: #2b2b2b;
-  color: #ffffff !important;
+  background: #f0f0f0;
+  color: #333 !important;
 }
 
 /* Logout */
@@ -327,8 +327,8 @@
 }
 
 .logout:hover {
-  color: #ff9a9a !important;
-  background: #2b2b2b;
+  color: #dc3545 !important;
+  background: #ffebee;
 }
 
 
@@ -793,9 +793,10 @@
     background: transparent;
   }
 
-  .menu-item-home:hover,
-  .menu-item-container > .menu-item:hover {
-    background: #f5f5f5;
+.menu-item-home:hover,
+.menu-item-container > .menu-item:hover {
+    background: #f0f0f0;
+    color: #333;
   }
 
   .menu-item-home.active,

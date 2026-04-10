@@ -6,6 +6,7 @@ import { AgenteServiceTs } from '../../../service/agente.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 import * as L from 'leaflet';
 import 'leaflet-routing-machine';
+import { environment } from '../../../environments/environment';
 
 
 @Component({
@@ -553,7 +554,9 @@ export class Reportes implements OnChanges, OnDestroy {
 
   private async getRouteFromOSRM(origin: [number, number], destination: [number, number]): Promise<{ coordinates: [number, number][] } | null> {
     return new Promise((resolve) => {
-      const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${origin[1]},${origin[0]};${destination[1]},${destination[0]}?overview=full&geometries=geojson`;
+      // Usar proxy del backend para evitar CORS
+      const coordinates = `${origin[1]},${origin[0]};${destination[1]},${destination[0]}`;
+      const osrmUrl = `${environment.apiRoute}/driving/${coordinates}?overview=full&geometries=geojson`;
       
       const xhr = new XMLHttpRequest();
       xhr.open('GET', osrmUrl, true);

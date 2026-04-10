@@ -61,7 +61,7 @@ export interface InfoExtra {
 })
 export class ConsultaMultasService {
   private http = inject(HttpClient);
-  private apiUrl = environment.apiScrappi;
+  private apiUrl = environment.apiScrappi + '/api';
 
   consultarMultas(datos: DatosConsulta): Observable<ResultadoMultas> {
     return this.http.post<ResultadoMultas>(`${this.apiUrl}/consultar`, datos);
