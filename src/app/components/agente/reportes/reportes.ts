@@ -6,7 +6,7 @@ import { AgenteServiceTs } from '../../../service/agente.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 import * as L from 'leaflet';
 import 'leaflet-routing-machine';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../../environments/environment';
 
 
 @Component({
