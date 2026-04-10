@@ -39,16 +39,12 @@ import { PoliticaPrivacidad } from './components/politica-privacidad/politica-pr
 import { AvisoPrivacidad } from './components/aviso-privacidad/aviso-privacidad';
 import { SenalesComponent } from './components/senales/senales';
 
-
-
-
-
 export const routes: Routes = [
   { path: '', component: Home },
   { path: 'home', component: Home },
   { path: 'login', component: Login },
   { path: 'recuperar', component: Recuperar },
-  { path: 'verificar-correo', component: VerificarCorreo },
+  { path: 'verificar-correo', component: VerificarCorreo  },
   { path: 'registro', component: Registro },
   { path: 'subir-reporte', component: SubirReporteComponent, canActivate: [authGuard] },
   { path: 'parking', component: Parking, canActivate: [authGuard] },
@@ -65,11 +61,11 @@ export const routes: Routes = [
   {path: 'dashboard', component: Dashboard, canActivate: [authGuard] },
   {path: 'perfil-agente', component: PerfilAgente, canActivate: [authGuard] },
   {path: 'gestion-agentes', component: GestionAgentes, canActivate: [authGuard] }, 
-  {path: 'gestion-soporte', component: GestionSoporte,  },
+  {path: 'gestion-soporte', component: GestionSoporte,  canActivate: [authGuard] },
   {path: 'sidebar-admin', component: SidebarAdmin },
-  {path: 'config-admin', component: ConfigAdminComponent},
+  {path: 'config-admin', component: ConfigAdminComponent, canActivate : [authGuard] },
   {path: 'mapa-reportes', component: MapaReportesComponent},
-  { path: 'admin', component: Admin, },
+  { path: 'admin', component: Admin, canActivate: [authGuard] },
   {path: 'senales', component: SenalesComponent },
   { path: 'sobre-nosotros', component: SobreNosotros },
   { path: 'servicios-footer', component: ServiciosFooter },
@@ -79,11 +75,9 @@ export const routes: Routes = [
   { path: 'mensajes', component: Mensajes, canActivate: [authGuard] },
   {path: 'voice-chat-bot', component: VoiceChatBotComponent },
   {path: 'puntos-atencion', component: PuntosAtencion },
-  {path: 'consulta-multas', component: ConsultaMultas,  },
+  {path: 'consulta-multas', component: ConsultaMultas,  canActivate: [authGuard] },
   {path: 'terminos-servicio', component: TerminosServicio },
   {path: 'politica-privacidad', component: PoliticaPrivacidad },
   {path: 'aviso-privacidad', component: AvisoPrivacidad },
   {path: 'puntos-atencion', component: PuntosAtencion }
-
-
 ];
