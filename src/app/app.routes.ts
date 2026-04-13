@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth-guard';
+import { adminGuard } from './guards/admin-guard';
+import { agenteGuard } from './guards/agente-guard';
 import { Home } from './components/home/home';
 import { Login } from './components/login/login';
 import { Recuperar } from './components/recuperar/recuperar';
@@ -48,24 +50,23 @@ export const routes: Routes = [
   { path: 'registro', component: Registro },
   { path: 'subir-reporte', component: SubirReporteComponent, canActivate: [authGuard] },
   { path: 'parking', component: Parking, canActivate: [authGuard] },
-  { path: 'agente', component: Agente, canActivate: [authGuard] },
   { path: 'footer', component: Footer },
   { path: 'soporte', component: Soporte },
   { path: 'pico-placa', component: PicoPlaca },
   {path: 'noticias', component: NoticiasComponent},
   {path: 'normas', component: Normas },
   {path: 'perfil', component: Perfil, canActivate: [authGuard]  },
-  {path: 'tareas', component: Tareas, canActivate: [authGuard] },
-  {path: 'historial', component: Historial, canActivate: [authGuard] },
-  {path: 'reportes', component: Reportes, canActivate: [authGuard] },
-  {path: 'dashboard', component: Dashboard, canActivate: [authGuard] },
-  {path: 'perfil-agente', component: PerfilAgente, canActivate: [authGuard] },
-  {path: 'gestion-agentes', component: GestionAgentes, canActivate: [authGuard] }, 
-  {path: 'gestion-soporte', component: GestionSoporte,  canActivate: [authGuard] },
+  {path: 'tareas', component: Tareas, canActivate: [agenteGuard] },
+  {path: 'historial', component: Historial, canActivate: [agenteGuard] },
+  {path: 'reportes', component: Reportes, canActivate: [agenteGuard] },
+  {path: 'dashboard', component: Dashboard, canActivate: [agenteGuard] },
+  {path: 'perfil-agente', component: PerfilAgente, canActivate: [agenteGuard] },
+  {path: 'gestion-agentes', component: GestionAgentes, canActivate: [adminGuard] }, 
+  {path: 'gestion-soporte', component: GestionSoporte, canActivate: [adminGuard] },
   {path: 'sidebar-admin', component: SidebarAdmin },
-  {path: 'config-admin', component: ConfigAdminComponent, canActivate : [authGuard] },
+  {path: 'config-admin', component: ConfigAdminComponent, canActivate : [adminGuard] },
   {path: 'mapa-reportes', component: MapaReportesComponent},
-  { path: 'admin', component: Admin, canActivate: [authGuard] },
+  { path: 'admin', component: Admin, canActivate: [adminGuard] },
   {path: 'senales', component: SenalesComponent },
   { path: 'sobre-nosotros', component: SobreNosotros },
   { path: 'servicios-footer', component: ServiciosFooter },

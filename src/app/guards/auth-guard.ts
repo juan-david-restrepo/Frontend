@@ -13,8 +13,19 @@ export const authGuard: CanActivateFn = () => {
 
   return authService.getCurrentUser().pipe(
     map(() => {
-      //  Sincronizamos estado global
-      authService.setAuthenticated(true);
+      const role = authService.getUserRole();
+      
+      const currentPath = window.location.pathname;
+      const agenteRoutes = ['/tareas', '/historial', '/reportes', '/dashboard', '/perfil-agente', '/agente'];
+      const adminRoutes = ['/admin', '/gestion-agentes', '/gestion-soporte', '/config-admin'];
+      
+      if (role === 'CIUDADANO') {
+        if (agenteRoutes.some(r => currentPath.startsWith(r)) || adminRoutes.some(r => currentPath.startsWith(r))) {
+          router.navigate(['/home']);
+          return false;
+        }
+      }
+      
       return true;
     }),
 
