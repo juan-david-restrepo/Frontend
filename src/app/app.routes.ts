@@ -56,6 +56,7 @@ export const routes: Routes = [
   {path: 'noticias', component: NoticiasComponent},
   {path: 'normas', component: Normas },
   {path: 'perfil', component: Perfil, canActivate: [authGuard]  },
+  {path: 'agente', component: Agente, canActivate: [agenteGuard] },
   {path: 'tareas', component: Tareas, canActivate: [agenteGuard] },
   {path: 'historial', component: Historial, canActivate: [agenteGuard] },
   {path: 'reportes', component: Reportes, canActivate: [agenteGuard] },

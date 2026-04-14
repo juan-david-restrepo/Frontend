@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Nav } from '../../shared/nav/nav';
 import { Avatar } from '../../service/avatar';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { switchMap } from 'rxjs/operators';
 import { AuthService, AuthUser } from '../../service/auth.service';
 import Swal from 'sweetalert2';
 
@@ -44,9 +45,15 @@ export class Login {
 
     const { email, password } = this.formLogin.value;
 
-    this.authService.login(email, password).subscribe({
-      next: (user: AuthUser | null) => {
-        if (!user) {
+    this.authService.login(email, password).pipe(
+      switchMap(() => this.authService.refreshUser())
+    ).subscribe({
+      next: () => {
+        const userId = localStorage.getItem('userId');
+        const userEmail = localStorage.getItem('email');
+        const role = localStorage.getItem('role')?.toUpperCase() || '';
+
+        if (!userId) {
           Swal.fire({
             icon: 'error',
             title: 'Error',
@@ -55,7 +62,7 @@ export class Login {
           return;
         }
 
-        this.avatarService.loadAvatarForUser(user.userId);
+        this.avatarService.loadAvatarForUser(userId);
 
         Swal.fire({
           icon: 'success',
@@ -65,7 +72,6 @@ export class Login {
           showConfirmButton: false,
         });
 
-        const role = user.role.toUpperCase();
         if (role === 'CIUDADANO') this.router.navigate(['/home']);
         else if (role === 'AGENTE') this.router.navigate(['/agente']);
         else if (role === 'ADMIN') this.router.navigate(['/admin']);
