@@ -123,6 +123,14 @@
             <option value="FINALIZADO">FINALIZADO</option>
             <option value="RECHAZADO">RECHAZADO</option>
           </select>
+
+          <!-- Filtro por prioridad -->
+          <select (change)="filtrarTablaPorPrioridad($event)">
+            <option value="">Todas las prioridades</option>
+            <option value="ALTA">ALTA</option>
+            <option value="MEDIA">MEDIA</option>
+            <option value="BAJA">BAJA</option>
+          </select>
         </div>
       </div>
 
@@ -134,6 +142,7 @@
               <th>#</th>
               <th>Fecha</th>
               <th>Tipo</th>
+              <th>Prioridad</th>
               <th>Agente</th>
               <th>Acompañamiento</th>
               <th>Estado</th>
@@ -145,6 +154,11 @@
               <td data-label="#"><strong>{{ inf.id }}</strong></td>
               <td data-label="Fecha">{{ inf.fecha }}</td>
               <td data-label="Tipo">{{ getNombreTipo(inf.tipo) }}</td>
+              <td data-label="Prioridad">
+                <span class="prioridad-badge" [ngClass]="getClasePrioridad(inf.prioridad || 'BAJA')">
+                  {{ inf.prioridad || 'BAJA' }}
+                </span>
+              </td>
               <td data-label="Agente">
                 <span class="placa-agente">{{ inf.placaAgente || inf.agente }}</span>
               </td>

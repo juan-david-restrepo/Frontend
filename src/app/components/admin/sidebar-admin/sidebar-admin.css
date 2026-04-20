@@ -16,9 +16,11 @@
 }
 
 .logo-img {
-  width: 70px;
-  height: 70px;
+  width: 53px;
+  height: 62px;
+  margin-bottom: 10px;
 }
+
 
 .logo-text {
   font-size: 20px;

@@ -30,6 +30,7 @@
 .filtros{
   display: flex;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .filtros button {
@@ -42,6 +43,23 @@
   font-size: 14px;
   font-weight: 600;
   transition: all .2s ease;
+}
+
+.filtro-select {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  color: #1e293b;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  min-width: 120px;
+}
+
+.filtro-select:focus {
+  outline: none;
+  border-color: #3b82f6;
 }
 
 /* 🔥 BOTÓN ACTIVO */
@@ -605,7 +623,63 @@ button:disabled {
 
 /* =========================
    MODALES
-========================= */
+ ========================= */
+
+/* Campo comparendo en modal */
+.comparendo-option {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.label-comparendo {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+.radio-group {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.radio-label input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.radio-text {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.info-semaforo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--soft-bg);
+  padding: 10px 15px;
+  border-radius: 8px;
+  width: 100%;
+}
+
+.info-semaforo i {
+  color: var(--accent);
+}
 
 .modal-box {
   background: linear-gradient(145deg, #ffffff, #f1f5f9);

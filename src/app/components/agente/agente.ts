@@ -47,6 +47,7 @@ export interface Reporte {
   placaAgente?: string;
   nombreAgente?: string;
   esCompanero?: boolean;
+  huboComparendo?: boolean | null;
 }
 
 export interface Tarea {
@@ -301,8 +302,8 @@ export class Agente implements OnInit, OnDestroy {
   // El hijo ya actualizó reportesScroll (optimista).
   // Aquí hacemos el HTTP y recargamos historial desde BD.
   // ================================
-  finalizarReporte(r: Reporte) {
-    this.agenteService.finalizarReporte(r.id, r.resumenOperativo || '').subscribe({
+  finalizeReporte(r: Reporte) {
+    this.agenteService.finalizarReporte(r.id, r.resumenOperativo || '', r.huboComparendo ?? null).subscribe({
       next: () => {
         // Quitar de reportesEntrantes
         this.reportesEntrantes = this.reportesEntrantes.filter(x => x.id !== r.id);
@@ -411,7 +412,8 @@ export class Agente implements OnInit, OnDestroy {
       placaCompanero:   r.placaCompanero,
       nombreCompanero:  r.nombreCompanero,
       placaAgente:      r.placaAgente?.toUpperCase() || '',
-      esCompanero:      r.acompanado && placaCompanero === placaActual && placaAgente !== placaActual
+      esCompanero:      r.acompanado && placaCompanero === placaActual && placaAgente !== placaActual,
+      huboComparendo:  r.huboComparendo
     };
   }
 

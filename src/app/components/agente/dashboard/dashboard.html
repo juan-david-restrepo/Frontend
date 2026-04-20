@@ -87,6 +87,26 @@
         <h2>{{ reportesRechazados }}</h2>
       </div>
 
+      <!-- Comparendos SÍ: reportes con comparendo en el rango de fechas -->
+      <div class="dash-card dash-card-verde">
+        <div class="icono-titulo">
+          <i class="fa-solid fa-file-contract"></i>
+          <span>Con Comparendo</span>
+        </div>
+        <!-- Total de comparendos SÍ (datos reales desde el backend) -->
+        <h2>{{ comparendosSi }}</h2>
+      </div>
+
+      <!-- Comparendos NO: reportes sin comparendo en el rango de fechas -->
+      <div class="dash-card dash-card-rojo">
+        <div class="icono-titulo">
+          <i class="fa-solid fa-file-circle-xmark"></i>
+          <span>Sin Comparendo</span>
+        </div>
+        <!-- Total de comparendos NO (datos reales desde el backend) -->
+        <h2>{{ comparendosNo }}</h2>
+      </div>
+
       <!-- Tiempo activo: tiempo de sesión del agente -->
       <div class="dash-card">
         <div class="icono-titulo">

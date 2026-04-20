@@ -77,6 +77,15 @@
     >
       <i class="fa-solid fa-file-pdf"></i> PDF
     </button>
+
+    <!-- Badge comparendo -->
+    <span 
+      class="badge-comparendo" 
+      *ngIf="h.estado === EstadoReporte.FINALIZADO && h.huboComparendo !== undefined && h.huboComparendo !== null"
+      [ngClass]="{ 'badge-si': h.huboComparendo, 'badge-no': !h.huboComparendo }"
+    >
+      {{ h.huboComparendo ? 'Con comparendo' : 'Sin comparendo' }}
+    </span>
   </div>
 
 </div>

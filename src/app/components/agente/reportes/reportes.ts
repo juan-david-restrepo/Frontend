@@ -107,6 +107,7 @@ export class Reportes implements OnChanges, OnDestroy {
   mostrarModal = false;
   mostrarModalResumen = false;
   resumenTexto = '';
+  huboComparendo: boolean | null = null;
 
   // ================================
   // DETALLE
@@ -118,6 +119,7 @@ export class Reportes implements OnChanges, OnDestroy {
   // FILTROS
   // ================================
   filtroActivo: 'TODOS' | 'BAJA' | 'MEDIA' | 'ALTA' = 'TODOS';
+  filtroTipo = '';
 
   // ================================
   // ALERTAS
@@ -222,8 +224,9 @@ export class Reportes implements OnChanges, OnDestroy {
 
   cambiarFiltro(filtro: 'TODOS' | 'BAJA' | 'MEDIA' | 'ALTA') {
     this.filtroActivo = filtro;
-    this.page         = 0;
-    this.totalPages   = 0;
+    this.filtroTipo = '';
+    this.page       = 0;
+    this.totalPages = 0;
 
     if (filtro === 'TODOS') {
       // Solo al volver a TODOS: recargar base desde backend para tener lista completa.
@@ -246,6 +249,11 @@ export class Reportes implements OnChanges, OnDestroy {
       // BAJA / MEDIA / ALTA: no vaciar la lista; solo cambiar el filtro.
       // reportesFiltrados (getter) filtra por etiqueta en la lista ya cargada.
     }
+  }
+
+  filtrarPorTipo(event: Event) {
+    const select = event.target as HTMLSelectElement;
+    this.filtroTipo = select.value;
   }
 
   // ================================================================
@@ -329,7 +337,8 @@ export class Reportes implements OnChanges, OnDestroy {
       placaCompanero:   r.placaCompanero,
       nombreCompanero:  r.nombreCompanero,
       placaAgente:      r.placaAgente?.toUpperCase() || '',
-      nombreAgente:      r.nombreAgente
+      nombreAgente:      r.nombreAgente,
+      huboComparendo:    r.huboComparendo
     };
   }
 
@@ -824,7 +833,17 @@ export class Reportes implements OnChanges, OnDestroy {
   // ================================
   // FINALIZAR — actualización optimista
   // ================================
-  abrirModalFinalizar() { this.mostrarModal = true; }
+  abrirModalFinalizar() { 
+    this.huboComparendo = null; // Resetear al abrir
+    this.mostrarModal = true; 
+  }
+
+  // Helper: verificar si es reporte de semáforo
+  get esTipoSemaforo(): boolean {
+    if (!this.reporteSeleccionado) return false;
+    const tipo = this.reporteSeleccionado.tipoInfraccion?.toLowerCase() || '';
+    return tipo.includes('semáforo') || tipo.includes('semaforo');
+  }
 
   confirmarFinalizar() {
     if (!this.reporteSeleccionado) return;
@@ -832,24 +851,31 @@ export class Reportes implements OnChanges, OnDestroy {
       this.mostrarAlerta('Debes escribir un resumen mínimo de 10 caracteres'); return;
     }
 
-    const idx = this.reportesScroll.findIndex(x => x.id === this.reporteSeleccionado!.id);
-    if (idx !== -1) {
-      this.reportesScroll[idx] = {
-        ...this.reportesScroll[idx],
-        estado:           EstadoReporte.FINALIZADO,
-        fechaFinalizado:  new Date(),
-        resumenOperativo: this.resumenTexto.trim()
-      };
-      this.reporteSeleccionado = this.reportesScroll[idx];
-    } else {
-      this.reporteSeleccionado.estado           = EstadoReporte.FINALIZADO;
-      this.reporteSeleccionado.fechaFinalizado  = new Date();
-      this.reporteSeleccionado.resumenOperativo = this.resumenTexto.trim();
+    // Validar comparendo (no obligatorio para semáforo)
+    if (!this.esTipoSemaforo && this.huboComparendo === null) {
+      this.mostrarAlerta('Selecciona si hubo comparendo'); return;
     }
 
-    this.finalizar.emit(this.reporteSeleccionado);
+    const reporteActualizado: Reporte = {
+      ...this.reporteSeleccionado!,
+      estado: EstadoReporte.FINALIZADO,
+      fechaFinalizado: new Date(),
+      resumenOperativo: this.resumenTexto.trim(),
+      huboComparendo: this.esTipoSemaforo ? undefined : this.huboComparendo ?? undefined
+    };
+
+    const idx = this.reportesScroll.findIndex(x => x.id === this.reporteSeleccionado!.id);
+    if (idx !== -1) {
+      this.reportesScroll[idx] = reporteActualizado;
+      this.reporteSeleccionado = this.reportesScroll[idx];
+    } else {
+      this.reporteSeleccionado = reporteActualizado;
+    }
+
+    this.finalizar.emit(reporteActualizado);
     this.mostrarModal        = false;
     this.resumenTexto        = '';
+    this.huboComparendo = null;
     this.reporteSeleccionado = null;
   }
 
@@ -864,12 +890,28 @@ export class Reportes implements OnChanges, OnDestroy {
       if (b.estado === EstadoReporte.EN_PROCESO) return  1;
       return 0;
     });
-    if (this.filtroActivo === 'TODOS') return lista;
-    const filtro = this.filtroActivo;
-    return lista.filter(r => {
-      const etq = (r.etiqueta ?? '').toString().toUpperCase();
-      return etq === filtro;
-    });
+
+    let filtrados = lista;
+
+    // Filtro prioridad (BAJA/MEDIA/ALTA)
+    if (this.filtroActivo !== 'TODOS') {
+      const filtro = this.filtroActivo;
+      filtrados = filtrados.filter(r => {
+        const etq = (r.etiqueta ?? '').toString().toUpperCase();
+        return etq === filtro;
+      });
+    }
+
+    // Filtro tipo
+    if (this.filtroTipo) {
+      filtrados = filtrados.filter(r => {
+        const tipo = (r.tipoInfraccion ?? '').toLowerCase();
+        const filtro = this.filtroTipo.toLowerCase();
+        return tipo.includes(filtro);
+      });
+    }
+
+    return filtrados;
   }
 
   getClasePrioridad(etiqueta: string) {

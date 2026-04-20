@@ -34,6 +34,10 @@ export class Dashboard implements AfterViewInit, OnInit, OnDestroy, OnChanges {
   reportesResueltos: number = 0;
   // Reportes rechazados en el rango de fechas (del backend)
   reportesRechazados: number = 0;
+  // Comparendos con comparendo SÍ (del backend)
+  comparendosSi: number = 0;
+  // Comparendos con comparendo NO (del backend)
+  comparendosNo: number = 0;
 
   // Historial de reportes del agente (para las gráficas y actividad)
   historialReportes: Reporte[] = [];
@@ -104,14 +108,26 @@ export class Dashboard implements AfterViewInit, OnInit, OnDestroy, OnChanges {
   // CARGAR ESTADÍSTICAS DESDE EL BACKEND
   // =============================
   cargarEstadisticas() {
+    // Proteger contra fechas vacías
+    if (!this.fechaInicio || !this.fechaFin) {
+      console.warn('Fechas vacías, inicializando...');
+      this.actualizarFechasPorModo('DIA');
+    }
+    
+    console.log('Cargando estadísticas con fechas:', this.fechaInicio, '-', this.fechaFin);
+    
     // Usar el endpoint de estadísticas completas (tarjetas + gráficas)
     this.agenteService.getEstadisticasCompletas(this.fechaInicio, this.fechaFin).subscribe({
       next: (data) => {
+        console.log('Estadísticas recibidas del backend:', data);
+        
         // Actualizar las tarjetas con los datos del backend
         this.reportesPeriodo = data.reportesHoy || 0;
         this.reportesPendientes = data.totalPendientes || 0;
         this.reportesResueltos = data.reportesResueltos || 0;
         this.reportesRechazados = data.reportesRechazados || 0;
+        this.comparendosSi = data.comparendosSi || 0;
+        this.comparendosNo = data.comparendosNo || 0;
 
         // Actualizar las fechas si el backend las cambió
         if (data.fechaInicio) this.fechaInicio = data.fechaInicio;
@@ -134,15 +150,7 @@ export class Dashboard implements AfterViewInit, OnInit, OnDestroy, OnChanges {
         // También cargar historial para la actividad reciente
         this.cargarHistorialYActividad();
       },
-      error: (err) => {
-        console.error('Error cargando estadísticas del dashboard', err);
-        // En caso de error, usar valores por defecto
-        this.reportesPeriodo = 0;
-        this.reportesPendientes = 0;
-        this.reportesResueltos = 0;
-        this.reportesRechazados = 0;
-      }
-    });
+      });
   }
 
   // Cargar historial para actividad reciente
@@ -251,7 +259,8 @@ export class Dashboard implements AfterViewInit, OnInit, OnDestroy, OnChanges {
       resumenOperativo: r.resumenOperativo,
       acompanado: r.acompanado ?? false,
       placaCompanero: r.placaCompanero,
-      nombreCompanero: r.nombreCompanero
+      nombreCompanero: r.nombreCompanero,
+      huboComparendo: r.huboComparendo
     };
   }
 
@@ -268,9 +277,10 @@ export class Dashboard implements AfterViewInit, OnInit, OnDestroy, OnChanges {
 
   ngAfterViewInit() {
     const hoy = new Date();
+    const fechaLocal = hoy.toLocaleDateString('en-CA');
     
-    this.fechaFin = hoy.toISOString().split('T')[0];
-    this.fechaInicio = hoy.toISOString().split('T')[0];
+    this.fechaFin = fechaLocal;
+    this.fechaInicio = fechaLocal;
     
     this.crearGrafica();
   }
@@ -373,18 +383,19 @@ export class Dashboard implements AfterViewInit, OnInit, OnDestroy, OnChanges {
 
   actualizarFechasPorModo(modo: 'SEMANA' | 'ANIO' | 'DIA') {
     const hoy = new Date();
+    const fechaLocal = hoy.toLocaleDateString('en-CA');
     if (modo === 'SEMANA') {
       const hace7Dias = new Date();
       hace7Dias.setDate(hoy.getDate() - 7);
-      this.fechaFin = hoy.toISOString().split('T')[0];
-      this.fechaInicio = hace7Dias.toISOString().split('T')[0];
+      this.fechaFin = fechaLocal;
+      this.fechaInicio = hace7Dias.toLocaleDateString('en-CA');
     } else if (modo === 'ANIO') {
       const inicioAnio = new Date(hoy.getFullYear(), 0, 1);
-      this.fechaInicio = inicioAnio.toISOString().split('T')[0];
-      this.fechaFin = hoy.toISOString().split('T')[0];
+      this.fechaInicio = inicioAnio.toLocaleDateString('en-CA');
+      this.fechaFin = fechaLocal;
     } else {
-      this.fechaInicio = hoy.toISOString().split('T')[0];
-      this.fechaFin = hoy.toISOString().split('T')[0];
+      this.fechaInicio = fechaLocal;
+      this.fechaFin = fechaLocal;
     }
   }
 

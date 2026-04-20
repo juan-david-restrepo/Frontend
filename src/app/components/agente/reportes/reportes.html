@@ -17,6 +17,15 @@
       <button class="btn-filtro" (click)="cambiarFiltro('BAJA')"  [ngClass]="{ activo: filtroActivo === 'BAJA' }">Baja</button>
       <button class="btn-filtro" (click)="cambiarFiltro('MEDIA')" [ngClass]="{ activo: filtroActivo === 'MEDIA' }">Media</button>
       <button class="btn-filtro" (click)="cambiarFiltro('ALTA')"  [ngClass]="{ activo: filtroActivo === 'ALTA' }">Alta</button>
+      
+      <select (change)="filtrarPorTipo($event)" class="filtro-select">
+        <option value="">Todos los tipos</option>
+        <option value="Accidente de tránsito">Accidente</option>
+        <option value="Vehículo mal estacionado">Mal Estacionado</option>
+        <option value="Semáforo dañado">Semáforo</option>
+        <option value="Conducción peligrosa">Conducción</option>
+        <option value="Otros">Otros</option>
+      </select>
     </div>
   </div>
 
@@ -297,11 +306,42 @@
       placeholder="Describe lo ocurrido durante el operativo..."
     ></textarea>
 
-    <div class="modal-actions">
+    <!-- Campo comparendo (solo si NO es semáforo) -->
+    <div class="comparendo-option" *ngIf="!esTipoSemaforo">
+      <label class="label-comparendo">¿Hubo comparendo?</label>
+      <div class="radio-group">
+        <label class="radio-label">
+          <input 
+            type="radio" 
+            name="comparendo" 
+            [value]="true"
+            [(ngModel)]="huboComparendo"
+          />
+          <span class="radio-text">Sí</span>
+        </label>
+        <label class="radio-label">
+          <input 
+            type="radio" 
+            name="comparendo" 
+            [value]="false"
+            [(ngModel)]="huboComparendo"
+          />
+          <span class="radio-text">No</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Mensaje informativo para semáforo -->
+    <p class="info-semaforo" *ngIf="esTipoSemaforo">
+      <i class="fas fa-info-circle"></i>
+      Para reportes de semáforo dañado no aplica comparendo
+    </p>
+
+<div class="modal-actions">
       <button class="btn-no" (click)="mostrarModal = false">Cancelar</button>
       <button
         class="btn-ok"
-        [disabled]="!resumenTexto || resumenTexto.trim().length < 10"
+        [disabled]="!resumenTexto || resumenTexto.trim().length < 10 || (!esTipoSemaforo && huboComparendo === null)"
         (click)="confirmarFinalizar()"
       >
         Confirmar

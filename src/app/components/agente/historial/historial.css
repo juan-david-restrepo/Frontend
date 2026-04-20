@@ -67,6 +67,28 @@
   box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
 }
 
+/* Badge comparendo */
+.badge-comparendo {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.badge-comparendo.badge-si {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.badge-comparendo.badge-no {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
 .historial-card {
   cursor: pointer;
   padding: 20px;

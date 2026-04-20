@@ -148,6 +148,23 @@
   font-size: 1.8em;
 }
 
+/* Cards de comparendos con colores */
+.dash-card-verde {
+  border-left: 4px solid #22c55e;
+}
+
+.dash-card-verde .icono-titulo i {
+  color: #22c55e;
+}
+
+.dash-card-rojo {
+  border-left: 4px solid #ef4444;
+}
+
+.dash-card-rojo .icono-titulo i {
+  color: #ef4444;
+}
+
 .icono-titulo{
   display: flex;
   align-items: center;
@@ -234,6 +251,8 @@ h4{
   display: flex;
   flex-direction: column;
   gap: 15px;
+  max-height: 400px;
+  overflow-y: auto;
 }
 
 .actividad-item {
@@ -316,6 +335,24 @@ h4{
 /* =========================
    RESPONSIVE DASHBOARD
 ========================= */
+
+@media (min-width: 1165px) {
+
+    .chart-header {
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+  }
+}
+
+@media (min-width:900px) {
+
+  .chart-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+}
 
 @media (max-width: 900px) {
 

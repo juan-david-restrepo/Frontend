@@ -64,6 +64,8 @@ app-sidebar-admin {
   padding: 28px;
   transition: all 0.3s ease;
   margin-bottom: 30px;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .card-dashboard:hover {
@@ -208,6 +210,11 @@ app-sidebar-admin {
   border: 1px solid #e2e8f0;
   box-shadow: 0 10px 24px rgba(10, 37, 64, 0.08);
   overflow-x: auto;
+}
+
+.table-responsive {
+  max-height: 400px;
+  overflow-y: auto;
 }
 
 .table-header {
@@ -868,7 +875,11 @@ app-sidebar-admin {
 }
 
 /* ===== REPORTES LIST ===== */
-.reportes-lista { margin-top: 20px; }
+.reportes-lista { 
+  margin-top: 20px;
+  max-height: 400px;
+  overflow-y: auto;
+}
 
 .section-title {
   display: flex;
@@ -1381,6 +1392,24 @@ app-sidebar-admin {
 /* ============================================
    RESPONSIVE BREAKPOINTS
    ============================================ */
+
+/* Fix chart-filtros overflow - Range 901px - 1164px */
+@media (min-width: 901px) and (max-width: 1164px) {
+  .card-header-pro {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+}
+
+/* Normal - From 1165px and up */
+@media (min-width: 1165px) {
+  .card-header-pro {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 20px;
+  }
+}
 
 /* Large Tablets (992px and below) */
 @media (max-width: 992px) {

@@ -108,10 +108,10 @@ export class AgenteServiceTs {
   // =============================
   // FINALIZAR REPORTE
   // =============================
-  finalizarReporte(id: number, resumen: string): Observable<any> {
+  finalizarReporte(id: number, resumen: string, huboComparendo: boolean | null): Observable<any> {
     return this.http.post(
       `${this.apiReportes}/finalizar/${id}`,
-      { resumen },
+      { resumen, huboComparendo },
       { withCredentials: true }
     );
   }

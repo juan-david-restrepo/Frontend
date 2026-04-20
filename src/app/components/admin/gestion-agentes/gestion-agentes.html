@@ -340,47 +340,64 @@
                 <span class="reporte-value" *ngIf="reporte.resumenOperativo.length < 30">{{ reporte.resumenOperativo }}</span>
                 <button *ngIf="reporte.resumenOperativo.length >= 30" class="ver-mas-btn" (click)="abrirModalDescripcion(reporte.resumenOperativo, 'Resumen Operativo')">Ver más</button>
               </div>
+              
+              <!-- Comparendo -->
+              <div class="reporte-item" *ngIf="reporte.huboComparendo === true || reporte.huboComparendo === false">
+                <span class="reporte-label">Comp.</span>
+                <span 
+                  class="reporte-badge"
+                  [ngClass]="{ 'badge-si': reporte.huboComparendo, 'badge-no': !reporte.huboComparendo }"
+                >
+                  {{ reporte.huboComparendo ? 'Sí' : 'No' }}
+                </span>
+              </div>
             </div>
           </div>
         </div>
         
-        <!-- Vista de REPORTES en formato TABLA (escritorio) -->
-        <table class="tabla-reportes-desktop" *ngIf="reportes.length > 0">
-          <thead>
-            <tr>
-              <th>Fecha</th>
-              <th>Hora</th>
-              <th>Ubicación</th>
-              <th>Incidente</th>
-              <th>Acompañamiento</th>
-              <th>Descripción</th>
-              <th>Resumen</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let reporte of reportes">
-              <td data-label="Fecha">{{ reporte.fechaIncidente }}</td>
-              <td data-label="Hora">{{ reporte.horaIncidente }}</td>
-              <td data-label="Ubicación">{{ reporte.direccion }}</td>
-              <td data-label="Incidente">{{ reporte.tipoInfraccion }}</td>
-              <td data-label="Acompañamiento">
-                <span *ngIf="reporte.acompanado" class="badge-acompanado">{{ reporte.placaCompanero }}</span>
-                <span *ngIf="!reporte.acompanado" class="badge-solo">Solo</span>
-              </td>
-              <td data-label="Descripción">
-                <span *ngIf="!reporte.descripcion || reporte.descripcion.length === 0">-</span>
-                <span *ngIf="reporte.descripcion && reporte.descripcion.length < 20">{{ reporte.descripcion }}</span>
-                <button *ngIf="reporte.descripcion && reporte.descripcion.length >= 20" class="ver-mas" (click)="abrirModalDescripcion(reporte.descripcion, 'Descripción del Reporte')">
-                  Ver más
-                </button>
-              </td>
-              <td data-label="Resumen">
-                <span *ngIf="!reporte.resumenOperativo || reporte.resumenOperativo.length < 20">{{ reporte.resumenOperativo || '-' }}</span>
-                <button *ngIf="reporte.resumenOperativo && reporte.resumenOperativo.length >= 20" class="ver-mas" (click)="abrirModalDescripcion(reporte.resumenOperativo, 'Resumen Operativo')">
-                  Ver más
-                </button>
-              </td>
-            </tr>
+<!-- Vista de REPORTES en formato TABLA (escritorio) -->
+          <table class="tabla-reportes-desktop" *ngIf="reportes.length > 0">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Ubicación</th>
+                <th>Incidente</th>
+                <th>Acompañamiento</th>
+                <th>Descripción</th>
+                <th>Resumen</th>
+                <th>Comparendo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let reporte of reportes">
+                <td data-label="Fecha">{{ reporte.fechaIncidente }}</td>
+                <td data-label="Hora">{{ reporte.horaIncidente }}</td>
+                <td data-label="Ubicación">{{ reporte.direccion }}</td>
+                <td data-label="Incidente">{{ reporte.tipoInfraccion }}</td>
+                <td data-label="Acompañamiento">
+                  <span *ngIf="reporte.acompanado" class="badge-acompanado">{{ reporte.placaCompanero }}</span>
+                  <span *ngIf="!reporte.acompanado" class="badge-solo">Solo</span>
+                </td>
+                <td data-label="Descripción">
+                  <span *ngIf="!reporte.descripcion || reporte.descripcion.length === 0">-</span>
+                  <span *ngIf="reporte.descripcion && reporte.descripcion.length < 20">{{ reporte.descripcion }}</span>
+                  <button *ngIf="reporte.descripcion && reporte.descripcion.length >= 20" class="ver-mas" (click)="abrirModalDescripcion(reporte.descripcion, 'Descripción del Reporte')">
+                    Ver más
+                  </button>
+                </td>
+                <td data-label="Resumen">
+                  <span *ngIf="!reporte.resumenOperativo || reporte.resumenOperativo.length < 20">{{ reporte.resumenOperativo || '-' }}</span>
+                  <button *ngIf="reporte.resumenOperativo && reporte.resumenOperativo.length >= 20" class="ver-mas" (click)="abrirModalDescripcion(reporte.resumenOperativo, 'Resumen Operativo')">
+                    Ver más
+                  </button>
+                </td>
+                <td data-label="Comparendo">
+                  <span *ngIf="reporte.huboComparendo === true" class="badge-comparendo-si">Sí</span>
+                  <span *ngIf="reporte.huboComparendo === false" class="badge-comparendo-no">No</span>
+                  <span *ngIf="reporte.huboComparendo === undefined || reporte.huboComparendo === null" class="badge-solo">-</span>
+                </td>
+              </tr>
           </tbody>
         </table>
         

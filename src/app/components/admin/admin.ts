@@ -50,6 +50,7 @@ interface ReporteAdmin {
   acompanado?: boolean;          // Si estaba acompañado
   placaCompanero?: string;       // Placa del compañero
   nombreCompanero?: string;      // Nombre del compañero
+  huboComparendo?: boolean | null; // Si hubo comparendo
 }
 
 
@@ -89,6 +90,7 @@ export class Admin implements OnInit, AfterViewInit, OnDestroy, OnChanges {
   filtroTiempoGrafico = 'mes';         // Filtro de tiempo en el gráfico
   filtroTablaTipo = '';                // Filtro de tipo en la tabla
   filtroTablaEstado = '';              // Filtro de estado en la tabla
+  filtroTablaPrioridad = '';           // Filtro de prioridad en la tabla
   filtroEstadoModal = '';              // Filtro de estado en el modal
 
 
@@ -449,6 +451,12 @@ export class Admin implements OnInit, AfterViewInit, OnDestroy, OnChanges {
     this.aplicarFiltrosTabla();
   }
 
+  // Filtra la tabla por prioridad
+  filtrarTablaPorPrioridad(event: Event): void {
+    this.filtroTablaPrioridad = (event.target as HTMLSelectElement).value;
+    this.aplicarFiltrosTabla();
+  }
+
   // Aplica ambos filtros a la tabla
   private aplicarFiltrosTabla(): void {
     let filtradas = [...this.infracciones];
@@ -459,6 +467,10 @@ export class Admin implements OnInit, AfterViewInit, OnDestroy, OnChanges {
 
     if (this.filtroTablaEstado) {
       filtradas = filtradas.filter(inf => inf.estado === this.filtroTablaEstado);
+    }
+
+    if (this.filtroTablaPrioridad) {
+      filtradas = filtradas.filter(inf => inf.prioridad === this.filtroTablaPrioridad);
     }
 
     this.infraccionesAMostrar = filtradas;
@@ -477,6 +489,12 @@ export class Admin implements OnInit, AfterViewInit, OnDestroy, OnChanges {
       'EN_PROCESO': 'estado-proceso'
     };
     return clases[estado] || '';
+  }
+
+  // Retorna la clase CSS según la prioridad
+  getClasePrioridad(prioridad: string): string {
+    if (!prioridad) return 'prioridad-baja';
+    return `prioridad-${prioridad.toLowerCase()}`;
   }
 
   // Retorna el nombre legible del tipo de infracción

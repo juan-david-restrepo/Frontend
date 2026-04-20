@@ -158,21 +158,21 @@ export class Home implements OnInit, OnDestroy, AfterViewInit {
       image: 'assets/images/principal.png',
       text: `"La seguridad vial empieza contigo.<br> 
               Reporta, participa, mejora tu ciudad."`,
-      buttonText: 'Ver reportes publicos',
-      buttonLink: '/reportes-publicos',
+      buttonText: 'SUBIR RESPORTE',
+      buttonLink: '/subir-reporte',
     },
     {
       image: 'assets/images/secundario.png',
       text: `"Reporta infracciones fácilmente.<br>
               Solo sube una foto o video."`,
-      buttonText: 'Subir reporte',
-      buttonLink: '/subir-reporte',
+      buttonText: 'REPORTES PUBLICOS',
+      buttonLink: '/reportes-publicos',
     },
     {
       image: 'assets/images/Armenia.webp',
       text: `"Mejora tu ciudad.<br>
               Cada reporte cuenta."`,
-      buttonText: 'Ver mis reportes',
+      buttonText: 'MIS REPORTES',
       buttonLink: '/mis-reportes',
     },
   ];
