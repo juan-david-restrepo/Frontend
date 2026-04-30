@@ -468,4 +468,18 @@ export class GestionAgentes implements OnInit, OnDestroy {
   hayTareasPendientes(tareas: any[]): boolean {
     return tareas.some(t => t.estado !== 'FINALIZADO');
   }
+
+  // Retorna el texto para mostrar el comparendo
+  getComparendoTexto(huboComparendo: boolean | null | undefined): string {
+    if (huboComparendo === true) return 'Sí';
+    if (huboComparendo === false) return 'No';
+    return 'N/A';
+  }
+
+  // Retorna la clase CSS para el comparendo
+  getClaseComparendo(huboComparendo: boolean | null | undefined): string {
+    if (huboComparendo === true) return 'comparendo-si';
+    if (huboComparendo === false) return 'comparendo-no';
+    return 'comparendo-na';
+  }
 }

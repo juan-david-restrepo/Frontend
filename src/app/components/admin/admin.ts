@@ -91,7 +91,9 @@ export class Admin implements OnInit, AfterViewInit, OnDestroy, OnChanges {
   filtroTablaTipo = '';                // Filtro de tipo en la tabla
   filtroTablaEstado = '';              // Filtro de estado en la tabla
   filtroTablaPrioridad = '';           // Filtro de prioridad en la tabla
+  filtroComparendo = '';              // Filtro de comparendo: '', 'si', 'no'
   filtroEstadoModal = '';              // Filtro de estado en el modal
+  filtroComparendoModal = '';          // Filtro de comparendo en el modal: '', 'si', 'no'
 
 
   /*------------------ 4. DASHBOARD Y GRÁFICOS ------------------*/
@@ -253,6 +255,12 @@ export class Admin implements OnInit, AfterViewInit, OnDestroy, OnChanges {
           this.debugInfo = 'Response es objeto: ' + JSON.stringify(response).substring(0, 100);
         }
         
+        // Debug: muestra el primer item para verificar campos
+        if (items.length > 0) {
+          console.log('Primer reporte recibido:', items[0]);
+          console.log('huboComparendo:', items[0].huboComparendo);
+        }
+        
         // Transforma cada item al formato ReporteAdmin
         this.infracciones = items.map((item: any) => this.transformarReporte(item));
         this.infraccionesAMostrar = [...this.infracciones];
@@ -381,6 +389,10 @@ export class Admin implements OnInit, AfterViewInit, OnDestroy, OnChanges {
     }
 
     // Retorna el objeto transformado
+    const huboComparendo = data.huboComparendo === true ? true : 
+                          data.huboComparendo === false ? false : 
+                          data.huboComparendo;
+    
     return {
       id: data.id || 0,
       ref: `INF-${String(data.id || 0).padStart(3, '0')}`,
@@ -406,7 +418,8 @@ export class Admin implements OnInit, AfterViewInit, OnDestroy, OnChanges {
       fechaRechazado: data.fechaRechazado,
       acompanado: data.acompanado ?? false,
       placaCompanero: placaCompanero,
-      nombreCompanero: nombreCompanero
+      nombreCompanero: nombreCompanero,
+      huboComparendo: huboComparendo
     };
   }
 
@@ -473,7 +486,18 @@ export class Admin implements OnInit, AfterViewInit, OnDestroy, OnChanges {
       filtradas = filtradas.filter(inf => inf.prioridad === this.filtroTablaPrioridad);
     }
 
+    if (this.filtroComparendo) {
+      const valor = this.filtroComparendo === 'si';
+      filtradas = filtradas.filter(inf => inf.huboComparendo === valor);
+    }
+
     this.infraccionesAMostrar = filtradas;
+  }
+
+  // Filtra la tabla por comparendo
+  filtrarTablaPorComparendo(event: Event): void {
+    this.filtroComparendo = (event.target as HTMLSelectElement).value;
+    this.aplicarFiltrosTabla();
   }
 
 
@@ -520,24 +544,68 @@ export class Admin implements OnInit, AfterViewInit, OnDestroy, OnChanges {
     return this.infraccionesAMostrar.filter(inf => inf.estado === estado).length;
   }
 
+  // Retorna la cantidad de reportes con comparendo
+  getCountComparendoSi(): number {
+    return this.infraccionesAMostrar.filter(inf => inf.huboComparendo === true).length;
+  }
+
+  getCountComparendoNo(): number {
+    return this.infraccionesAMostrar.filter(inf => inf.huboComparendo === false).length;
+  }
+
+  // Retorna el texto para mostrar el comparendo
+  getComparendoTexto(huboComparendo: boolean | null | undefined): string {
+    if (huboComparendo === true) return 'Sí';
+    if (huboComparendo === false) return 'No';
+    return 'N/A';
+  }
+
+  // Retorna la clase CSS para el comparendo
+  getClaseComparendo(huboComparendo: boolean | null | undefined): string {
+    if (huboComparendo === true) return 'comparendo-si';
+    if (huboComparendo === false) return 'comparendo-no';
+    return 'comparendo-na';
+  }
+
 
   /*------------------ 18. FILTROS DEL MODAL ------------------*/
   
   // Filtra los reportes mostrados en el modal por estado
   filtrarPorEstadoModal(estado: string): void {
-    this.filtroEstadoModal = this.filtroEstadoModal === estado ? '' : estado;
+    if (estado === 'COMPARENDO') {
+      // Toggle para comparendo
+      this.filtroComparendoModal = this.filtroComparendoModal === 'si' ? '' : 'si';
+      this.filtroEstadoModal = '';
+    } else {
+      this.filtroEstadoModal = this.filtroEstadoModal === estado ? '' : estado;
+      this.filtroComparendoModal = '';
+    }
   }
 
   // Getter: retorna los reportes filtrados según el filtro de estado
   get reportesFiltrados(): ReporteAdmin[] {
-    if (!this.filtroEstadoModal) {
-      return this.infraccionesAMostrar;
+    let filtrados = this.infraccionesAMostrar;
+    
+    // Filtro por estado
+    if (this.filtroEstadoModal && this.filtroEstadoModal !== 'COMPARENDO') {
+      filtrados = filtrados.filter(inf => inf.estado === this.filtroEstadoModal);
     }
-    return this.infraccionesAMostrar.filter(inf => inf.estado === this.filtroEstadoModal);
+    
+    // Filtro por comparendo
+    if (this.filtroComparendoModal === 'si') {
+      filtrados = filtrados.filter(inf => inf.huboComparendo === true);
+    } else if (this.filtroComparendoModal === 'no') {
+      filtrados = filtrados.filter(inf => inf.huboComparendo === false);
+    }
+    
+    return filtrados;
   }
 
   // Verifica si un estado está activo para el filtro
   isEstadoActivo(estado: string): boolean {
+    if (estado === 'COMPARENDO') {
+      return this.filtroComparendoModal === 'si';
+    }
     return this.filtroEstadoModal === estado;
   }
 

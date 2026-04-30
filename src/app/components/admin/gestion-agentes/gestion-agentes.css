@@ -1340,44 +1340,33 @@ table td {
   vertical-align: middle;
 }
 
-/* Badge comparendo */
-.reporte-badge {
+/* Badges de comparendo - NUEVO ESTILO CONSISTENTE */
+.comparendo-badge {
   display: inline-block;
-  padding: 5px 12px;
-  border-radius: 8px;
-  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
   font-weight: 600;
+  text-align: center;
+  min-width: 80px;
 }
 
-.reporte-badge.badge-si {
-  background: #dcfce7;
-  color: #166534;
+.comparendo-si {
+  background: linear-gradient(135deg, #4ade80, #22c55e) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
 }
 
-.reporte-badge.badge-no {
-  background: #fee2e2;
-  color: #991b1b;
+.comparendo-no {
+  background: linear-gradient(135deg, #f87171, #ef4444) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
 }
 
-/* Badges de comparendo para la tabla */
-.badge-comparendo-si {
-  display: inline-block;
-  background: #dcfce7;
-  color: #166534;
-  padding: 2px 5px;
-  border-radius: 3px;
-  font-size: 9px;
-  font-weight: 600;
-}
-
-.badge-comparendo-no {
-  display: inline-block;
-  background: #fee2e2;
-  color: #991b1b;
-  padding: 2px 5px;
-  border-radius: 3px;
-  font-size: 9px;
-  font-weight: 600;
+.comparendo-na {
+  background: linear-gradient(135deg, #e2e8f0, #cbd5e1) !important;
+  color: #64748b !important;
+  box-shadow: 0 2px 8px rgba(100, 116, 139, 0.2);
 }
 
 /* ====================================================
@@ -1815,6 +1804,32 @@ table td {
 
 ::ng-deep body.dark-mode .ver-mas-btn:hover {
   color: #93c5fd;
+}
+
+/* Comparendo - Modo oscuro */
+::ng-deep body.dark-mode .comparendo-si {
+  background: linear-gradient(135deg, #166534, #15803d) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.4) !important;
+}
+
+::ng-deep body.dark-mode .comparendo-no {
+  background: linear-gradient(135deg, #991b1b, #dc2626) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4) !important;
+}
+
+::ng-deep body.dark-mode .comparendo-na {
+  background: linear-gradient(135deg, #334155, #475569) !important;
+  color: #94a3b8 !important;
+  box-shadow: 0 2px 8px rgba(100, 116, 139, 0.3) !important;
+}
+
+/* Tareas finalizadas - fecha y hora en azul */
+::ng-deep body.dark-mode .tabla-tareas td[data-label="Fecha"],
+::ng-deep body.dark-mode .tabla-tareas td[data-label="Hora"] {
+  color: #60a5fa !important;
+  font-weight: 600 !important;
 }
 
 

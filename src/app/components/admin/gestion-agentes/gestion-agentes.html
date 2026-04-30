@@ -344,11 +344,8 @@
               <!-- Comparendo -->
               <div class="reporte-item" *ngIf="reporte.huboComparendo === true || reporte.huboComparendo === false">
                 <span class="reporte-label">Comp.</span>
-                <span 
-                  class="reporte-badge"
-                  [ngClass]="{ 'badge-si': reporte.huboComparendo, 'badge-no': !reporte.huboComparendo }"
-                >
-                  {{ reporte.huboComparendo ? 'Sí' : 'No' }}
+                <span class="comparendo-badge" [ngClass]="getClaseComparendo(reporte.huboComparendo)">
+                  {{ getComparendoTexto(reporte.huboComparendo) }}
                 </span>
               </div>
             </div>
@@ -393,9 +390,9 @@
                   </button>
                 </td>
                 <td data-label="Comparendo">
-                  <span *ngIf="reporte.huboComparendo === true" class="badge-comparendo-si">Sí</span>
-                  <span *ngIf="reporte.huboComparendo === false" class="badge-comparendo-no">No</span>
-                  <span *ngIf="reporte.huboComparendo === undefined || reporte.huboComparendo === null" class="badge-solo">-</span>
+                  <span class="comparendo-badge" [ngClass]="getClaseComparendo(reporte.huboComparendo)">
+                    {{ getComparendoTexto(reporte.huboComparendo) }}
+                  </span>
                 </td>
               </tr>
           </tbody>

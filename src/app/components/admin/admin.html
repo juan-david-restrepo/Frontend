@@ -131,6 +131,13 @@
             <option value="MEDIA">MEDIA</option>
             <option value="BAJA">BAJA</option>
           </select>
+
+          <!-- Filtro por comparendo -->
+          <select (change)="filtrarTablaPorComparendo($event)">
+            <option value="">Todos los comparendos</option>
+            <option value="si">Con Comparendo</option>
+            <option value="no">Sin Comparendo</option>
+          </select>
         </div>
       </div>
 
@@ -145,6 +152,7 @@
               <th>Prioridad</th>
               <th>Agente</th>
               <th>Acompañamiento</th>
+              <th>Comparendo</th>
               <th>Estado</th>
             </tr>
           </thead>
@@ -169,6 +177,11 @@
                 </span>
                 <span *ngIf="!inf.acompanado" class="badge-solo">
                   Sin acompañante
+                </span>
+              </td>
+              <td data-label="Comparendo">
+                <span class="comparendo-badge" [ngClass]="getClaseComparendo(inf.huboComparendo)">
+                  {{ getComparendoTexto(inf.huboComparendo) }}
                 </span>
               </td>
               <td data-label="Estado">
@@ -237,6 +250,11 @@
             <span class="stat-numero">{{ getCountByEstado('FINALIZADO') }}</span>
             <span class="stat-label">Finalizados</span>
           </div>
+          <!-- Con Comparendo -->
+          <div class="stat-item stat-comparendo" [class.active]="filtroEstadoModal === 'COMPARENDO'" (click)="filtrarPorEstadoModal('COMPARENDO')">
+            <span class="stat-numero">{{ getCountComparendoSi() }}</span>
+            <span class="stat-label">Con Comparendo</span>
+          </div>
         </div>
 
         <!-- Lista de reportes filtrados -->
@@ -274,6 +292,11 @@
               <div class="fila-acompanamiento" *ngIf="!inf.acompanado">
                 <i class="fas fa-user"></i>
                 <span class="badge-solo">Sin acompañante</span>
+              </div>
+              <!-- Comparendo -->
+              <div class="fila-comparendo">
+                <i class="fas fa-traffic-light"></i>
+                <span class="texto-comparendo">Comparendo: </span><span class="comparendo-badge" [ngClass]="getClaseComparendo(inf.huboComparendo)">{{ getComparendoTexto(inf.huboComparendo) }}</span>
               </div>
               <!-- Descripción -->
               <div class="detalle-fila">
@@ -321,6 +344,10 @@
           <div class="detalle-item"><label>Estado</label>
             <p><span class="status-badge" [ngClass]="getClaseEstado(infraccionSeleccionada.estado)">{{
                 infraccionSeleccionada.estado }}</span></p>
+          </div>
+          <!-- Comparendo -->
+          <div class="detalle-item"><label>Comparendo</label>
+            <p><span class="comparendo-badge" [ngClass]="getClaseComparendo(infraccionSeleccionada.huboComparendo)">{{ getComparendoTexto(infraccionSeleccionada.huboComparendo) }}</span></p>
           </div>
         </div>
       </div>

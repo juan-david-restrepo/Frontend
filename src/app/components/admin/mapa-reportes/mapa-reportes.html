@@ -143,6 +143,14 @@
               <span class="detalle-item-label">Acompañante</span>
               <span class="detalle-item-value">{{ reporteSeleccionado.placaAcompanante }}</span>
             </div>
+
+            <!-- Comparendo (solo visible si está definido) -->
+            <div class="detalle-item" *ngIf="reporteSeleccionado.huboComparendo === true || reporteSeleccionado.huboComparendo === false">
+              <span class="detalle-item-label">Comparendo</span>
+              <span class="comparendo-badge" [ngClass]="getClaseComparendo(reporteSeleccionado.huboComparendo)">
+                {{ getComparendoTexto(reporteSeleccionado.huboComparendo) }}
+              </span>
+            </div>
           </div>
         </div>
 

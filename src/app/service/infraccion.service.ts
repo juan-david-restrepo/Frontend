@@ -33,6 +33,7 @@ export interface Infraccion {
   fechaFinalizado?: string;
   fechaRechazado?: string;
   createdAt?: string;
+  huboComparendo?: boolean;
 }
 
 export interface PageResponse<T> {

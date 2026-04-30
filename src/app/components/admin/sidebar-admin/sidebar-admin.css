@@ -5,7 +5,15 @@
   padding: 20px;
   display: flex;
   flex-direction: column;
-  height: 121vh;
+  min-height: 100vh;
+  height: 100%;
+}
+
+/* Laptop Range: 1024px - 1366px */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  .sidebar {
+    height: 207dvh;
+  }
 }
 
 .logo-box {
