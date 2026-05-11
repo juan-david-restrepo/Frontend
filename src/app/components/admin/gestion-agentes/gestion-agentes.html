@@ -48,7 +48,112 @@
       <p class="cargando" *ngIf="cargando">Buscando agente...</p>
     </div>
 
-    <!-- ==================== 2. MENSAJE INICIAL ==================== -->
+    <!-- ==================== 2. CREAR AGENTE ==================== -->
+    <div class="card">
+      <button class="btn-crear-agente" (click)="toggleCrearAgente()">
+        <i class="fa-solid fa-plus"></i> {{ mostrarCrearAgente ? 'Cancelar' : 'Crear nuevo agente' }}
+      </button>
+
+      <div class="crear-agente-form" *ngIf="mostrarCrearAgente">
+        <h2>Registrar Agente de Tránsito</h2>
+        <div class="form-grid">
+          <div>
+            <label>Correo electrónico *</label>
+            <input type="email" [(ngModel)]="nuevoAgente.correo"
+              (blur)="validarCampo('correo')" (input)="erroresFormulario['correo']=''"
+              [class.input-error]="erroresFormulario['correo']"
+              placeholder="correo@ejemplo.com" />
+            <span class="campo-error" *ngIf="erroresFormulario['correo']">{{ erroresFormulario['correo'] }}</span>
+          </div>
+          <div>
+            <label>Contraseña *</label>
+            <div class="password-wrapper">
+              <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="nuevoAgente.password"
+                (input)="actualizarRequisitosPassword(); erroresFormulario['password']=''"
+                (blur)="validarCampo('password')"
+                [class.input-error]="erroresFormulario['password']"
+                placeholder="Mín. 8 caracteres" />
+              <button type="button" class="toggle-password" (click)="showPassword = !showPassword" tabindex="-1">
+                <i class="fa-solid" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+              </button>
+            </div>
+            <ul class="password-requisitos" *ngIf="nuevoAgente.password.length > 0">
+              <li [class.valido]="passwordRequisitos.length" [class.invalido]="!passwordRequisitos.length">
+                <i class="fa-solid" [class.fa-check]="passwordRequisitos.length" [class.fa-times]="!passwordRequisitos.length"></i>
+                8+ caracteres
+              </li>
+              <li [class.valido]="passwordRequisitos.mayuscula" [class.invalido]="!passwordRequisitos.mayuscula">
+                <i class="fa-solid" [class.fa-check]="passwordRequisitos.mayuscula" [class.fa-times]="!passwordRequisitos.mayuscula"></i>
+                1 mayúscula
+              </li>
+              <li [class.valido]="passwordRequisitos.minuscula" [class.invalido]="!passwordRequisitos.minuscula">
+                <i class="fa-solid" [class.fa-check]="passwordRequisitos.minuscula" [class.fa-times]="!passwordRequisitos.minuscula"></i>
+                1 minúscula
+              </li>
+              <li [class.valido]="passwordRequisitos.numero" [class.invalido]="!passwordRequisitos.numero">
+                <i class="fa-solid" [class.fa-check]="passwordRequisitos.numero" [class.fa-times]="!passwordRequisitos.numero"></i>
+                1 número
+              </li>
+              <li [class.valido]="passwordRequisitos.especial" [class.invalido]="!passwordRequisitos.especial">
+                <i class="fa-solid" [class.fa-check]="passwordRequisitos.especial" [class.fa-times]="!passwordRequisitos.especial"></i>
+                1 especial (@$!%*?&)
+              </li>
+            </ul>
+            <span class="campo-error" *ngIf="erroresFormulario['password']">{{ erroresFormulario['password'] }}</span>
+          </div>
+          <div>
+            <label>Nombre completo *</label>
+            <input type="text" [(ngModel)]="nuevoAgente.nombreCompleto"
+              (blur)="validarCampo('nombreCompleto')" (input)="erroresFormulario['nombreCompleto']=''"
+              [class.input-error]="erroresFormulario['nombreCompleto']"
+              placeholder="Nombre y apellidos" />
+            <span class="campo-error" *ngIf="erroresFormulario['nombreCompleto']">{{ erroresFormulario['nombreCompleto'] }}</span>
+          </div>
+          <div>
+            <label>Tipo documento</label>
+            <select [(ngModel)]="nuevoAgente.tipoDocumento">
+              <option value="CC">CC</option>
+              <option value="CE">CE</option>
+              <option value="NIT">NIT</option>
+              <option value="Pasaporte">Pasaporte</option>
+            </select>
+          </div>
+          <div>
+            <label>Número documento *</label>
+            <input type="text" [(ngModel)]="nuevoAgente.numeroDocumento"
+              (blur)="validarCampo('numeroDocumento')" (input)="erroresFormulario['numeroDocumento']=''"
+              [class.input-error]="erroresFormulario['numeroDocumento']"
+              placeholder="Número de identificación" />
+            <span class="campo-error" *ngIf="erroresFormulario['numeroDocumento']">{{ erroresFormulario['numeroDocumento'] }}</span>
+          </div>
+          <div>
+            <label>Placa *</label>
+            <input type="text" [(ngModel)]="nuevoAgente.placa"
+              (blur)="validarCampo('placa')" (input)="erroresFormulario['placa']=''"
+              [class.input-error]="erroresFormulario['placa']"
+              placeholder="Ej: AT-123" style="text-transform: uppercase;" />
+            <span class="campo-error" *ngIf="erroresFormulario['placa']">{{ erroresFormulario['placa'] }}</span>
+          </div>
+          <div>
+            <label>Teléfono *</label>
+            <input type="text" [(ngModel)]="nuevoAgente.telefono"
+              (blur)="validarCampo('telefono')" (input)="erroresFormulario['telefono']=''"
+              [class.input-error]="erroresFormulario['telefono']"
+              placeholder="Número de contacto" />
+            <span class="campo-error" *ngIf="erroresFormulario['telefono']">{{ erroresFormulario['telefono'] }}</span>
+          </div>
+        </div>
+
+        <p class="mensaje-ok" *ngIf="mensajeCrearAgente">{{ mensajeCrearAgente }}</p>
+        <p class="error" *ngIf="errorCrearAgente">{{ errorCrearAgente }}</p>
+
+        <button class="btn-asignar" (click)="crearAgente()" [disabled]="creandoAgente">
+          {{ creandoAgente ? 'Creando...' : 'Crear agente' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- ==================== 3. MENSAJE INICIAL ==================== -->
     <!-- Se muestra cuando NO hay agente cargado Y NO está cargando -->
     <!-- Guía al usuario sobre qué hacer -->
     <div class="card estado-inicial" *ngIf="!agente && !cargando">

@@ -126,6 +126,35 @@ export class GestionAgentes implements OnInit, OnDestroy {
   descripcionSeleccionada = '';            // Texto a mostrar en modal de descripción
   tituloModal = 'Detalle';                 // Título del modal de descripción
 
+  /*------------------ FORMULARIO CREAR AGENTE ------------------*/
+  mostrarCrearAgente = false;
+  nuevoAgente = {
+    correo: '',
+    password: '',
+    nombreCompleto: '',
+    tipoDocumento: 'CC',
+    numeroDocumento: '',
+    placa: '',
+    telefono: ''
+  };
+  mensajeCrearAgente = '';
+  errorCrearAgente = '';
+  creandoAgente = false;
+  showPassword = false;
+
+  erroresFormulario: Record<string, string> = {
+    correo: '', password: '', nombreCompleto: '',
+    numeroDocumento: '', placa: '', telefono: ''
+  };
+
+  passwordRequisitos = {
+    length: false, mayuscula: false, minuscula: false,
+    numero: false, especial: false
+  };
+
+  private regexEmail = /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+  private caracteresEspeciales = '@$!%*?&';
+
 
   /*------------------ 5. CONSTRUCTOR ------------------
     Inicializa los servicios que se usarán en el componente
@@ -450,6 +479,91 @@ export class GestionAgentes implements OnInit, OnDestroy {
     this.fechaTarea = '';
     this.horaTarea = '';
     this.prioridadTarea = 'MEDIA';
+  }
+
+  /*------------------ VALIDACIONES CREAR AGENTE ------------------*/
+  private limpiarErrores(): void {
+    this.errorCrearAgente = '';
+    this.mensajeCrearAgente = '';
+    Object.keys(this.erroresFormulario).forEach(k => this.erroresFormulario[k] = '');
+  }
+
+  actualizarRequisitosPassword(): void {
+    const p = this.nuevoAgente.password;
+    this.passwordRequisitos = {
+      length: p.length >= 8,
+      mayuscula: /[A-Z]/.test(p),
+      minuscula: /[a-z]/.test(p),
+      numero: /\d/.test(p),
+      especial: new RegExp(`[${this.caracteresEspeciales.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')}]`).test(p)
+    };
+  }
+
+  validarCampo(campo: string): void {
+    const valor = (this.nuevoAgente as any)[campo]?.trim() ?? '';
+    let error = '';
+
+    switch (campo) {
+      case 'correo':
+        if (!valor) error = 'El correo es requerido';
+        else if (!this.regexEmail.test(valor)) error = 'Formato de correo inválido';
+        break;
+      case 'password':
+        if (!valor) error = 'La contraseña es requerida';
+        else {
+          this.actualizarRequisitosPassword();
+          const r = this.passwordRequisitos;
+          if (!r.length || !r.mayuscula || !r.minuscula || !r.numero || !r.especial)
+            error = 'Debe cumplir todos los requisitos de contraseña';
+        }
+        break;
+      case 'nombreCompleto':
+        if (!valor) error = 'El nombre completo es requerido';
+        break;
+      case 'numeroDocumento':
+        if (!valor) error = 'El número de documento es requerido';
+        break;
+      case 'placa':
+        if (!valor) error = 'La placa es requerida';
+        break;
+      case 'telefono':
+        if (!valor) error = 'El teléfono es requerido';
+        break;
+    }
+    this.erroresFormulario[campo] = error;
+  }
+
+  validarFormulario(): boolean {
+    this.limpiarErrores();
+    const campos = ['correo', 'password', 'nombreCompleto', 'numeroDocumento', 'placa', 'telefono'];
+    campos.forEach(c => this.validarCampo(c));
+    return campos.every(c => !this.erroresFormulario[c]);
+  }
+
+  toggleCrearAgente(): void {
+    this.mostrarCrearAgente = !this.mostrarCrearAgente;
+    this.limpiarErrores();
+    this.passwordRequisitos = { length: false, mayuscula: false, minuscula: false, numero: false, especial: false };
+    this.showPassword = false;
+  }
+
+  crearAgente(): void {
+    if (!this.validarFormulario()) return;
+
+    this.creandoAgente = true;
+
+    this.adminService.crearAgente(this.nuevoAgente).subscribe({
+      next: (res) => {
+        this.creandoAgente = false;
+        this.mensajeCrearAgente = `Agente ${res.nombre || res.placa} creado exitosamente`;
+        this.nuevoAgente = { correo: '', password: '', nombreCompleto: '', tipoDocumento: 'CC', numeroDocumento: '', placa: '', telefono: '' };
+        this.mostrarCrearAgente = false;
+      },
+      error: (err) => {
+        this.creandoAgente = false;
+        this.errorCrearAgente = err.error || 'Error al crear el agente';
+      }
+    });
   }
 
 

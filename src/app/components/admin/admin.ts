@@ -446,6 +446,7 @@ export class Admin implements OnInit, AfterViewInit, OnDestroy, OnChanges {
     if (estadoStr === 'EN_PROCESO' || estadoStr === 'EN PROCESO') return 'EN PROCESO';
     if (estadoStr === 'FINALIZADO') return 'FINALIZADO';
     if (estadoStr === 'RECHAZADO') return 'RECHAZADO';
+    if (estadoStr === 'EXPIRADO') return 'EXPIRADO';
     return 'PENDIENTE';
   }
 
@@ -510,7 +511,8 @@ export class Admin implements OnInit, AfterViewInit, OnDestroy, OnChanges {
       'FINALIZADO': 'estado-finalizado',
       'RECHAZADO': 'estado-rechazado',
       'EN PROCESO': 'estado-proceso',
-      'EN_PROCESO': 'estado-proceso'
+      'EN_PROCESO': 'estado-proceso',
+      'EXPIRADO': 'estado-expirado'
     };
     return clases[estado] || '';
   }

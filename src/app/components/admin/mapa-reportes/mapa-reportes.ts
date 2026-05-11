@@ -30,19 +30,20 @@ import { WebsocketService } from '../../../service/websocket';
   Define la estructura de datos de un reporte en el frontend
 */
 interface Reporte {
-  id: number;                    // ID único del reporte
-  tipo: string;                 // Tipo de infracción/incidente
-  descripcion: string;          // Descripción del incidente
-  latitud: number;              // Coordenada X (latitud)
-  longitud: number;             // Coordenada Y (longitud)
-  fechaIncidente: Date;         // Fecha del incidente
-  horaIncidente?: Date | null;  // Hora del incidente
-  estado: 'PENDIENTE' | 'EN_PROCESO' | 'FINALIZADO';  // Estado del reporte
-  agente?: string;              // Placa del agente que atiende
-  placaAcompanante?: string;    // Placa del agente compañero
-  foto?: string;                // URL de foto (opcional)
-  direccion?: string;          // Dirección textual del incidente
-  huboComparendo?: boolean | null;  // Si hubo comparendo
+  id: number;
+  tipo: string;
+  descripcion: string;
+  latitud: number;
+  longitud: number;
+  fechaIncidente: Date;
+  horaIncidente?: Date | null;
+  estado: 'PENDIENTE' | 'EN_PROCESO' | 'FINALIZADO' | 'RECHAZADO' | 'EXPIRADO';
+  agente?: string;
+  placaAcompanante?: string;
+  foto?: string;
+  direccion?: string;
+  huboComparendo?: boolean | null;
+  createdAt?: string;  // "yyyy-MM-dd" — fecha en que se creó el reporte
 }
 
 
@@ -81,13 +82,15 @@ export class MapaReportesComponent implements AfterViewInit, OnInit, OnDestroy {
     Variables accesibles desde la plantilla HTML
   */
   
-  menuAbierto: boolean = false;       // Control del menú lateral en móvil
-  reportes: Reporte[] = [];           // Lista de todos los reportes
-  pendientes = 0;                       // Contador de reportes pendientes
-  enProceso = 0;                       // Contador de reportes en proceso
-  finalizados = 0;                     // Contador de reportes finalizados
-  reporteSeleccionado?: Reporte;       // Reporte seleccionado para ver detalles
-  mostrarDetalle = false;             // Controla la visibilidad del panel de detalles
+  menuAbierto: boolean = false;
+  reportes: Reporte[] = [];
+  pendientes = 0;
+  enProceso = 0;
+  finalizados = 0;
+  reporteSeleccionado?: Reporte;
+  mostrarDetalle = false;
+  filtroTiempo: 'hoy' | 'semana' | 'mes' | 'anio' = 'hoy';
+  filtroTipo = 'todos';
 
 
   /*------------------ 3. CONSTRUCTOR ------------------
@@ -176,7 +179,63 @@ export class MapaReportesComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
 
-  /*------------------ 8. CARGA DE DATOS ------------------
+  /*------------------ 8. FILTRO DE TIEMPO ------------------*/
+
+  get labelTotal(): string {
+    return { hoy: 'Total Hoy', semana: 'Total Semana', mes: 'Total Mes', anio: 'Total Año' }[this.filtroTiempo];
+  }
+
+  get reportesFiltrados(): Reporte[] {
+    const hoy = new Date();
+    return this.reportes.filter(r => {
+      // --- filtro de tiempo ---
+      if (!r.createdAt) return false;
+      const f = new Date(r.createdAt + 'T00:00:00');
+      if (isNaN(f.getTime())) return false;
+
+      let pasaTiempo: boolean;
+      switch (this.filtroTiempo) {
+        case 'hoy':
+          pasaTiempo = f.getFullYear() === hoy.getFullYear()
+                    && f.getMonth()    === hoy.getMonth()
+                    && f.getDate()     === hoy.getDate();
+          break;
+        case 'semana': {
+          const hace7 = new Date(hoy); hace7.setDate(hoy.getDate() - 7);
+          pasaTiempo = f >= hace7;
+          break;
+        }
+        case 'mes':
+          pasaTiempo = f.getFullYear() === hoy.getFullYear()
+                    && f.getMonth()    === hoy.getMonth();
+          break;
+        case 'anio':
+          pasaTiempo = f.getFullYear() === hoy.getFullYear();
+          break;
+        default:
+          pasaTiempo = true;
+      }
+      if (!pasaTiempo) return false;
+
+      // --- filtro de tipo ---
+      if (this.filtroTipo === 'todos') return true;
+      return r.tipo === this.filtroTipo;
+    });
+  }
+
+  cambiarFiltro(filtro: 'hoy' | 'semana' | 'mes' | 'anio'): void {
+    this.filtroTiempo = filtro;
+    this.actualizarContadores();
+    if (this.mapaListo) this.refrescarMapa();
+  }
+
+  cambiarTipo(event: Event): void {
+    this.filtroTipo = (event.target as HTMLSelectElement).value;
+    this.actualizarContadores();
+    if (this.mapaListo) this.refrescarMapa();
+  }
+
+  /*------------------ 9. CARGA DE DATOS ------------------
     Métodos para obtener y procesar reportes del servidor
   */
 
@@ -224,7 +283,8 @@ export class MapaReportesComponent implements AfterViewInit, OnInit, OnDestroy {
           agente: agente,
           placaAcompanante: placaAcompanante,
           estado: estado,
-          huboComparendo: r.huboComparendo
+          huboComparendo: r.huboComparendo,
+          createdAt: r.createdAt || null
         };
       });
 
@@ -265,7 +325,6 @@ export class MapaReportesComponent implements AfterViewInit, OnInit, OnDestroy {
       }
     }
     
-    // Asegura que huboComparendo esté mapeado
     const reporteMapeado: Reporte = {
       id: reporte.id,
       tipo: reporte.tipoInfraccion || reporte.tipo,
@@ -278,13 +337,13 @@ export class MapaReportesComponent implements AfterViewInit, OnInit, OnDestroy {
       agente: reporte.agente || '',
       placaAcompanante: reporte.placaAcompanante || '',
       estado: estado || 'PENDIENTE',
-      huboComparendo: reporte.huboComparendo
+      huboComparendo: reporte.huboComparendo,
+      createdAt: reporte.createdAt || null
     };
-    
-    // Agrega a la lista y actualiza el mapa si está listo
+
     this.reportes.push(reporteMapeado);
-    if (this.mapaListo) this.crearMarcador(reporteMapeado);
     this.actualizarContadores();
+    if (this.mapaListo) this.refrescarMapa();
   }
 
   // Actualiza un reporte existente (cuando cambia su estado)
@@ -327,17 +386,12 @@ export class MapaReportesComponent implements AfterViewInit, OnInit, OnDestroy {
     this.actualizarContadores();
   }
 
-  // Actualiza los contadores de reportes por estado
+  // Actualiza los contadores usando únicamente los reportes del período seleccionado
   private actualizarContadores(): void {
-    this.pendientes = this.reportes.filter(
-      (r) => r.estado === 'PENDIENTE',
-    ).length;
-    this.enProceso = this.reportes.filter(
-      (r) => r.estado === 'EN_PROCESO',
-    ).length;
-    this.finalizados = this.reportes.filter(
-      (r) => r.estado === 'FINALIZADO',
-    ).length;
+    const f = this.reportesFiltrados;
+    this.pendientes  = f.filter(r => r.estado === 'PENDIENTE').length;
+    this.enProceso   = f.filter(r => r.estado === 'EN_PROCESO').length;
+    this.finalizados = f.filter(r => r.estado === 'FINALIZADO').length;
   }
 
 
@@ -395,10 +449,10 @@ export class MapaReportesComponent implements AfterViewInit, OnInit, OnDestroy {
     });
   }
 
-  // Limpia y redibuja todos los marcadores en el mapa
+  // Limpia y redibuja solo los marcadores del período filtrado
   private refrescarMapa(): void {
-    this.markersLayer.clearLayers();  // Elimina todos los marcadores existentes
-    this.reportes.forEach((r) => this.crearMarcador(r));  // Crea marcadores para cada reporte
+    this.markersLayer.clearLayers();
+    this.reportesFiltrados.forEach(r => this.crearMarcador(r));
   }
 
   // Crea un marcador en el mapa para un reporte específico

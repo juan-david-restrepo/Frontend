@@ -191,7 +191,7 @@ export class Nav implements OnInit, OnDestroy {
       if (notif.tipo === 'TICKET_RESPONDIDO' || notif.tipo === 'NUEVO_MENSAJE_SOPORTE') {
         this.router.navigate(['/soporte']);
       } else {
-        this.router.navigate(['/soporte']);
+        this.router.navigate(['/mis-reportes']);
       }
     }
     this.mostrarNotifDropdown = false;

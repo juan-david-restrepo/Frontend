@@ -1,35 +1,39 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root' // disponible en toda la app
+  providedIn: 'root'
 })
 export class IdleService {
 
   private timeoutId: any;
+  private cleanupFns: (() => void)[] = [];
 
-  // 10 minutos
   private readonly IDLE_TIME = 10 * 60 * 1000;
 
   startWatching(onIdle: () => void) {
-
-    // arrancamos el temporizador
+    this.stopWatching();
     this.resetTimer(onIdle);
 
-    // eventos que cuentan como actividad apa que pues el usuario los mueva o algo
     const events = ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'];
-
     events.forEach(event => {
-      window.addEventListener(event, () => {
-        this.resetTimer(onIdle);
-      });
+      const handler = () => this.resetTimer(onIdle);
+      window.addEventListener(event, handler, { passive: true });
+      this.cleanupFns.push(() => window.removeEventListener(event, handler));
     });
+  }
+
+  resetIdle(onIdle: () => void) {
+    this.resetTimer(onIdle);
+  }
+
+  stopWatching() {
+    clearTimeout(this.timeoutId);
+    this.cleanupFns.forEach(fn => fn());
+    this.cleanupFns = [];
   }
 
   private resetTimer(onIdle: () => void) {
     clearTimeout(this.timeoutId);
-
-    this.timeoutId = setTimeout(() => {
-      onIdle(); // usuario inactivo
-    }, this.IDLE_TIME);
+    this.timeoutId = setTimeout(() => onIdle(), this.IDLE_TIME);
   }
 }

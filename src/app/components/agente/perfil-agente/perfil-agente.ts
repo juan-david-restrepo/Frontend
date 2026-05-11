@@ -72,6 +72,7 @@ export class PerfilAgente {
           if (response.foto) {
             this.agente.foto = response.foto;
           }
+          this.perfilActualizado.emit(response);
         },
         error: (err) => {
           console.error('Error guardando foto', err);

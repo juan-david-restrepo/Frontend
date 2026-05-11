@@ -53,10 +53,9 @@
         <span>{{ finalizados }}</span>
       </div>
 
-      <!-- Total de reportes del día -->
+      <!-- Total del período seleccionado -->
       <div class="stat-card total">
-        <h3>Total Hoy</h3>
-        <!-- Suma los tres contadores -->
+        <h3>{{ labelTotal }}</h3>
         <span>{{ pendientes + enProceso + finalizados }}</span>
       </div>
 
@@ -64,14 +63,30 @@
 
     <!-- ==================== 3. MAPA INTERACTIVO ==================== -->
     <div class="map-card">
-      <!-- Encabezado del mapa -->
+      <!-- Encabezado del mapa con filtros de tiempo -->
       <div class="map-header">
-        <h2>Mapa de Reportes</h2>
-        <span>Vista Satelital Activa</span>
+        <div class="map-header-title">
+          <h2>Mapa de Reportes</h2>
+          <span>Vista Satelital Activa</span>
+        </div>
+        <div class="filtros-mapa">
+          <button class="filtro-btn" [class.activo]="filtroTiempo === 'hoy'"    (click)="cambiarFiltro('hoy')">Hoy</button>
+          <button class="filtro-btn" [class.activo]="filtroTiempo === 'semana'" (click)="cambiarFiltro('semana')">Semana</button>
+          <button class="filtro-btn" [class.activo]="filtroTiempo === 'mes'"    (click)="cambiarFiltro('mes')">Mes</button>
+          <button class="filtro-btn" [class.activo]="filtroTiempo === 'anio'"   (click)="cambiarFiltro('anio')">Año</button>
+          <span class="filtros-divisor"></span>
+          <select class="filtro-select" (change)="cambiarTipo($event)">
+            <option value="todos">Todos los tipos</option>
+            <option value="Accidente de tránsito">Accidente de tránsito</option>
+            <option value="Vehículo mal estacionado">Mal estacionado</option>
+            <option value="Semáforo dañado">Semáforo dañado</option>
+            <option value="Conducción peligrosa">Conducción peligrosa</option>
+            <option value="Invasión de carril">Invasión de carril</option>
+          </select>
+        </div>
       </div>
 
       <!-- Contenedor del mapa Leaflet -->
-      <!-- El ID "map" es usado por Leaflet para inicializar el mapa -->
       <div id="map"></div>
     </div>
 

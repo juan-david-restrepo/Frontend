@@ -71,8 +71,7 @@ export class VerificarCorreo implements OnInit {
       error: (err) => {
         this.verificando = false;
         this.verificado = false;
-        const body = err.error?.body || err.error;
-        this.mensaje = body?.message || 'Error al verificar el correo.';
+        this.mensaje = err.error?.message || 'Error al verificar el correo.';
         this.mostrarReenviar = true;
       },
     });

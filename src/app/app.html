@@ -3,14 +3,27 @@
 <app-floating-actions></app-floating-actions>
 
 <div *ngIf="showIdleModal" class="modal-backdrop">
-
   <div class="modal">
+
+    <div class="idle-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+        stroke="#2a4eee" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <polyline points="12 6 12 12 16 14"></polyline>
+      </svg>
+    </div>
+
     <h2>¿Sigues ahí?</h2>
-    <p>Llevas 10 minutos sin actividad.</p>
+    <p>Llevas 10 minutos sin actividad.<br>Tu sesión se cerrará en:</p>
 
-    <button (click)="showIdleModal = false">
-      Continuar sesión
-    </button>
+    <div class="idle-countdown" [class.urgente]="countdown <= 10">
+      {{ countdown }}s
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-continuar" (click)="continuarSesion()">Continuar sesión</button>
+      <button class="btn-cerrar" (click)="cerrarSesion()">Cerrar sesión</button>
+    </div>
+
   </div>
-
 </div>

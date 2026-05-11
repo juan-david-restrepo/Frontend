@@ -212,6 +212,12 @@ export class AgenteServiceTs {
     });
   }
 
+  marcarTodasNotificacionesLeidas(): Observable<any> {
+    return this.http.put(`${this.apiAgente}/notificaciones/leer-todas`, {}, {
+      withCredentials: true
+    });
+  }
+
   generarPdfOperativo(reporte: any): Observable<Blob> {
     return this.http.post(environment.apiScrappi + '/api/operativo-pdf', reporte, {
       responseType: 'blob',

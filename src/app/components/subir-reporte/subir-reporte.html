@@ -120,7 +120,11 @@
                 <span class="required-badge" *ngIf="requierePlacaActual">Requerido</span>
               </div>
               <!-- Input de placa con validación de formato -->
-              <input type="text" name="placa" [(ngModel)]="placa" placeholder="Ej: ABC123" maxlength="6" class="input-clean uppercase" />
+              <input type="text" name="placa" [(ngModel)]="placa" placeholder="Ej: ABC123, ABC12D, CD1234" maxlength="10" class="input-clean uppercase" />
+              <div class="fecha-info" style="margin-top:6px">
+                <i class="fas fa-info-circle"></i>
+                <span>Carro: ABC123 · Moto: ABC12D · Diplomática: CD1234 · Remolque: R12345 · Temporal: A1234 · Militar: FAC123456</span>
+              </div>
             </div>
           </div>
         </div>

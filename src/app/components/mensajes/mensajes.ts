@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Nav } from '../../shared/nav/nav';
 import { Footer } from '../../shared/footer/footer';
@@ -40,7 +40,8 @@ export class Mensajes implements OnInit, OnDestroy {
   constructor(
     private http: HttpClient,
     private authService: AuthService,
-    private websocketService: WebsocketService
+    private websocketService: WebsocketService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -135,6 +136,18 @@ export class Mensajes implements OnInit, OnDestroy {
     this.http.put(environment.apiBackend + '/api/ciudadano/notificaciones/leer-todas', {}).subscribe({
       error: (err) => console.error('Error:', err)
     });
+  }
+
+  abrirNotificacion(notif: Notificacion) {
+    if (!notif.leida) {
+      notif.leida = true;
+      this.http.put(environment.apiBackend + `/api/ciudadano/notificaciones/${notif.id}/leida`, {}).subscribe();
+    }
+    if (notif.tipo === 'TICKET_RESPONDIDO' || notif.tipo === 'NUEVO_MENSAJE_SOPORTE') {
+      this.router.navigate(['/soporte']);
+    } else {
+      this.router.navigate(['/mis-reportes']);
+    }
   }
 
   formatearFecha(fecha: string): string {

@@ -6,7 +6,6 @@ import { AgenteServiceTs } from '../../../service/agente.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 import * as L from 'leaflet';
 import 'leaflet-routing-machine';
-import { environment } from '../../../../environments/environment';
 
 
 @Component({
@@ -457,16 +456,29 @@ export class Reportes implements OnChanges, OnDestroy {
   startTracking() {
     if (!navigator.geolocation) return;
 
+    let lastRouteLat: number | null = null;
+    let lastRouteLng: number | null = null;
+    const MIN_MOVE_METERS = 20;
+
     this.watchId = navigator.geolocation.watchPosition(
       (position) => {
-        this.agentPosition = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        };
+        const newLat = position.coords.latitude;
+        const newLng = position.coords.longitude;
+        this.agentPosition = { lat: newLat, lng: newLng };
+
+        // Actualiza el marcador en cada pulso (movimiento fluido)
         this.updateAgentMarker();
-        
-        if (this.reporteSeleccionado && this.reporteSeleccionado.lat && this.reporteSeleccionado.lng) {
-          this.updateRoute().catch(() => {});
+
+        // Recalcula ruta solo si se movió al menos 20 metros
+        if (this.reporteSeleccionado?.lat && this.reporteSeleccionado?.lng) {
+          const movedEnough = lastRouteLat === null ||
+            this.calcularDistanciaMetros(lastRouteLat, lastRouteLng!, newLat, newLng) >= MIN_MOVE_METERS;
+
+          if (movedEnough) {
+            lastRouteLat = newLat;
+            lastRouteLng = newLng;
+            this.updateRoute().catch(() => {});
+          }
         }
       },
       (error) => {
@@ -474,6 +486,15 @@ export class Reportes implements OnChanges, OnDestroy {
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 5000 }
     );
+  }
+
+  private calcularDistanciaMetros(lat1: number, lng1: number, lat2: number, lng2: number): number {
+    const R = 6371000;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) ** 2 +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   }
 
   stopTracking() {
@@ -563,20 +584,21 @@ export class Reportes implements OnChanges, OnDestroy {
 
   private async getRouteFromOSRM(origin: [number, number], destination: [number, number]): Promise<{ coordinates: [number, number][] } | null> {
     return new Promise((resolve) => {
-      // Usar proxy del backend para evitar CORS
+      // OSRM demo server soporta CORS — llamada directa evita el problema
+      // del proxy de Spring Boot que trunca path variables en ";"
       const coordinates = `${origin[1]},${origin[0]};${destination[1]},${destination[0]}`;
-      const osrmUrl = `${environment.apiRoute}/driving/${coordinates}?overview=full&geometries=geojson`;
-      
+      const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${coordinates}?overview=full&geometries=geojson`;
+
       const xhr = new XMLHttpRequest();
       xhr.open('GET', osrmUrl, true);
-      
+      xhr.timeout = 8000;
+
       xhr.onload = () => {
         if (xhr.status === 200) {
           try {
             const data = JSON.parse(xhr.responseText);
-            if (data.code === 'Ok' && data.routes && data.routes.length > 0) {
-              const geometry = data.routes[0].geometry;
-              resolve({ coordinates: geometry.coordinates });
+            if (data.code === 'Ok' && data.routes?.length > 0) {
+              resolve({ coordinates: data.routes[0].geometry.coordinates });
             } else {
               resolve(null);
             }
@@ -587,11 +609,10 @@ export class Reportes implements OnChanges, OnDestroy {
           resolve(null);
         }
       };
-      
-      xhr.onerror = () => {
-        resolve(null);
-      };
-      
+
+      xhr.onerror = () => resolve(null);
+      xhr.ontimeout = () => resolve(null);
+
       xhr.send();
     });
   }

@@ -44,4 +44,20 @@ export class AdminService {
       { withCredentials: true }
     );
   }
+
+  crearAgente(datos: {
+    correo: string;
+    password: string;
+    nombreCompleto: string;
+    tipoDocumento: string;
+    numeroDocumento: string;
+    placa: string;
+    telefono: string;
+    nombre?: string;
+    documento?: string;
+  }): Observable<any> {
+    return this.http.post(`${environment.apiBackend}/admin/agentes/crear`, datos, {
+      withCredentials: true
+    });
+  }
 }

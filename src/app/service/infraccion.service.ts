@@ -50,6 +50,7 @@ export interface AdminDashboard {
   enProceso: number;
   finalizados: number;
   rechazados: number;
+  expirados: number;
   reportesHoy: number;
   estadisticasTipo?: StatItem[];
   estadisticasMes?: StatItem[];

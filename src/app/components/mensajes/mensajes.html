@@ -18,7 +18,7 @@
             class="mensaje-item" 
             *ngFor="let n of notificaciones"
             [class.no-leida]="!n.leida"
-            (click)="marcarLeida(n)"
+            (click)="abrirNotificacion(n)"
         >
             <div class="mensaje-icono" [ngClass]="getClaseIcono(n.tipo)">
                 <i class="fa-solid" [ngClass]="getIcono(n.tipo)"></i>

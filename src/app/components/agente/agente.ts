@@ -371,7 +371,11 @@ export class Agente implements OnInit, OnDestroy {
           correo:    data.email ?? '',
           placa:     data.placa ?? 'N/A',
           telefono:  data.telefono ?? 'N/A',
-          foto:      data.foto || 'https://randomuser.me/api/portraits/men/32.jpg'
+          foto:      data.foto || 'https://randomuser.me/api/portraits/men/32.jpg',
+          resumenProfesional1: data.resumenProfesional1 || '',
+          resumenProfesional2: data.resumenProfesional2 || '',
+          resumenProfesional3: data.resumenProfesional3 || '',
+          resumenProfesional4: data.resumenProfesional4 || ''
         };
         this.estadoAgente = data.estado || 'DISPONIBLE';
       },
@@ -570,6 +574,9 @@ export class Agente implements OnInit, OnDestroy {
 
   toggleNotificaciones() {
     if (!this.mostrarNotificaciones) {
+      this.agenteService.marcarTodasNotificacionesLeidas().subscribe({
+        error: (err) => console.error('Error al marcar notificaciones como leídas', err)
+      });
       this.notificaciones.forEach(n => n.leida = true);
     }
 
@@ -700,6 +707,12 @@ export class Agente implements OnInit, OnDestroy {
   // INIT
   // ================================
   ngOnInit() {
+
+    // 0. Cargar configuración persistida desde localStorage
+    const stored = localStorage.getItem('ciudadano_config');
+    if (stored) {
+      try { this.config = JSON.parse(stored); } catch {}
+    }
 
     // 1. Perfil → WebSocket → Tareas → Suscripciones WS
     this.agenteService.getPerfil().subscribe({

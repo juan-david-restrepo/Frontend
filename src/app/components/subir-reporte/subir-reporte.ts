@@ -58,7 +58,7 @@ export class SubirReporteComponent implements OnInit, OnDestroy {
   private readonly MAX_FILES = 1;              // Máximo de archivos permitidos
   private readonly MAX_SIZE_MB = 5;            // Tamaño máximo por archivo (MB)
   private readonly ALLOWED_TYPES = ['image/jpeg', 'image/png', 'video/mp4'];  // Tipos permitidos
-  private readonly PLACA_REGEX = /^[A-Z]{3}\d{3}$/;  // Regex para validar placas
+  private readonly PLACA_REGEX = /^([A-Z]{3}\d{3}|[A-Z]{3}\d{2}[A-Z]|[A-Z]{2}\d{4}|[RS]\d{5}|[A-Z]\d{4}|[A-Z]{2,3}\d{4,6})$/;
 
 
   /*------------------ 2. ESTADO DEL FORMULARIO ------------------*/
@@ -294,8 +294,8 @@ export class SubirReporteComponent implements OnInit, OnDestroy {
     const imageUrl = URL.createObjectURL(imagen);
     Tesseract.recognize(imageUrl, 'eng')
       .then(({ data }: any) => {
-        // Busca patrones de placas (3 letras + 3 números)
-        const matches = data.text.match(/[A-Z]{3}[- ]?\d{3}/);
+        // Busca patrones de placa colombiana (múltiples formatos)
+        const matches = data.text.match(/[A-Z]{3}[- ]?\d{2}[A-Z]|[A-Z]{3}[- ]?\d{3}|[A-Z]{2}[- ]?\d{4}|[RS]\d{5}|[A-Z]{2,3}\d{4,6}/);
         if (matches?.[0]) {
           this.placa = matches[0].replace(/[- ]/, '').toUpperCase();
         }
@@ -317,15 +317,15 @@ export class SubirReporteComponent implements OnInit, OnDestroy {
 
     // Muestra mensaje de carga
     Swal.fire({
-      title: 'Obteniendo ubicación...',
-      text: 'Por favor espera',
+      title: 'Obteniendo ubicación GPS...',
+      text: 'Por favor espera. Esto puede tardar unos segundos.',
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
       }
     });
 
-    // Obtiene la posición
+    // Obtiene la posición con alta precisión (GPS del dispositivo)
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         const lat = pos.coords.latitude;
@@ -341,9 +341,18 @@ export class SubirReporteComponent implements OnInit, OnDestroy {
         Swal.close();
         let mensaje = 'No se pudo obtener la ubicación.';
         if (error.code === error.PERMISSION_DENIED) {
-          mensaje = 'Permiso de ubicación denegado. Por favor habilítalo en tu navegador.';
+          mensaje = 'Permiso de ubicación denegado. Por favor habilítalo en la configuración de tu navegador.';
+        } else if (error.code === error.TIMEOUT) {
+          mensaje = 'El GPS tardó demasiado. Asegúrate de tener la ubicación activada en tu dispositivo e inténtalo de nuevo.';
+        } else if (error.code === error.POSITION_UNAVAILABLE) {
+          mensaje = 'No se pudo determinar tu ubicación. Verifica que el GPS de tu dispositivo esté activo.';
         }
-        Swal.fire('Error', mensaje, 'error');
+        Swal.fire('Error de ubicación', mensaje, 'error');
+      },
+      {
+        enableHighAccuracy: true,  // fuerza GPS en lugar de IP/antena
+        timeout: 15000,            // espera hasta 15 seg al GPS
+        maximumAge: 0              // nunca usar posición cacheada
       }
     );
   }
@@ -549,7 +558,7 @@ export class SubirReporteComponent implements OnInit, OnDestroy {
     }
     if (!this.validarFecha()) return 'Selecciona la fecha del incidente';
     if (!this.validarHora()) return 'Selecciona la hora del incidente';
-    if (!this.validarPlaca()) return 'La placa no es válida (formato: ABC123)';
+    if (!this.validarPlaca()) return 'La placa no es válida. Formatos aceptados: ABC123, ABC12D, CD1234, R12345, A1234, FAC123456';
     
     return '';
   }

@@ -122,6 +122,7 @@
             <option value="EN PROCESO">EN PROCESO</option>
             <option value="FINALIZADO">FINALIZADO</option>
             <option value="RECHAZADO">RECHAZADO</option>
+            <option value="EXPIRADO">EXPIRADO</option>
           </select>
 
           <!-- Filtro por prioridad -->
@@ -254,6 +255,11 @@
           <div class="stat-item stat-comparendo" [class.active]="filtroEstadoModal === 'COMPARENDO'" (click)="filtrarPorEstadoModal('COMPARENDO')">
             <span class="stat-numero">{{ getCountComparendoSi() }}</span>
             <span class="stat-label">Con Comparendo</span>
+          </div>
+          <!-- Expirados -->
+          <div class="stat-item stat-expirado" [class.active]="isEstadoActivo('EXPIRADO')" (click)="filtrarPorEstadoModal('EXPIRADO')">
+            <span class="stat-numero">{{ dashboard?.expirados ?? getCountByEstado('EXPIRADO') }}</span>
+            <span class="stat-label">Expirados</span>
           </div>
         </div>
 
