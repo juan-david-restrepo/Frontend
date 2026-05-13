@@ -19,6 +19,7 @@
               "src/polyfills.ts"
             ],
             "tsConfig": "tsconfig.app.json",
+            "serviceWorker": "ngsw-config.json",
             "assets": [
               {
                 "glob": "**/*",
