@@ -6,10 +6,11 @@ import { AuthService } from './service/auth.service';
 import { CommonModule } from '@angular/common';
 import { FloatingActionsComponent } from './shared/floating-actions/floating-actions';
 import { SplashScreenComponent } from './splash-screen/splash-screen.component';
+import { PwaInstallComponent } from './shared/pwa-install/pwa-install';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, ScrollTopComponent, CommonModule, FloatingActionsComponent, SplashScreenComponent],
+  imports: [RouterOutlet, ScrollTopComponent, CommonModule, FloatingActionsComponent, SplashScreenComponent, PwaInstallComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
