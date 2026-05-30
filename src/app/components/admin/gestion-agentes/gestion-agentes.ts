@@ -555,13 +555,16 @@ export class GestionAgentes implements OnInit, OnDestroy {
     this.adminService.crearAgente(this.nuevoAgente).subscribe({
       next: (res) => {
         this.creandoAgente = false;
-        this.mensajeCrearAgente = `Agente ${res.nombre || res.placa} creado exitosamente`;
         this.nuevoAgente = { correo: '', password: '', nombreCompleto: '', tipoDocumento: 'CC', numeroDocumento: '', placa: '', telefono: '' };
         this.mostrarCrearAgente = false;
+        this.mensajeCrearAgente = `Agente ${res.nombre || res.placa} creado exitosamente`;
+        setTimeout(() => { this.mensajeCrearAgente = ''; }, 5000);
       },
       error: (err) => {
         this.creandoAgente = false;
-        this.errorCrearAgente = err.error || 'Error al crear el agente';
+        const msg = err.error;
+        this.errorCrearAgente = typeof msg === 'string' ? msg : msg?.message || 'Error al crear el agente';
+        console.error('Error creando agente:', err);
       }
     });
   }

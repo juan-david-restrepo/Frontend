@@ -1,10 +1,22 @@
 <app-nav></app-nav>
 
 <div class="public-container">
-  
+
   <div class="public-header">
     <h1>Reportes de Infracciones en Tiempo Real</h1>
     <p>Mapa público de incidentes vial</p>
+  </div>
+
+  <div class="filter-card">
+    <div class="filter-row">
+      <label class="filter-label" for="filtroMes">
+        <i class="fa-regular fa-calendar"></i> Mes
+      </label>
+      <select id="filtroMes" [(ngModel)]="mesSeleccionado" (ngModelChange)="onMesCambiado()">
+        <option *ngFor="let mes of mesesDisponibles" [value]="mes.valor">{{ mes.etiqueta }}</option>
+      </select>
+      <span class="filter-count">{{ reportesFiltrados.length }} reporte{{ reportesFiltrados.length !== 1 ? 's' : '' }}</span>
+    </div>
   </div>
 
   <div class="legend-card">

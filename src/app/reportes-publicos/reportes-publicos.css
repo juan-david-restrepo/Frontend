@@ -22,6 +22,56 @@
   font-size: 14px;
 }
 
+.filter-card {
+  background: white;
+  border-radius: 12px;
+  padding: 14px 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
+}
+
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.filter-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2c3e50;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.filter-card select {
+  padding: 7px 12px;
+  border: 1px solid #dce1e7;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #2c3e50;
+  background: #f8f9fa;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.filter-card select:focus {
+  border-color: #3498db;
+}
+
+.filter-count {
+  margin-left: auto;
+  font-size: 13px;
+  color: #7f8c8d;
+  background: #f0f3f7;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
 .legend-card {
   background: white;
   border-radius: 12px;

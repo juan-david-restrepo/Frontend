@@ -144,13 +144,14 @@
           </div>
         </div>
 
-        <p class="mensaje-ok" *ngIf="mensajeCrearAgente">{{ mensajeCrearAgente }}</p>
         <p class="error" *ngIf="errorCrearAgente">{{ errorCrearAgente }}</p>
 
         <button class="btn-asignar" (click)="crearAgente()" [disabled]="creandoAgente">
           {{ creandoAgente ? 'Creando...' : 'Crear agente' }}
         </button>
       </div>
+
+      <p class="mensaje-ok" *ngIf="mensajeCrearAgente">{{ mensajeCrearAgente }}</p>
     </div>
 
     <!-- ==================== 3. MENSAJE INICIAL ==================== -->

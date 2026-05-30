@@ -1,5 +1,6 @@
 import { AfterViewInit, OnInit, OnDestroy, Component, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import * as L from 'leaflet';
 import { ReportesService } from '../service/reportes.service';
 import { WebsocketService } from '../service/websocket';
@@ -23,7 +24,7 @@ interface Reporte {
   standalone: true,
   templateUrl: './reportes-publicos.html',
   styleUrl: './reportes-publicos.css',
-  imports: [CommonModule, Nav],
+  imports: [CommonModule, FormsModule, Nav],
 })
 export class ReportesPublicos implements AfterViewInit, OnInit, OnDestroy {
   private map!: L.Map;
@@ -32,6 +33,9 @@ export class ReportesPublicos implements AfterViewInit, OnInit, OnDestroy {
   private mapaListo = false;
 
   reportes: Reporte[] = [];
+  reportesFiltrados: Reporte[] = [];
+  mesSeleccionado: string = this.getMesStr(new Date());
+  mesesDisponibles: { valor: string; etiqueta: string }[] = [];
 
   tiposConteo: { tipo: string; cantidad: number; color: string }[] = [
     { tipo: 'Accidente de Tránsito', cantidad: 0, color: '#e74c3c' },
@@ -96,6 +100,42 @@ export class ReportesPublicos implements AfterViewInit, OnInit, OnDestroy {
     if (this.socket) this.socket.close();
   }
 
+  onMesCambiado(): void {
+    this.actualizarFiltros();
+    this.actualizarConteoPorTipo();
+    if (this.mapaListo) this.refrescarMapa();
+  }
+
+  private getMesStr(fecha: Date): string {
+    return `${fecha.getFullYear()}-${String(fecha.getMonth() + 1).padStart(2, '0')}`;
+  }
+
+  private formatearMes(mesAnio: string): string {
+    const [anio, mes] = mesAnio.split('-');
+    const nombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    return `${nombres[parseInt(mes) - 1]} ${anio}`;
+  }
+
+  private actualizarFiltros(): void {
+    const mesActual = this.getMesStr(new Date());
+    const meses = new Set<string>([mesActual]);
+
+    this.reportes.forEach(r => {
+      const d = new Date(r.fechaIncidente);
+      if (!isNaN(d.getTime())) meses.add(this.getMesStr(d));
+    });
+
+    this.mesesDisponibles = Array.from(meses)
+      .sort((a, b) => b.localeCompare(a))
+      .map(m => ({ valor: m, etiqueta: this.formatearMes(m) }));
+
+    this.reportesFiltrados = this.reportes.filter(r => {
+      const d = new Date(r.fechaIncidente);
+      return !isNaN(d.getTime()) && this.getMesStr(d) === this.mesSeleccionado;
+    });
+  }
+
   private cargarReportesIniciales(): void {
     this.reportesService.obtenerReportes().then((data: any) => {
       this.reportes = data.content.map((r: any) => ({
@@ -110,6 +150,7 @@ export class ReportesPublicos implements AfterViewInit, OnInit, OnDestroy {
         direccion: r.direccion,
       }));
 
+      this.actualizarFiltros();
       this.actualizarConteoPorTipo();
 
       if (this.mapaListo) {
@@ -121,8 +162,9 @@ export class ReportesPublicos implements AfterViewInit, OnInit, OnDestroy {
   private agregarReporte(reporte: Reporte): void {
     reporte.fechaIncidente = new Date(reporte.fechaIncidente);
     this.reportes.push(reporte);
-    if (this.mapaListo) this.crearMarcador(reporte);
+    this.actualizarFiltros();
     this.actualizarConteoPorTipo();
+    if (this.mapaListo) this.refrescarMapa();
   }
 
   private actualizarReporte(reporteActualizado: Reporte): void {
@@ -135,6 +177,7 @@ export class ReportesPublicos implements AfterViewInit, OnInit, OnDestroy {
       fechaIncidente: new Date(reporteActualizado.fechaIncidente)
     };
 
+    this.actualizarFiltros();
     if (this.mapaListo) this.refrescarMapa();
     this.actualizarConteoPorTipo();
   }
@@ -142,7 +185,7 @@ export class ReportesPublicos implements AfterViewInit, OnInit, OnDestroy {
   private actualizarConteoPorTipo(): void {
     const conteo: { [key: string]: number } = {};
 
-    this.reportes.forEach(r => {
+    this.reportesFiltrados.forEach(r => {
       const tipoNormalizado = this.normalizarTipo(r.tipo);
       conteo[tipoNormalizado] = (conteo[tipoNormalizado] || 0) + 1;
     });
@@ -225,7 +268,7 @@ export class ReportesPublicos implements AfterViewInit, OnInit, OnDestroy {
 
   private refrescarMapa(): void {
     this.markersLayer.clearLayers();
-    this.reportes.forEach((r) => this.crearMarcador(r));
+    this.reportesFiltrados.forEach((r) => this.crearMarcador(r));
   }
 
   private crearMarcador(reporte: Reporte): void {

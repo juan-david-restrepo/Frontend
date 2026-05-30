@@ -377,7 +377,10 @@ export class Agente implements OnInit, OnDestroy {
           resumenProfesional3: data.resumenProfesional3 || '',
           resumenProfesional4: data.resumenProfesional4 || ''
         };
-        this.estadoAgente = data.estado || 'DISPONIBLE';
+        const estadoRaw1 = (data.estado || '').toUpperCase();
+        this.estadoAgente = (estadoRaw1 === 'OCUPADO' || estadoRaw1 === 'FUERA_SERVICIO')
+          ? estadoRaw1
+          : 'DISPONIBLE';
       },
       error: (err) => {
         if (err.status === 401) this.router.navigate(['/login']);
@@ -729,8 +732,11 @@ export class Agente implements OnInit, OnDestroy {
           resumenProfesional3: data.resumenProfesional3 || '',
           resumenProfesional4: data.resumenProfesional4 || ''
         };
-        this.estadoAgente = data.estado || 'DISPONIBLE';
-        
+        const estadoRaw = (data.estado || '').toUpperCase();
+        this.estadoAgente = (estadoRaw === 'OCUPADO' || estadoRaw === 'FUERA_SERVICIO')
+          ? estadoRaw
+          : 'DISPONIBLE';
+
         if (this.estadoAgente !== 'FUERA_SERVICIO') {
           this.iniciarCronometro();
         }
