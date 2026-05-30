@@ -179,12 +179,23 @@
         <!-- Estado con estilo dinámico -->
         <p class="estado-container">
           <strong>Estado actual:</strong>
-          <!-- [ngClass] aplica clase CSS basada en el estado -->
-          <!-- getClaseEstado() convierte el estado a nombre de clase válido -->
           <span class="estado" [ngClass]="getClaseEstado(agente.estado)">
             {{ agente.estado }}
           </span>
         </p>
+      </div>
+
+      <div class="agente-acciones">
+        <button class="btn-desactivar"
+          *ngIf="agente.activo !== false"
+          (click)="desactivarAgente()">
+          <i class="fa-solid fa-ban"></i> Desactivar agente
+        </button>
+        <button class="btn-activar"
+          *ngIf="agente.activo === false"
+          (click)="activarAgente()">
+          <i class="fa-solid fa-check-circle"></i> Activar agente
+        </button>
       </div>
     </div>
 

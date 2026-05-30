@@ -45,6 +45,14 @@ export class AdminService {
     );
   }
 
+  desactivarAgente(id: number): Observable<any> {
+    return this.http.put(`${environment.apiBackend}/admin/agentes/${id}/desactivar`, {}, { withCredentials: true });
+  }
+
+  activarAgente(id: number): Observable<any> {
+    return this.http.put(`${environment.apiBackend}/admin/agentes/${id}/activar`, {}, { withCredentials: true });
+  }
+
   crearAgente(datos: {
     correo: string;
     password: string;

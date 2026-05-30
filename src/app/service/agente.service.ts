@@ -119,10 +119,10 @@ export class AgenteServiceTs {
   // =============================
   // RECHAZAR REPORTE
   // =============================
-  rechazarReporte(id: number): Observable<any> {
+  rechazarReporte(id: number, motivo?: string): Observable<any> {
     return this.http.post(
       `${this.apiReportes}/rechazar/${id}`,
-      {},
+      { motivo: motivo ?? '' },
       { withCredentials: true }
     );
   }

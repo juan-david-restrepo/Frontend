@@ -277,20 +277,34 @@ export class Agente implements OnInit, OnDestroy {
   // Solo actualizamos reportesEntrantes.
   // El historial (incluido rechazados) se recarga desde BD al entrar a esa vista.
   // ================================
-  rechazarReporte(r: Reporte) {
+  async rechazarReporte(r: Reporte) {
     if (r.estado === EstadoReporte.RECHAZADO) return;
+
+    const Swal = (await import('sweetalert2')).default;
+    const result = await Swal.fire({
+      title: '¿Rechazar este reporte?',
+      html: `<textarea id="swal-motivo" class="swal2-textarea" placeholder="Motivo del rechazo (opcional)" style="margin-top:8px;resize:vertical;min-height:80px;"></textarea>`,
+      showCancelButton: true,
+      confirmButtonText: 'Rechazar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#ef4444',
+      preConfirm: () => (document.getElementById('swal-motivo') as HTMLTextAreaElement)?.value ?? ''
+    });
+
+    if (!result.isConfirmed) return;
+
+    const motivo = result.value as string;
+
     // Optimista: quitarlo de la lista visible
     this.reportesEntrantes = this.reportesEntrantes.filter(x => x.id !== r.id);
     this.reporteDesdeHistorial = null;
 
-    this.agenteService.rechazarReporte(r.id).subscribe({
+    this.agenteService.rechazarReporte(r.id, motivo).subscribe({
       next: () => {
-        // Recargar historial desde BD para incluir el RECHAZADO
         this.cargarHistorialDesdeBD();
       },
       error: (err) => {
         console.error('Error rechazando reporte', err);
-        // Si el backend falla, recargar para dejar todo consistente
         this.cargarReportesDesdeBD();
         this.cargarHistorialDesdeBD();
       }

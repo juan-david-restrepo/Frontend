@@ -1,12 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { Nav } from '../../shared/nav/nav';
 import { Footer } from '../../shared/footer/footer';
 import { MisReportesService, ReporteCiudadano, ReporteEstadisticas } from '../../service/mis-reportes.service';
 import { AuthService, AuthUser } from '../../service/auth.service';
 import { ActividadRecienteService } from '../../service/actividad-reciente.service';
+import { WebsocketService } from '../../service/websocket.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -16,13 +19,13 @@ import Swal from 'sweetalert2';
   templateUrl: './mis-reportes.html',
   styleUrls: ['./mis-reportes.css']
 })
-export class MisReportes implements OnInit {
+export class MisReportes implements OnInit, OnDestroy {
   reportes: ReporteCiudadano[] = [];
   estadisticas: ReporteEstadisticas | null = null;
   isLoggedIn = false;
   isLoading = true;
   editingReporte: ReporteCiudadano | null = null;
-  
+
   editForm = {
     descripcion: '',
     direccion: '',
@@ -31,37 +34,63 @@ export class MisReportes implements OnInit {
     tipoInfraccion: ''
   };
 
+  private destroy$ = new Subject<void>();
+
   constructor(
     private misReportesService: MisReportesService,
     private authService: AuthService,
     private actividadService: ActividadRecienteService,
+    private websocketService: WebsocketService,
     private router: Router
   ) {}
 
   ngOnInit() {
     this.actividadService.registrarAccesoModulo('Mis Reportes');
-    
+
     this.authService.refreshUser().subscribe({
       next: (user: AuthUser | null) => {
         if (!user || !user.userId) {
           this.isLoggedIn = false;
-          Swal.fire({
-            icon: 'warning',
-            title: 'Acceso denegado',
-            text: 'Debe iniciar sesión para ver sus reportes'
-          }).then(() => {
-            this.router.navigate(['/login']);
-          });
+          Swal.fire({ icon: 'warning', title: 'Acceso denegado', text: 'Debe iniciar sesión para ver sus reportes' })
+            .then(() => this.router.navigate(['/login']));
           return;
         }
         this.isLoggedIn = true;
         this.loadData();
+        this.conectarWebSocket(user.email);
       },
       error: () => {
         this.isLoggedIn = false;
         this.router.navigate(['/login']);
       }
     });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.websocketService.disconnect();
+  }
+
+  private conectarWebSocket(email: string) {
+    this.websocketService.connectCiudadano(email);
+
+    this.websocketService.notificacionesCiudadano$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((notif: any) => {
+        this.loadData();
+
+        const tipo = notif.tipo ?? '';
+        const mensaje = notif.mensaje ?? '';
+
+        if (tipo === 'REPORTE_ACEPTADO' || mensaje.toLowerCase().includes('aceptado')) {
+          Swal.fire({ icon: 'info', title: '¡Tu reporte fue tomado!', text: mensaje, timer: 4000, showConfirmButton: false });
+        } else if (tipo === 'REPORTE_RECHAZADO' || mensaje.toLowerCase().includes('rechazado')) {
+          Swal.fire({ icon: 'warning', title: 'Reporte rechazado', text: mensaje, timer: 4000, showConfirmButton: false });
+        } else if (tipo === 'REPORTE_FINALIZADO' || mensaje.toLowerCase().includes('finalizado')) {
+          Swal.fire({ icon: 'success', title: '¡Reporte finalizado!', text: mensaje, timer: 4000, showConfirmButton: false });
+        }
+      });
   }
 
   loadData() {
@@ -71,24 +100,15 @@ export class MisReportes implements OnInit {
         this.reportes = data;
         this.isLoading = false;
       },
-      error: (err) => {
-        console.error('Error loading reports:', err);
+      error: () => {
         this.isLoading = false;
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'No se pudieron cargar los reportes'
-        });
+        Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudieron cargar los reportes' });
       }
     });
 
     this.misReportesService.getEstadisticas().subscribe({
-      next: (data) => {
-        this.estadisticas = data;
-      },
-      error: (err) => {
-        console.error('Error loading stats:', err);
-      }
+      next: (data) => { this.estadisticas = data; },
+      error: () => {}
     });
   }
 
@@ -97,6 +117,7 @@ export class MisReportes implements OnInit {
       case 'PENDIENTE': return 'estado-pendiente';
       case 'EN_PROCESO': return 'estado-proceso';
       case 'FINALIZADO': return 'estado-finalizado';
+      case 'RECHAZADO': return 'estado-rechazado';
       default: return '';
     }
   }
@@ -106,17 +127,13 @@ export class MisReportes implements OnInit {
       case 'PENDIENTE': return 'Pendiente';
       case 'EN_PROCESO': return 'En Proceso';
       case 'FINALIZADO': return 'Finalizado';
+      case 'RECHAZADO': return 'Rechazado';
       default: return estado;
     }
   }
 
-  puedeEditar(estado: string): boolean {
-    return estado === 'PENDIENTE';
-  }
-
-  puedeEliminar(estado: string): boolean {
-    return estado === 'PENDIENTE';
-  }
+  puedeEditar(estado: string): boolean { return estado === 'PENDIENTE'; }
+  puedeEliminar(estado: string): boolean { return estado === 'PENDIENTE'; }
 
   openEditModal(reporte: ReporteCiudadano) {
     this.editingReporte = reporte;
@@ -129,13 +146,10 @@ export class MisReportes implements OnInit {
     };
   }
 
-  closeEditModal() {
-    this.editingReporte = null;
-  }
+  closeEditModal() { this.editingReporte = null; }
 
   saveEdit() {
     if (!this.editingReporte) return;
-
     this.misReportesService.actualizarReporte(this.editingReporte.id, {
       descripcion: this.editForm.descripcion,
       direccion: this.editForm.direccion,
@@ -145,38 +159,20 @@ export class MisReportes implements OnInit {
     }).subscribe({
       next: (updated) => {
         const index = this.reportes.findIndex(r => r.id === updated.id);
-        if (index !== -1) {
-          this.reportes[index] = updated;
-        }
+        if (index !== -1) this.reportes[index] = updated;
         this.closeEditModal();
         this.actividadService.registrarEdicionReporte(updated.id);
-        Swal.fire({
-          icon: 'success',
-          title: '¡Éxito!',
-          text: 'Reporte actualizado correctamente'
-        });
+        Swal.fire({ icon: 'success', title: '¡Éxito!', text: 'Reporte actualizado correctamente' });
       },
-      error: (err) => {
-        console.error('Error updating report:', err);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'No se pudo actualizar el reporte'
-        });
-      }
+      error: () => Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo actualizar el reporte' })
     });
   }
 
   deleteReport(id: number) {
     Swal.fire({
-      title: '¿Está seguro?',
-      text: 'Esta acción no se puede deshacer',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar'
+      title: '¿Está seguro?', text: 'Esta acción no se puede deshacer', icon: 'warning',
+      showCancelButton: true, confirmButtonColor: '#d33', cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, eliminar', cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
         this.misReportesService.eliminarReporte(id).subscribe({
@@ -184,20 +180,9 @@ export class MisReportes implements OnInit {
             this.reportes = this.reportes.filter(r => r.id !== id);
             this.actividadService.registrarEliminacionReporte(id);
             this.loadData();
-            Swal.fire({
-              icon: 'success',
-              title: '¡Eliminado!',
-              text: 'Reporte eliminado correctamente'
-            });
+            Swal.fire({ icon: 'success', title: '¡Eliminado!', text: 'Reporte eliminado correctamente' });
           },
-          error: (err) => {
-            console.error('Error deleting report:', err);
-            Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: 'No se pudo eliminar el reporte'
-            });
-          }
+          error: () => Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo eliminar el reporte' })
         });
       }
     });
@@ -205,24 +190,15 @@ export class MisReportes implements OnInit {
 
   formatDate(dateStr: string | null): string {
     if (!dateStr) return '-';
-    try {
-      const date = new Date(dateStr);
-      return date.toLocaleDateString('es-CO');
-    } catch {
-      return dateStr;
-    }
+    try { return new Date(dateStr).toLocaleDateString('es-CO'); }
+    catch { return dateStr; }
   }
 
   getEvidenciaUrl(reporte: ReporteCiudadano): string | null {
-    if (reporte.evidencias && reporte.evidencias.length > 0) {
-      return reporte.evidencias[0].archivo;
-    }
-    return null;
+    return reporte.evidencias?.length ? reporte.evidencias[0].archivo : null;
   }
 
   openInNewTab(url: string | null) {
-    if (url) {
-      window.open(url, '_blank');
-    }
+    if (url) window.open(url, '_blank');
   }
 }

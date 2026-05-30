@@ -547,6 +547,33 @@ export class GestionAgentes implements OnInit, OnDestroy {
     this.showPassword = false;
   }
 
+  desactivarAgente(): void {
+    if (!this.agente?.id) return;
+    if (!confirm(`¿Desactivar al agente ${this.agente.nombre}? No podrá iniciar sesión.`)) return;
+    this.adminService.desactivarAgente(this.agente.id).subscribe({
+      next: () => {
+        this.agente!.activo = false;
+        this.agente!.estado = 'FUERA_SERVICIO';
+        this.mensajeCrearAgente = 'Agente desactivado correctamente.';
+        setTimeout(() => { this.mensajeCrearAgente = ''; }, 4000);
+      },
+      error: () => { this.errorCrearAgente = 'Error al desactivar el agente.'; }
+    });
+  }
+
+  activarAgente(): void {
+    if (!this.agente?.id) return;
+    this.adminService.activarAgente(this.agente.id).subscribe({
+      next: () => {
+        this.agente!.activo = true;
+        this.agente!.estado = 'DISPONIBLE';
+        this.mensajeCrearAgente = 'Agente activado correctamente.';
+        setTimeout(() => { this.mensajeCrearAgente = ''; }, 4000);
+      },
+      error: () => { this.errorCrearAgente = 'Error al activar el agente.'; }
+    });
+  }
+
   crearAgente(): void {
     if (!this.validarFormulario()) return;
 

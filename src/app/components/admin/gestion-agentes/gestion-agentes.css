@@ -363,6 +363,44 @@ table td {
   border-color: #1e3a8a;
 }
 
+.agente-acciones {
+  margin-top: 16px;
+  display: flex;
+  gap: 10px;
+}
+
+.btn-desactivar {
+  padding: 8px 18px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: opacity 0.2s;
+}
+.btn-desactivar:hover { opacity: 0.85; }
+
+.btn-activar {
+  padding: 8px 18px;
+  background: #16a34a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: opacity 0.2s;
+}
+.btn-activar:hover { opacity: 0.85; }
+
 /* BOTÓN ASIGNAR */
 
 .btn-asignar {
