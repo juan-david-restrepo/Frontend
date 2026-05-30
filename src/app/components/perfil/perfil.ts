@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core'; 
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { Nav } from '../../shared/nav/nav';
 import { Footer } from '../../shared/footer/footer';
 import { Avatar } from '../../service/avatar';
@@ -18,7 +20,8 @@ import { ActividadRecienteService, ActividadReciente } from '../../service/activ
   templateUrl: './perfil.html',
   styleUrls: ['./perfil.css'],
 })
-export class Perfil implements OnInit {
+export class Perfil implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   totalReportes: number = 0;
   notificacionesNoLeidas: number = 0;
   avatar = '';
@@ -65,9 +68,9 @@ export class Perfil implements OnInit {
         this.isLoggedIn = true;
 
         this.avatarService.loadAvatarForUser(this.userId);
-        this.avatarService.avatar$.subscribe(avatar => {
-          if (avatar) this.avatar = avatar;
-        });
+        this.avatarService.avatar$
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(avatar => { if (avatar) this.avatar = avatar; });
 
         this.loadProfile();
 
@@ -111,10 +114,15 @@ export class Perfil implements OnInit {
     });
   }
 
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   cargarActividades() {
-    this.actividadService.actividades$.subscribe(actividades => {
-      this.actividades = actividades;
-    });
+    this.actividadService.actividades$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(actividades => { this.actividades = actividades; });
   }
 
   openAvatarModal() {

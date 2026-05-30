@@ -255,12 +255,6 @@ export class Admin implements OnInit, AfterViewInit, OnDestroy, OnChanges {
           this.debugInfo = 'Response es objeto: ' + JSON.stringify(response).substring(0, 100);
         }
         
-        // Debug: muestra el primer item para verificar campos
-        if (items.length > 0) {
-          console.log('Primer reporte recibido:', items[0]);
-          console.log('huboComparendo:', items[0].huboComparendo);
-        }
-        
         // Transforma cada item al formato ReporteAdmin
         this.infracciones = items.map((item: any) => this.transformarReporte(item));
         this.infraccionesAMostrar = [...this.infracciones];

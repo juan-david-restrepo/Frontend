@@ -4,7 +4,8 @@ import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Nav } from '../../shared/nav/nav';
 import { Footer } from '../../shared/footer/footer';
-import { interval, Subscription } from 'rxjs';
+import { interval, Subject, Subscription } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { NoticiasComponent } from '../noticias/noticias';
 import { AuthService } from '../../service/auth.service';
 
@@ -24,11 +25,13 @@ interface Module {
   styleUrls: ['./home.css'],
 })
 export class Home implements OnInit, OnDestroy, AfterViewInit {
+  private destroy$ = new Subject<void>();
+
   /* ------------------------------------------
      Modal de módulos
   ------------------------------------------- */
   isModalOpen = false;
-  isLoggedIn = false; // Simulación de estado de autenticación
+  isLoggedIn = false;
   selectedModule: Module | null = null;
 
   modulesData: Record<ModuleKey, Module> = {
@@ -205,14 +208,16 @@ export class Home implements OnInit, OnDestroy, AfterViewInit {
   ------------------------------------------- */
 
   ngOnInit() {
-    this.authService.authState$.subscribe((state) => {
-      this.isLoggedIn = state;
-    });
+    this.authService.authState$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((state) => { this.isLoggedIn = state; });
     this.startCarousel();
     this.startHeaderCarousel();
   }
 
   ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
     this.stopCarousel();
     this.stopHeaderCarousel();
   }
