@@ -19,6 +19,7 @@ export interface ReporteCiudadano {
   updatedAt: string;
   evidencias?: Evidencia[];
   agente?: AgenteInfo;
+  motivoRechazo?: string;
 }
 
 export interface Evidencia {

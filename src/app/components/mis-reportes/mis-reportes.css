@@ -86,6 +86,11 @@
 }
 
 /* Table */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .table-container {
   max-width: 1400px;
   margin: 0 auto;
@@ -192,6 +197,42 @@
 .estado-finalizado {
   background: linear-gradient(135deg, #d1fae5, #a7f3d0);
   color: #065f46;
+}
+
+.estado-rechazado {
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
+  color: #7f1d1d;
+}
+
+.motivo-rechazo {
+  background: #fff7ed;
+  border-left: 3px solid #f97316;
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-top: 4px;
+}
+
+.motivo-text {
+  color: #92400e;
+  font-style: italic;
+  margin: 4px 0 0;
+}
+
+@media (max-width: 768px) {
+  .reports-table th:nth-child(3),
+  .reports-table td:nth-child(3) {
+    display: none;
+  }
+
+  .reports-table th,
+  .reports-table td {
+    padding: 10px 8px;
+    font-size: 13px;
+  }
+
+  .header-section h1 {
+    font-size: 1.6rem;
+  }
 }
 
 /* Buttons */

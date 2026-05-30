@@ -58,6 +58,7 @@
       <h2><i class="fa-solid fa-list"></i> Historial de Reportes</h2>
     </div>
     
+    <div class="table-responsive">
     <table class="reports-table" *ngIf="reportes.length > 0">
       <thead>
         <tr>
@@ -109,6 +110,7 @@
         </tr>
       </tbody>
     </table>
+    </div>
 
     <div class="empty-state" *ngIf="reportes.length === 0">
       <i class="fa-regular fa-file"></i>
@@ -189,6 +191,11 @@
       <div class="detail-row" *ngIf="editingReporte.agente">
         <span class="detail-label"><i class="fa-solid fa-user-police"></i> Agente Asignado:</span>
         <span class="detail-value">{{ editingReporte.agente.nombreCompleto }} ({{ editingReporte.agente.placa }})</span>
+      </div>
+
+      <div class="detail-row motivo-rechazo" *ngIf="editingReporte.estado === 'RECHAZADO' && editingReporte.motivoRechazo">
+        <span class="detail-label"><i class="fa-solid fa-circle-exclamation"></i> Motivo del rechazo:</span>
+        <p class="detail-value motivo-text">{{ editingReporte.motivoRechazo }}</p>
       </div>
       
       <div class="detail-row" *ngIf="getEvidenciaUrl(editingReporte)">
