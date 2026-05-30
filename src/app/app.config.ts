@@ -3,6 +3,7 @@ import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { provideHttpClient, withInterceptors, withFetch } from '@angular/common/http';
 import { provideServiceWorker } from '@angular/service-worker';
 import { authInterceptor } from './auth-interceptor';
+import { errorInterceptor } from './interceptors/error.interceptor';
 
 import { routes } from './app.routes';
 
@@ -20,7 +21,7 @@ export const appConfig: ApplicationConfig = {
 
     provideHttpClient(
       withFetch(),
-      withInterceptors([authInterceptor])
+      withInterceptors([authInterceptor, errorInterceptor])
     ),
 
     provideServiceWorker('ngsw-worker.js', {
