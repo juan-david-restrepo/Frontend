@@ -24,7 +24,10 @@ export class ReportesService {
   }
 
   obtenerReportes() {
-    return fetch(this.apiUrl).then((res) => res.json());
+    return fetch(this.apiUrl).then((res) => {
+      if (!res.ok) return null;
+      return res.json();
+    });
   }
 
 }
