@@ -85,7 +85,6 @@ export const routes: Routes = [
   {
     path: 'reportes-publicos',
     loadComponent: () => import('./reportes-publicos/reportes-publicos').then(m => m.ReportesPublicos),
-    canActivate: [authGuard]
   },
   {
     path: 'voice-chat-bot',
