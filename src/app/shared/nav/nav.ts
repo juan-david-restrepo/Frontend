@@ -71,10 +71,10 @@ export class Nav implements OnInit, OnDestroy {
         this.email = user.email;
         this.isLoggedIn = true;
         this.avatarService.loadAvatarForUser(this.userId);
-        this.cargarNotificaciones();
-        this.conectarWebSocket();
-        
+
         if (user.role === 'CIUDADANO') {
+          this.cargarNotificaciones();
+          this.conectarWebSocket();
           this.configCiudadanoService.aplicarEstilos();
         }
       } else {
