@@ -138,6 +138,8 @@ export class ReportesPublicos implements AfterViewInit, OnInit, OnDestroy {
 
   private cargarReportesIniciales(): void {
     this.reportesService.obtenerReportes().then((data: any) => {
+      if (!data?.content) return;
+
       this.reportes = data.content.map((r: any) => ({
         id: r.id,
         tipo: r.tipoInfraccion,
@@ -156,7 +158,7 @@ export class ReportesPublicos implements AfterViewInit, OnInit, OnDestroy {
       if (this.mapaListo) {
         this.refrescarMapa();
       }
-    });
+    }).catch(() => {});
   }
 
   private agregarReporte(reporte: Reporte): void {
