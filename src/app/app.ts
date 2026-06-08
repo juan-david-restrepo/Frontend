@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
-import { ScrollTopComponent } from './scroll-top/scroll-top';
 import { IdleService } from './service/idle.service';
 import { AuthService } from './service/auth.service';
 import { CommonModule } from '@angular/common';
@@ -10,7 +9,7 @@ import { PwaInstallComponent } from './shared/pwa-install/pwa-install';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, ScrollTopComponent, CommonModule, FloatingActionsComponent, SplashScreenComponent, PwaInstallComponent],
+  imports: [RouterOutlet, CommonModule, FloatingActionsComponent, SplashScreenComponent, PwaInstallComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

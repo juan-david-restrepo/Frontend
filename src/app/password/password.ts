@@ -2,14 +2,14 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
-import { Nav } from '../shared/nav/nav';
 import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-password',
   standalone: true,
-  imports: [RouterLink, Nav, ReactiveFormsModule],
+  imports: [RouterLink, CommonModule, ReactiveFormsModule],
   templateUrl: './password.html',
   styleUrls: ['./password.css'],
 })

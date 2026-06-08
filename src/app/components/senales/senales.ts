@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule, NgFor, UpperCasePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { SenalesService, Senal } from './senales.service';
 import { Nav } from '../../shared/nav/nav';
 import { Footer } from '../../shared/footer/footer';
@@ -7,7 +7,7 @@ import { Footer } from '../../shared/footer/footer';
 @Component({
   selector: 'app-senales',
   standalone: true,
-  imports: [CommonModule, NgFor, UpperCasePipe, Nav, Footer],
+  imports: [CommonModule, Nav, Footer],
   templateUrl: './senales.html',
   styleUrls: ['./senales.css']
 })
