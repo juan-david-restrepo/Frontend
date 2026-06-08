@@ -1,9 +1,9 @@
 export const environment = {
   production: false,
   apiBackend: 'http://localhost:8080',
-  apiNoticias: 'http://localhost:3000',
-  apiScrappi: 'http://localhost:3002',
-  apiSenales: 'http://localhost:3001',
+  apiNoticias: 'https://noticias-backend-an1r.onrender.com',
+  apiScrappi: 'https://scrappi-simit.onrender.com',
+  apiSenales: 'https://senales-backend1-1.onrender.com',
   apiIA: 'http://127.0.0.1:8000',
   apiRoute: 'http://localhost:8080/api/route'
 };

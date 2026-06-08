@@ -98,7 +98,7 @@ export class AuthService {
           }
         }),
         catchError((err) => {
-          console.error('refreshUser error', err);
+          if (err?.status !== 401) console.error('refreshUser error', err);
           this.clearUserState();
           return of(null);
         }),
