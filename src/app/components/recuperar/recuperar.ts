@@ -59,21 +59,12 @@ export class Recuperar {
         },
         error: (err: HttpErrorResponse) => {
           this.loading = false;
-
-          let message = 'Error al procesar la solicitud.';
-          if (err.error && typeof err.error === 'string') {
-            message = err.error;
-          } else if (err.message) {
-            message = err.message;
-          }
-
           Swal.fire({
             icon: 'error',
-            title: 'Oops...',
-            text: message
+            title: 'No pudimos procesar tu solicitud',
+            text: 'Hubo un problema al enviar el correo de recuperación. Verifica tu conexión e intenta de nuevo.'
           });
-
-          console.error('Error real al enviar recuperación:', err);
+          console.error('Error al enviar recuperación:', err);
         }
       });
   }

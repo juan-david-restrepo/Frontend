@@ -76,7 +76,13 @@ export class PerfilAgente {
         },
         error: (err) => {
           console.error('Error guardando foto', err);
-          alert('Error al guardar la foto. Intenta de nuevo.');
+          import('sweetalert2').then(({ default: Swal }) => {
+            Swal.fire({
+              icon: 'error',
+              title: 'No se pudo actualizar la foto',
+              text: 'Hubo un problema al guardar tu foto de perfil. Asegúrate de que el archivo no sea muy grande e intenta de nuevo.'
+            });
+          });
         }
       });
     };
@@ -157,7 +163,13 @@ export class PerfilAgente {
       },
       error: (err) => {
         console.error('Error guardando perfil', err);
-        alert('Error al guardar. Intenta de nuevo.');
+        import('sweetalert2').then(({ default: Swal }) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'No se pudo guardar el cambio',
+            text: 'Hubo un problema al actualizar tu información. Verifica tu conexión e intenta de nuevo.'
+          });
+        });
         this.guardando = false;
       }
     });

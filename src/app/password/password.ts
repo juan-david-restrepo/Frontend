@@ -125,11 +125,14 @@ export class Password implements OnInit, OnDestroy {
         },
         error: (err: HttpErrorResponse) => {
           this.loading = false;
-          let message = 'Token inválido o expirado';
-          if (err.error && typeof err.error === 'string') message = err.error;
-          else if (err.message) message = err.message;
-
-          Swal.fire({ icon: 'error', title: 'Oops...', text: message });
+          const esExpirado = err.status === 400 || err.status === 404;
+          Swal.fire({
+            icon: 'error',
+            title: esExpirado ? 'Enlace expirado o inválido' : 'No se pudo cambiar la contraseña',
+            text: esExpirado
+              ? 'El enlace para restablecer tu contraseña ya no es válido. Solicita uno nuevo desde la página de recuperación.'
+              : 'Ocurrió un problema al guardar tu nueva contraseña. Verifica tu conexión e intenta de nuevo.'
+          });
           console.error('Error al resetear contraseña:', err);
         }
       });

@@ -55,7 +55,13 @@ export class Historial implements OnInit {
       },
       error: (err) => {
         console.error('Error al generar PDF:', err);
-        alert('Error al generar el PDF');
+        import('sweetalert2').then(({ default: Swal }) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'No se pudo generar el PDF',
+            text: 'Hubo un problema al crear el documento. Verifica tu conexión e intenta de nuevo.'
+          });
+        });
       }
     });
   }

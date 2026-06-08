@@ -90,13 +90,7 @@ export class ConsultaMultas implements OnInit {
       error: (error) => {
         console.error('Error:', error);
         this.mostrarLoading = false;
-        let mensaje = 'Error al conectar con el servidor';
-        if (error.error && error.error.mensaje) {
-          mensaje = error.error.mensaje;
-        } else if (error.message) {
-          mensaje = error.message;
-        }
-        this.mostrarErrorMensaje(mensaje);
+        this.mostrarErrorMensaje('No pudimos conectar con el servicio de SIMIT. Verifica tu conexión e intenta de nuevo en unos momentos.');
       }
     });
   }
@@ -302,7 +296,7 @@ export class ConsultaMultas implements OnInit {
 
   generarPDF(): void {
     if (!this.datosConsulta && !this.sessionId) {
-      alert('No hay datos para generar PDF');
+      this.mostrarErrorMensaje('Primero realiza una consulta para poder generar el PDF.');
       return;
     }
 
@@ -321,7 +315,7 @@ export class ConsultaMultas implements OnInit {
       },
       error: (error) => {
         console.error('Error al generar PDF:', error);
-        alert('Error al generar el PDF: ' + (error.message || 'Error desconocido'));
+        this.mostrarErrorMensaje('No se pudo generar el PDF. Verifica tu conexión e intenta de nuevo.');
       },
       complete: () => {
         this.mostrarPdfModal = false;

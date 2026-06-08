@@ -187,7 +187,11 @@ export class Agente implements OnInit, OnDestroy {
           this.estadoAgente = 'DISPONIBLE';
           this.comenzarTareaInterno(t);
         },
-        error: (err) => console.error('Error al activar servicio', err)
+        error: async (err) => {
+          console.error('Error al activar servicio', err);
+          const { default: Swal } = await import('sweetalert2');
+          Swal.fire({ icon: 'error', title: 'No se pudo activar el servicio', text: 'Hubo un problema al cambiar tu estado. Intenta de nuevo.' });
+        }
       });
     } else {
       this.comenzarTareaInterno(t);
@@ -211,7 +215,11 @@ export class Agente implements OnInit, OnDestroy {
         this.estadoAgente = 'DISPONIBLE';
         this.agenteService.actualizarEstado('DISPONIBLE').subscribe();
       },
-      error: (err) => console.error('Error:', err)
+      error: async (err) => {
+        console.error('Error finalizando tarea:', err);
+        const { default: Swal } = await import('sweetalert2');
+        Swal.fire({ icon: 'error', title: 'No se pudo finalizar la tarea', text: 'Hubo un problema al guardar el resultado. Intenta de nuevo.' });
+      }
     });
   }
 
@@ -265,9 +273,11 @@ export class Agente implements OnInit, OnDestroy {
         this.estadoAgente = 'OCUPADO';
         this.agenteService.actualizarEstado('OCUPADO').subscribe();
       },
-      error: (err) => {
+      error: async (err) => {
         console.error('Error aceptando reporte', err);
         this.cargarReportesDesdeBD();
+        const { default: Swal } = await import('sweetalert2');
+        Swal.fire({ icon: 'error', title: 'No se pudo aceptar el reporte', text: 'Hubo un problema al tomar el reporte. Es posible que otro agente ya lo haya tomado.' });
       }
     });
   }
@@ -303,10 +313,12 @@ export class Agente implements OnInit, OnDestroy {
       next: () => {
         this.cargarHistorialDesdeBD();
       },
-      error: (err) => {
+      error: async (err) => {
         console.error('Error rechazando reporte', err);
         this.cargarReportesDesdeBD();
         this.cargarHistorialDesdeBD();
+        const { default: Swal } = await import('sweetalert2');
+        Swal.fire({ icon: 'error', title: 'No se pudo rechazar el reporte', text: 'Hubo un problema al procesar el rechazo. Intenta de nuevo.' });
       }
     });
   }
@@ -329,9 +341,11 @@ export class Agente implements OnInit, OnDestroy {
         // ===========================================================
         this.cargarHistorialDesdeBD();
       },
-      error: () => {
+      error: async () => {
         console.error('Error finalizando reporte');
         this.cargarReportesDesdeBD();
+        const { default: Swal } = await import('sweetalert2');
+        Swal.fire({ icon: 'error', title: 'No se pudo finalizar el reporte', text: 'Hubo un problema al cerrar el reporte. Intenta de nuevo.' });
       }
     });
   }
@@ -349,9 +363,11 @@ export class Agente implements OnInit, OnDestroy {
         );
         if (enProceso) this.estadoAgente = 'OCUPADO';
       },
-      error: (err) => {
-        if (err.status === 401) this.router.navigate(['/login']);
+      error: async (err) => {
+        if (err.status === 401) { this.router.navigate(['/login']); return; }
         console.error('Error cargando reportes', err);
+        const { default: Swal } = await import('sweetalert2');
+        Swal.fire({ icon: 'warning', title: 'No se pudieron cargar los reportes', text: 'Verifica tu conexión e intenta recargar la página.' });
       }
     });
   }

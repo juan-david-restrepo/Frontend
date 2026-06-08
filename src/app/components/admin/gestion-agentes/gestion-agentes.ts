@@ -378,7 +378,7 @@ export class GestionAgentes implements OnInit, OnDestroy {
         this.limpiarFormulario();  // Limpia los campos
       },
       error: () => {
-        this.mensajeTarea = 'Error al asignar la tarea';
+        this.mensajeTarea = 'No se pudo asignar la tarea. Verifica la conexión e intenta de nuevo.';
       }
     });
   }
@@ -398,7 +398,7 @@ export class GestionAgentes implements OnInit, OnDestroy {
         this.mensajeTarea = 'Tarea eliminada correctamente';
       },
       error: () => {
-        this.mensajeTarea = 'No se pudo eliminar la tarea';
+        this.mensajeTarea = 'No se pudo eliminar la tarea. Verifica la conexión e intenta de nuevo.';
       }
     });
   }

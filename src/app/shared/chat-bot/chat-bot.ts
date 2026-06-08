@@ -212,7 +212,7 @@ export class ChatBotComponent implements OnInit {
   
   private procesarArchivo(file: File) {
     if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
-      alert('Por favor selecciona una imagen o video');
+      Swal.fire({ icon: 'warning', title: 'Archivo no permitido', text: 'Solo puedes adjuntar imágenes o videos.' });
       return;
     }
     
@@ -779,7 +779,7 @@ onTouchEnd() {
     if (!result.isConfirmed) return;
 
     if (!this.isValidUserId()) {
-      Swal.fire('Error', 'Usuario no válido', 'error');
+      Swal.fire({ icon: 'warning', title: 'Sesión no iniciada', text: 'Debes iniciar sesión para usar el chat.' });
       return;
     }
 
@@ -791,7 +791,7 @@ onTouchEnd() {
 
       if (!res.ok) {
         console.error("Error eliminando conversación:", res.status);
-        Swal.fire('Error', 'No se pudo eliminar la conversación', 'error');
+        Swal.fire({ icon: 'error', title: 'No se pudo eliminar', text: 'Hubo un problema al eliminar la conversación. Intenta de nuevo.' });
         return;
       }
 
@@ -811,7 +811,7 @@ onTouchEnd() {
     }catch(err){
 
       console.error("Error eliminando conversación", err);
-      Swal.fire('Error', 'No se pudo eliminar la conversación', 'error');
+      Swal.fire({ icon: 'error', title: 'No se pudo eliminar', text: 'Hubo un problema al eliminar la conversación. Intenta de nuevo.' });
 
     }
 
@@ -830,7 +830,7 @@ lastTranscript = '';
 async startVoiceDictation() {
 
   if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
-    alert('Tu navegador no soporta reconocimiento de voz.');
+    Swal.fire({ icon: 'warning', title: 'Navegador no compatible', text: 'Tu navegador no soporta el dictado por voz. Prueba con Google Chrome.' });
     return;
   }
 
@@ -906,7 +906,7 @@ onInputFocus() {
       stream.getTracks().forEach(track => track.stop());
       this.router.navigate(['/voice-chat']);
     } catch(error) {
-      alert('Debes permitir el micrófono 🎙️');
+      Swal.fire({ icon: 'warning', title: 'Micrófono bloqueado', text: 'Para usar el chat de voz necesitas permitir el acceso al micrófono en tu navegador.' });
     }
   }
 

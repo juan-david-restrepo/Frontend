@@ -275,7 +275,7 @@ export class Admin implements OnInit, AfterViewInit, OnDestroy, OnChanges {
       },
       error: (err) => {
         console.error('=== Error API ===', err);
-        this.errorCarga = 'Error: ' + (err.message || err.statusText || 'Error desconocido');
+        this.errorCarga = 'No se pudieron cargar los reportes. Verifica tu conexión e intenta recargar la página.';
         this.cargando = false;
         this.infracciones = [];
         this.infraccionesAMostrar = [];
