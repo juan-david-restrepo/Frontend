@@ -33,6 +33,7 @@ export class Registro {
   terminosAceptados = false;
   mostrarContrasena = false;
   mostrarConfirmarContrasena = false;
+  loading = false;
 
   get placeholderDocumento(): string {
     return this.tipoDocumentoSeleccionado === 'PASAPORTE' 
@@ -192,8 +193,10 @@ export class Registro {
       rol: this.registroForm.value.rol,
     };
 
+    this.loading = true;
     this.authService.register(data).subscribe({
       next: (response: any) => {
+        this.loading = false;
         const body = response.body || response;
         localStorage.setItem('pendingEmail', data.email);
         
@@ -217,6 +220,7 @@ export class Registro {
         });
       },
       error: (err) => {
+        this.loading = false;
         console.error('Error en registro:', err);
         this.manejarErrorRegistro(err);
       },

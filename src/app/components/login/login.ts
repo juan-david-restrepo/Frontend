@@ -18,6 +18,7 @@ import Swal from 'sweetalert2';
 export class Login {
   formLogin: FormGroup;
   mostrarPassword = false;
+  loading = false;
 
   constructor(
     private fb: FormBuilder,
@@ -44,6 +45,7 @@ export class Login {
     }
 
     const { email, password } = this.formLogin.value;
+    this.loading = true;
 
     this.authService.login(email, password).pipe(
       switchMap(() => this.authService.refreshUser())
@@ -53,6 +55,7 @@ export class Login {
         const userEmail = localStorage.getItem('email');
         const role = localStorage.getItem('role')?.toUpperCase() || '';
 
+        this.loading = false;
         if (!userId) {
           Swal.fire({
             icon: 'error',
@@ -77,6 +80,7 @@ export class Login {
         else if (role === 'ADMIN') this.router.navigate(['/admin']);
       },
       error: (err) => {
+        this.loading = false;
         console.error('Error login:', err);
         this.manejarErrorLogin(err);
       },

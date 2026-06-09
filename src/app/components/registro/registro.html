@@ -109,8 +109,10 @@
     </label>
   </div>
 
-  <button type="submit" class="btn-secundary">
-    Crear cuenta
+  <button type="submit" class="btn-secundary" [disabled]="loading">
+    <i *ngIf="loading" class="fa-solid fa-spinner fa-spin"></i>
+    <span *ngIf="!loading">Crear cuenta</span>
+    <span *ngIf="loading">Creando cuenta...</span>
   </button>
 
 </form>
