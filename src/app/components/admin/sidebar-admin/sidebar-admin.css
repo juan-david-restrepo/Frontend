@@ -1,12 +1,13 @@
 /* ===== SIDEBAR ===== */
 .sidebar {
   width: 260px;
-  background: #1e293b;
+  background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
   padding: 20px;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   height: 100%;
+  border-right: 1px solid rgba(255,255,255,0.06);
 }
 
 /* Laptop Range: 1024px - 1366px */
@@ -61,9 +62,9 @@
 }
 
 .sidebar-nav a.active {
-  background: #3498db;
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
   color: #ffffff;
-  box-shadow: inset 4px 0 0 #60a5fa;
+  box-shadow: inset 4px 0 0 #93c5fd;
 }
 
 .sidebar-nav button {

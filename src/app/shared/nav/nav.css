@@ -163,12 +163,14 @@
 
 .button-signup {
     color: #fff;
-    background-color: black;
+    background-color: #1d4ed8;
     height: 40px;
+    border-color: #1d4ed8;
 }
 
 .button-signup:hover {
-    background: rgb(53, 50, 50);
+    background: #1e40af;
+    border-color: #1e40af;
 }
 
 .toggle-btn{
@@ -185,11 +187,12 @@
   left: -260px;
   width: 260px;
   height: 100%;
-  background-color: #414141;
+  background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
   color: #fff;
-  transition: left 0.3s ease;
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 10001;
   padding: 20px;
+  border-right: 1px solid rgba(255,255,255,0.06);
 }
 
 .sidebar.active {
@@ -699,11 +702,11 @@
   }
 
   .menu-and-logo {
-    display: none;
+    display: flex;
     position: fixed;
     top: 0;
     left: 0;
-    width: 75%;
+    width: 80%;
     max-width: 320px;
     height: 100vh;
     background: white;
@@ -713,12 +716,13 @@
     z-index: 10003;
     overflow-y: auto;
     overflow-x: hidden;
-    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.18);
     box-sizing: border-box;
     opacity: 0;
     transform: translateX(-100%);
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition: opacity 0.32s ease, transform 0.32s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.32s ease;
     visibility: hidden;
+    pointer-events: none;
   }
 
   .menu-and-logo * {
@@ -726,10 +730,10 @@
   }
 
   .menu-and-logo.mobile-open {
-    display: flex;
     opacity: 1;
     transform: translateX(0);
     visibility: visible;
+    pointer-events: auto;
   }
 
   .menu-buttons-group {
@@ -786,23 +790,26 @@
   .menu-item-home,
   .menu-item-container > .menu-item {
     width: 100%;
-    padding: 14px 16px;
+    padding: 13px 16px;
     justify-content: space-between;
-    font-size: 13px;
-    border-radius: 8px;
+    font-size: 14px;
+    border-radius: 10px;
     background: transparent;
+    color: #374151;
+    font-weight: 500;
   }
 
-.menu-item-home:hover,
-.menu-item-container > .menu-item:hover {
-    background: #f0f0f0;
-    color: #333;
+  .menu-item-home:hover,
+  .menu-item-container > .menu-item:hover {
+    background: #f0f4ff;
+    color: #1d4ed8;
   }
 
   .menu-item-home.active,
   .menu-item-container.active > .menu-item {
-    background: #e8f0fe;
-    color: #1a73e8;
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-weight: 600;
   }
 
   /* Dropdown mobile */
@@ -890,18 +897,48 @@
   .mobile-profile {
     display: block;
   }
-  
+
   .mobile-auth-buttons {
     display: flex !important;
   }
-  
+
   .menu-and-logo {
     overflow-y: auto;
     overflow-x: hidden;
   }
-  
+
   .menu-buttons-group {
     overflow-x: hidden;
+  }
+
+  /* Borde bandera colombiana en el panel lateral */
+  .menu-and-logo::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(to bottom, #FFD700 33.33%, #0033A0 33.33% 66.66%, #CE1126 66.66%);
+    z-index: 1;
+  }
+
+  /* Logo mini en la parte superior del menú móvil */
+  .menu-and-logo::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background: linear-gradient(135deg, #f8faff 0%, #eff6ff 100%);
+    border-bottom: 1px solid #e2e8f0;
+    z-index: 0;
+  }
+
+  .menu-buttons-group {
+    position: relative;
+    z-index: 2;
   }
 }
 
@@ -1154,21 +1191,23 @@
 
   .mobile-buttons .button-login {
     background: transparent;
-    border: 2px solid #333;
-    color: #333;
+    border: 2px solid #1d4ed8;
+    color: #1d4ed8;
+    font-weight: 600;
   }
 
   .mobile-buttons .button-login:hover {
-    background: #f5f5f5;
+    background: #eff6ff;
   }
 
   .mobile-buttons .button-signup {
-    background: #333;
+    background: linear-gradient(135deg, #1d4ed8, #2563eb);
     color: white;
-    border: 2px solid #333;
+    border: 2px solid #1d4ed8;
+    font-weight: 600;
   }
 
   .mobile-buttons .button-signup:hover {
-    background: #555;
+    background: linear-gradient(135deg, #1e40af, #1d4ed8);
   }
 }

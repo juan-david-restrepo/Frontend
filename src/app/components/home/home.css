@@ -922,23 +922,41 @@
   .features-content {
     flex-direction: column;
   }
-  
+
+  /* En tablet: fila scrollable horizontal de tabs compactos */
   .features-nav {
     flex: none;
+    width: 100%;
     flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 12px;
+    padding-bottom: 10px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(37,99,235,0.3) transparent;
   }
-  
+
+  .features-nav::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .features-nav::-webkit-scrollbar-thumb {
+    background: rgba(37,99,235,0.4);
+    border-radius: 4px;
+  }
+
   .nav-item {
-    flex: 1 1 45%;
-    min-width: 280px;
+    flex: 0 0 auto;
+    min-width: 200px;
+    max-width: 260px;
   }
-  
+
   .panel-card {
     flex-direction: column;
   }
-  
+
   .card-image {
     flex: none;
     height: 250px;
@@ -1036,229 +1054,271 @@
 
 /* Mobile Large */
 @media (max-width: 768px) {
+  /* Carrusel hero: empuja la sección debajo del nav fijo */
   .interfaz {
-    height: 55vh;
+    height: 65vh;
+    margin-top: 60px;
   }
 
-  .slide{
-    margin-top: 50px;
+  /* El slide ya no necesita margin-top — ahora empieza en top:0 del contenedor */
+  .slide {
+    margin-top: 0;
+    top: 0;
   }
-  
+
   .text-box {
-    font-size: 22px;
-    bottom: 25%;
-    padding: 0 15px;
+    font-size: 20px;
+    bottom: 22%;
+    padding: 0 20px;
   }
-  
+
   .text-box h1 {
-    font-size: 26px !important;
-    margin-top: 50px;
+    font-size: 24px !important;
+    margin-top: 0;
+    line-height: 1.3;
   }
-  
+
   .slide-btn {
     padding: 10px 24px;
-    font-size: 16px;
-    margin-top: 15px;
+    font-size: 15px;
+    margin-top: 16px;
   }
-  
+
   .arrow {
-    font-size: 24px;
-    padding: 8px 12px;
+    font-size: 22px;
+    padding: 10px 14px;
+    background: rgba(0,0,0,0.25);
+    border-radius: 50%;
+    transition: background 0.2s;
   }
-  
+
+  .arrow:hover {
+    background: rgba(0,0,0,0.45);
+  }
+
   .dots {
-    bottom: 20px;
+    bottom: 16px;
   }
-  
+
   .dots span {
     width: 10px;
     height: 10px;
-    margin: 0 3px;
+    margin: 0 4px;
   }
-  
+
+  /* Módulos: grid 2x2 en lugar de columna única */
   .container {
     padding: 40px 15px;
     min-height: auto;
   }
-  
+
   .title {
     font-size: 24px;
   }
-  
+
   .container p {
     font-size: 1rem;
     bottom: 15px;
     margin-top: 30px;
   }
-  
+
   .modules {
-    flex-direction: column;
-    align-items: center;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    justify-items: center;
+    align-items: start;
   }
-  
+
   .module {
     width: 100%;
-    max-width: 280px;
-    height: 160px;
+    max-width: 100%;
+    height: 155px;
   }
-  
+
   .icon {
-    width: 100px;
-    height: 100px;
+    width: 95px;
+    height: 95px;
   }
-  
+
   .layer {
-    width: 100px;
-    height: 100px;
+    width: 95px;
+    height: 95px;
   }
-  
+
   .icon i {
-    font-size: 35px;
+    font-size: 34px;
   }
-  
+
   .layer .bx {
-    font-size: 30px;
+    font-size: 28px;
   }
-  
+
   .text {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
-  
+
   .modal-content {
     width: 95%;
     max-width: none;
     margin: 10px;
   }
-  
+
   .modal-image {
     height: 180px;
   }
-  
+
   .modal-body {
     padding: 20px;
   }
-  
+
   .modal-body h2 {
     font-size: 1.3rem;
   }
-  
+
   .pyp-container {
     flex-direction: column;
     gap: 40px;
     padding: 40px 15px;
     align-items: center;
   }
-  
+
   .pyp-left {
     text-align: center;
   }
-  
+
   .pyp-left h1 {
     font-size: 28px;
   }
-  
+
   .pyp-left h2 {
     font-size: 18px;
   }
-  
+
   .pyp-left p {
     font-size: 14px;
     line-height: 1.6;
   }
-  
+
   .pyp-btn {
     padding: 14px 24px;
     font-size: 14px;
   }
-  
+
   .accordion-header {
     font-size: 14px;
     height: 55px;
   }
-  
+
   .accordion-body {
     font-size: 13px;
   }
-  
+
   .features-carousel {
-    padding: 40px 15px;
+    padding: 40px 10px;
   }
-  
+
   .features-header h1 {
     font-size: 1.5rem;
   }
-  
+
   .features-header p {
     font-size: 0.95rem;
   }
-  
+
   .features-content {
-    padding: 0 10px;
+    padding: 0 5px;
   }
-  
+
+  /* Features nav: scroll horizontal en lugar de apilado vertical */
   .features-nav {
     flex: none;
     width: 100%;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 10px;
+    padding-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(37,99,235,0.3) transparent;
   }
-  
+
+  .features-nav::-webkit-scrollbar {
+    height: 3px;
+  }
+
+  .features-nav::-webkit-scrollbar-thumb {
+    background: rgba(37, 99, 235, 0.4);
+    border-radius: 3px;
+  }
+
   .nav-item {
-    padding: 15px;
+    flex: 0 0 auto;
+    min-width: 160px;
+    max-width: 200px;
+    padding: 14px 12px;
+    gap: 10px;
   }
-  
+
   .nav-icon {
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
   }
-  
+
   .nav-icon i {
     font-size: 16px;
   }
-  
+
   .nav-text h3 {
-    font-size: 0.9rem;
+    font-size: 0.82rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
-  
+
   .nav-text p {
-    font-size: 0.75rem;
     display: none;
   }
-  
+
   .nav-arrow {
     display: none;
   }
-  
+
   .panel-card {
     padding: 20px;
     min-height: auto;
     flex-direction: column;
   }
-  
+
   .card-content {
     text-align: center;
   }
-  
+
   .card-content h2 {
     font-size: 1.3rem;
   }
-  
+
   .card-content p {
     font-size: 0.9rem;
     margin-bottom: 20px;
   }
-  
+
   .card-stats {
     justify-content: center;
     gap: 20px;
   }
-  
+
   .stat-number {
     font-size: 1.5rem;
   }
-  
+
   .stat-label {
     font-size: 0.75rem;
   }
-  
+
   .card-image {
     flex: none;
     height: 200px;
@@ -1269,186 +1329,74 @@
 /* Mobile Small */
 @media (max-width: 480px) {
   .interfaz {
-    height: 50vh;
+    height: 60vh;
+    margin-top: 56px;
   }
 
   .slide {
-    margin-top: 40px;
+    margin-top: 0;
+    top: 0;
   }
-  
+
   .text-box {
-    font-size: 18px;
+    font-size: 17px;
+    bottom: 20%;
+    padding: 0 15px;
   }
-  
+
   .text-box h1 {
-    font-size: 22px !important;
-    padding: 10px;
-    letter-spacing: 1px;
-    margin-top: 45px;
+    font-size: 21px !important;
+    padding: 0 5px;
+    letter-spacing: 0.5px;
+    margin-top: 0;
+    line-height: 1.3;
   }
-  
+
   .slide-btn {
-    padding: 8px 20px;
+    padding: 9px 20px;
     font-size: 14px;
-    margin-top: 12px;
+    margin-top: 14px;
   }
-  
+
   .arrow {
-    font-size: 20px;
-    padding: 6px 10px;
+    font-size: 18px;
+    padding: 9px 12px;
   }
 
   .dots {
-    bottom: 18px;
+    bottom: 14px;
   }
-  
+
   .title {
     font-size: 20px;
   }
-  
+
   .container p {
     font-size: 0.9rem;
     margin-top: 30px;
   }
-  
-  .module {
-    max-width: 250px;
-    height: 150px;
-  }
-  
-  .pyp-left h1 {
-    font-size: 24px;
-  }
-  
-  .pyp-left h2 {
-    font-size: 16px;
-  }
-  
-  .accordion {
-    padding: 0 15px;
-  }
-  
-  .accordion-header {
-    font-size: 13px;
-    height: 50px;
-  }
-  
-  .accordion .icon {
-    font-size: 18px;
-  }
-  
-  .features-header h1 {
-    font-size: 1.3rem;
-  }
-  
-  .features-header p {
-    font-size: 0.85rem;
-  }
-  
-  .nav-item {
-    padding: 12px;
-  }
-  
-  .nav-icon {
-    width: 35px;
-    height: 35px;
-  }
-  
-  .nav-text h3 {
-    font-size: 0.85rem;
-  }
-  
-  .card-image {
-    height: 160px;
-  }
-  
-  .stat {
-    min-width: 70px;
-  }
-  
-  .stat-number {
-    font-size: 1.3rem;
-  }
-  
-  .modal-image {
-    height: 150px;
-  }
-  
-  .modal-body {
-    padding: 15px;
-  }
-  
-  .btn-login {
-    padding: 10px 20px;
-    font-size: 14px;
-  }
-}
 
-/* Extra Small */
-@media (max-width: 375px) {
-  .interfaz {
-    height: 45vh;
-  }
-
-  .slide {
-    margin-top: 65px;
-  }
-
-  .text-box {
-    font-size: 15px;
-    bottom: 28%;
-    padding: 0px 10px;
-  }
-
-  .text-box h1 {
-    font-size: 19px !important;
-    padding: 8px;
-    margin-top: 40px;
-  }
-
-  .slide-btn {
-    padding: 7px 16px;
-    font-size: 13px;
-    margin-top: 0px;
-  }
-
-  .arrow {
-    font-size: 18px;
-    padding: 5px 8px;
-  }
-
-  .dots {
-    bottom: 3px;
-  }
-
-  .dots span {
-    width: 8px;
-    height: 8px;
-    margin: 0 2px;
-  }
-
-  .title {
-    font-size: 19px;
-  }
-
-  .container p {
-    font-size: 0.85rem;
-    margin-top: 25px;
+  /* Grid 2x2 en móvil pequeño */
+  .modules {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
   }
 
   .module {
-    max-width: 230px;
-    height: 140px;
+    width: 100%;
+    max-width: 100%;
+    height: 145px;
   }
 
   .icon {
-    width: 90px;
-    height: 90px;
+    width: 85px;
+    height: 85px;
   }
 
   .layer {
-    width: 90px;
-    height: 90px;
+    width: 85px;
+    height: 85px;
   }
 
   .icon i {
@@ -1460,7 +1408,166 @@
   }
 
   .text {
+    font-size: 0.8rem;
+  }
+
+  .pyp-left h1 {
+    font-size: 24px;
+  }
+
+  .pyp-left h2 {
+    font-size: 16px;
+  }
+
+  .accordion {
+    padding: 0 15px;
+  }
+
+  .accordion-header {
+    font-size: 13px;
+    height: 50px;
+  }
+
+  .accordion .icon {
+    font-size: 18px;
+  }
+
+  .features-header h1 {
+    font-size: 1.3rem;
+  }
+
+  .features-header p {
     font-size: 0.85rem;
+  }
+
+  .nav-item {
+    min-width: 140px;
+    padding: 12px 10px;
+  }
+
+  .nav-icon {
+    width: 34px;
+    height: 34px;
+  }
+
+  .nav-text h3 {
+    font-size: 0.78rem;
+  }
+
+  .card-image {
+    height: 160px;
+  }
+
+  .stat {
+    min-width: 70px;
+  }
+
+  .stat-number {
+    font-size: 1.3rem;
+  }
+
+  .modal-image {
+    height: 150px;
+  }
+
+  .modal-body {
+    padding: 15px;
+  }
+
+  .btn-login {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}
+
+/* Extra Small - 375px */
+@media (max-width: 375px) {
+  .interfaz {
+    height: 55vh;
+    margin-top: 56px;
+  }
+
+  .slide {
+    margin-top: 0;
+    top: 0;
+  }
+
+  .text-box {
+    font-size: 14px;
+    bottom: 22%;
+    padding: 0 12px;
+  }
+
+  .text-box h1 {
+    font-size: 18px !important;
+    padding: 4px;
+    margin-top: 0;
+    line-height: 1.3;
+  }
+
+  .slide-btn {
+    padding: 8px 16px;
+    font-size: 13px;
+    margin-top: 12px;
+  }
+
+  .arrow {
+    font-size: 16px;
+    padding: 8px 11px;
+  }
+
+  .dots {
+    bottom: 12px;
+  }
+
+  .dots span {
+    width: 8px;
+    height: 8px;
+    margin: 0 3px;
+  }
+
+  .title {
+    font-size: 19px;
+  }
+
+  .container p {
+    font-size: 0.85rem;
+    margin-top: 25px;
+  }
+
+  /* Grid 2x2 también en pantallas muy pequeñas */
+  .modules {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .module {
+    width: 100%;
+    max-width: 100%;
+    height: 135px;
+  }
+
+  .icon {
+    width: 80px;
+    height: 80px;
+  }
+
+  .layer {
+    width: 80px;
+    height: 80px;
+  }
+
+  .icon i {
+    font-size: 28px;
+  }
+
+  .layer .bx {
+    font-size: 24px;
+  }
+
+  .text {
+    font-size: 0.78rem;
   }
 
   .pyp-left h1 {
@@ -1493,20 +1600,21 @@
   }
 
   .nav-item {
-    padding: 10px;
+    min-width: 130px;
+    padding: 10px 9px;
   }
 
   .nav-icon {
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
   }
 
   .nav-icon i {
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .nav-text h3 {
-    font-size: 0.8rem;
+    font-size: 0.76rem;
   }
 
   .card-content h2 {
@@ -1547,24 +1655,42 @@
   }
 }
 
-/* Extra Small */
+/* Extra Small - 360px */
 @media (max-width: 360px) {
-  .text-box h1 {
-    font-size: 18px !important;
+  .interfaz {
+    height: 52vh;
+    margin-top: 56px;
   }
-  
+
+  .slide {
+    margin-top: 0;
+    top: 0;
+  }
+
+  .text-box h1 {
+    font-size: 17px !important;
+  }
+
   .title {
     font-size: 18px;
   }
-  
-  .module {
-    max-width: 220px;
+
+  .modules {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
   }
-  
+
+  .module {
+    width: 100%;
+    max-width: 100%;
+    height: 130px;
+  }
+
   .features-header h1 {
     font-size: 1.1rem;
   }
-  
+
   .card-content h2 {
     font-size: 1.1rem;
   }
