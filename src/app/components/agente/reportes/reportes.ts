@@ -1,7 +1,7 @@
 import { Component, EventEmitter, HostListener, Input, OnChanges, OnDestroy, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Reporte, EstadoReporte } from '../agente';
+import { Reporte, EstadoReporte, ReporteAsignado } from '../agente';
 import { AgenteServiceTs } from '../../../service/agente.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 import * as L from 'leaflet';
@@ -33,7 +33,7 @@ export class Reportes implements OnChanges, OnDestroy {
   private markersLayer = L.layerGroup();
   
   // Mapa ruta y seguimiento
-  private routingControl: any;
+  private routingControl: any; // TODO: tipar
   private agentMarker: L.Marker | null = null;
   private reportMarker: L.Marker | null = null;
   private routePolyline: L.Polyline | null = null;
@@ -158,8 +158,8 @@ export class Reportes implements OnChanges, OnDestroy {
   cargarReportesAgente() {
     this.loading = true;
     this.agenteService.getReportesAgente().subscribe({
-      next: (data: any[]) => {
-        this.reportesScroll = data.map((r: any): Reporte => this._mapear(r));
+      next: (data: ReporteAsignado[]) => {
+        this.reportesScroll = data.map((r: ReporteAsignado): Reporte => this._mapear(r));
         this.cargaInicialHecha = true;
         this.loading = false;
         // Después de la carga inicial, arrancar el scroll paginado desde página 0
@@ -191,7 +191,7 @@ export class Reportes implements OnChanges, OnDestroy {
         const totalPages = data?.totalPages ?? 0;
         if (Array.isArray(content)) {
           this.totalPages = totalPages;
-          const nuevos: Reporte[] = content.map((r: any): Reporte => ({
+          const nuevos: Reporte[] = content.map((r: ReporteAsignado): Reporte => ({
             ...this._mapear(r),
             estado: this._estadoDesdePadre(r.id, (r.estado || 'PENDIENTE').toLowerCase())
           }));
@@ -234,8 +234,8 @@ export class Reportes implements OnChanges, OnDestroy {
       );
       this.loading = true;
       this.agenteService.getReportesAgente().subscribe({
-        next: (data: any[]) => {
-          this.reportesScroll = data.map((r: any): Reporte => this._mapear(r));
+        next: (data: ReporteAsignado[]) => {
+          this.reportesScroll = data.map((r: ReporteAsignado): Reporte => this._mapear(r));
           this.loading = false;
           this.cargarMasReportesPaginados();
         },
@@ -307,12 +307,12 @@ export class Reportes implements OnChanges, OnDestroy {
     return (estadoBackend || 'pendiente') as EstadoReporte;
   }
 
-  private _mapear(r: any): Reporte {
+  private _mapear(r: ReporteAsignado): Reporte {
     const prioridadRaw = r.prioridad;
     const etiqueta = typeof prioridadRaw === 'string'
       ? prioridadRaw
-      : (prioridadRaw && typeof prioridadRaw === 'object' && (prioridadRaw as any).name)
-        ? (prioridadRaw as any).name
+      : (prioridadRaw && typeof prioridadRaw === 'object' && (prioridadRaw as { name?: string }).name)
+        ? (prioridadRaw as { name?: string }).name
         : prioridadRaw ?? '';
     return {
       id:               r.id,
@@ -326,7 +326,7 @@ export class Reportes implements OnChanges, OnDestroy {
       longitud:         r.longitud,
       lat:              r.latitud,
       lng:              r.longitud,
-      etiqueta:         etiqueta,
+      etiqueta:         etiqueta || '',
       estado:           ((r.estado || 'PENDIENTE') as string).toLowerCase() as EstadoReporte,
       fechaAceptado:    r.fechaAceptado    ? new Date(r.fechaAceptado)    : undefined,
       fechaFinalizado:  r.fechaFinalizado  ? new Date(r.fechaFinalizado)  : undefined,
@@ -780,7 +780,7 @@ export class Reportes implements OnChanges, OnDestroy {
     this.companeroEncontrado = null;
 
     this.agenteService.buscarAgenteDisponible(placa).subscribe({
-      next: (agente) => {
+      next: (agente: { nombre: string; placa: string; estado: string }) => {
         this.buscandoCompanero = false;
         if (!agente.estado || agente.estado.toUpperCase() !== 'DISPONIBLE') {
           this.errorBusqueda = `${agente.nombre} no está disponible (${agente.estado})`;
@@ -970,8 +970,6 @@ export class Reportes implements OnChanges, OnDestroy {
   descargarPdf(r: Reporte, event: Event) {
     if (event) event.stopPropagation();
     
-    console.log('PDF reportes - perfilAgenteNombre:', this.perfilAgenteNombre);
-    console.log('PDF reportes - perfilAgentePlaca:', this.perfilAgentePlaca);
     
     const reporteConPerfil = {
       ...r,

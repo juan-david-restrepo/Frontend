@@ -114,12 +114,10 @@ export class Dashboard implements AfterViewInit, OnInit, OnDestroy, OnChanges {
       this.actualizarFechasPorModo('DIA');
     }
     
-    console.log('Cargando estadísticas con fechas:', this.fechaInicio, '-', this.fechaFin);
     
     // Usar el endpoint de estadísticas completas (tarjetas + gráficas)
     this.agenteService.getEstadisticasCompletas(this.fechaInicio, this.fechaFin).subscribe({
       next: (data) => {
-        console.log('Estadísticas recibidas del backend:', data);
         
         // Actualizar las tarjetas con los datos del backend
         this.reportesPeriodo = data.reportesHoy || 0;

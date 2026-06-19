@@ -109,7 +109,7 @@
                 </button>
             </div>
 
-            <div id="resultContent" [innerHTML]="htmlResultado"></div>
+            <div id="resultContent" [innerHTML]="htmlResultado | sanitizeHtml"></div>
 
             <div class="result-actions" id="resultActions">
                 <button id="btnGenerarPDF" class="btn-primary" (click)="generarPDF()">

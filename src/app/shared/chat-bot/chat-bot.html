@@ -6,7 +6,7 @@
 
 <!-- OVERLAY + CONTENEDOR DEL CHAT (solo usuarios logueados) -->
 <div class="chat-overlay" *ngIf="showChat && mostrarChat" (click)="toggleChat()">
-  <div class="chat-container" (click)="$event.stopPropagation()">
+  <div class="chat-container" role="dialog" aria-label="Chatbot de asistencia" (click)="$event.stopPropagation()">
 
     <!-- SIDEBAR -->
     <div class="sidebar" [ngClass]="{'active': sidebarCollapsed}">

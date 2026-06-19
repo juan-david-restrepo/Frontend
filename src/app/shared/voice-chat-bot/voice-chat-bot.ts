@@ -465,8 +465,6 @@ export class VoiceChatBotComponent implements AfterViewInit, OnDestroy {
 
   private connectWebSocket(): void {
     const wsUrl = `ws://127.0.0.1:8000/ws/${this.CLIENT_ID}`;
-    console.log('[WS] Connecting to:', wsUrl);
-
     if (this.ws) {
       this.ws.close();
     }
@@ -477,7 +475,6 @@ export class VoiceChatBotComponent implements AfterViewInit, OnDestroy {
 
     connectionTimeout = setTimeout(() => {
       if (this.ws && this.ws.readyState !== WebSocket.OPEN && this.isCallActive) {
-        console.log('[WS] Connection timeout, closing...');
         this.ws.close();
         this.showToast('Tiempo de conexión agotado (10s). El servidor no está disponible.', 'error');
         this.updateStatus('Error de conexión', 'error');
@@ -485,7 +482,6 @@ export class VoiceChatBotComponent implements AfterViewInit, OnDestroy {
     }, 10000);
 
     this.ws.onopen = () => {
-      console.log('[WS] Connected successfully');
       clearTimeout(connectionTimeout);
       this.reconnectAttempts = 0;
       this.isInCall = true;
@@ -508,7 +504,6 @@ export class VoiceChatBotComponent implements AfterViewInit, OnDestroy {
     };
 
     this.ws.onclose = (event) => {
-      console.log('[WS] Closed:', event.code, event.reason);
       if (!this.isCallActive) return;
       this.cleanupConnection();
       if (event.code !== 1000 && this.reconnectAttempts < this.MAX_RECONNECT_ATTEMPTS) {
@@ -528,7 +523,6 @@ export class VoiceChatBotComponent implements AfterViewInit, OnDestroy {
 
   private attemptReconnect(): void {
     this.reconnectAttempts++;
-    console.log(`[WS] Reconnection attempt ${this.reconnectAttempts}/${this.MAX_RECONNECT_ATTEMPTS}`);
     this.showToast(`Reconectando... (${this.reconnectAttempts}/${this.MAX_RECONNECT_ATTEMPTS})`, 'info');
     this.updateStatus('Reconectando...', '');
 

@@ -22,7 +22,21 @@ import Swal from 'sweetalert2';
 import * as L from 'leaflet';
 import Tesseract from 'tesseract.js';
 import { Nav } from '../../shared/nav/nav';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
+
+
+interface ReporteFormData {
+  placa: string;
+  fecha: string;
+  hora: string;
+  ubicacion: string;
+  latitud?: number;
+  longitud?: number;
+  tipoIncidente: string;
+  descripcion: string;
+}
 
 
 /*------------------ INTERFAZ INCIDENTE ------------------
@@ -53,6 +67,8 @@ interface Incidente {
   CLASE PRINCIPAL
 =========================================================*/
 export class SubirReporteComponent implements OnInit, OnDestroy {
+
+  constructor(private http: HttpClient) {}
 
   /*------------------ 1. CONFIGURACIÓN CONSTANTE ------------------*/
   private readonly MAX_FILES = 1;              // Máximo de archivos permitidos
@@ -110,8 +126,9 @@ export class SubirReporteComponent implements OnInit, OnDestroy {
 
 
   /*------------------ 5. PROPIEDADES DEL MAPA ------------------*/
-  private map: any;      // Instancia del mapa Leaflet
-  private marker: any;   // Marcador de ubicación
+  private map!: L.Map;
+  private marker!: L.Marker;
+  private mapaActivo = false;
 
 
   /*------------------ 6. ngOnInit - INICIALIZACIÓN ------------------*/
@@ -172,7 +189,7 @@ export class SubirReporteComponent implements OnInit, OnDestroy {
   /*------------------ 10. GESTIÓN DE ARCHIVOS ------------------*/
   
   // Maneja el cambio en el input de archivos
-  onFileChange(event: any) {
+  onFileChange(event: Event) {
     const input = event.target as HTMLInputElement;
     if (!input.files?.length) return;
 
@@ -293,7 +310,7 @@ export class SubirReporteComponent implements OnInit, OnDestroy {
 
     const imageUrl = URL.createObjectURL(imagen);
     Tesseract.recognize(imageUrl, 'eng')
-      .then(({ data }: any) => {
+      .then(({ data }: { data: { text: string } }) => {
         // Busca patrones de placa colombiana (múltiples formatos)
         const matches = data.text.match(/[A-Z]{3}[- ]?\d{2}[A-Z]|[A-Z]{3}[- ]?\d{3}|[A-Z]{2}[- ]?\d{4}|[RS]\d{5}|[A-Z]{2,3}\d{4,6}/);
         if (matches?.[0]) {
@@ -391,11 +408,12 @@ export class SubirReporteComponent implements OnInit, OnDestroy {
     L.Marker.prototype.options.icon = defaultIcon;
 
     // Evento: al hacer click en el mapa, marca la ubicación
-    this.map.on('click', (e: any) => {
+    this.map.on('click', (e: L.LeafletMouseEvent) => {
       this.marcarUbicacionEnMapa(e.latlng.lat, e.latlng.lng);
     });
 
     this.map.invalidateSize();
+    this.mapaActivo = true;
   }
 
   // Marca una ubicación en el mapa y obtiene la dirección
@@ -404,7 +422,7 @@ export class SubirReporteComponent implements OnInit, OnDestroy {
     this.coordenadas = `${lat}, ${lng}`;
 
     // Si el mapa no existe, lo crea
-    if (!this.map) {
+    if (!this.mapaActivo) {
       this.map = L.map('map', {
         center: [4.5339, -75.6811],
         zoom: 16,
@@ -428,9 +446,11 @@ export class SubirReporteComponent implements OnInit, OnDestroy {
       
       L.Marker.prototype.options.icon = defaultIcon;
 
-      this.map.on('click', (e: any) => {
+      this.map.on('click', (e: L.LeafletMouseEvent) => {
         this.marcarUbicacionEnMapa(e.latlng.lat, e.latlng.lng);
       });
+
+      this.mapaActivo = true;
     }
 
     // Centra el mapa en la ubicación
@@ -448,10 +468,9 @@ export class SubirReporteComponent implements OnInit, OnDestroy {
 
     // Obtiene la dirección a partir de las coordenadas (reverse geocoding)
     try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`,
+      const data: any = await firstValueFrom( // TODO: tipar respuesta Nominatim
+        this.http.get(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`),
       );
-      const data = await res.json();
       
       const address = data.address;
       let direccionCorta = '';
@@ -491,12 +510,9 @@ export class SubirReporteComponent implements OnInit, OnDestroy {
       this.direccion = '';
       this.coordenadas = '';
       // Elimina el mapa si existe
-      if (this.map) {
+      if (this.mapaActivo) {
         this.map.remove();
-        this.map = null;
-      }
-      if (this.marker) {
-        this.marker = null;
+        this.mapaActivo = false;
       }
     }
   }
@@ -608,17 +624,15 @@ export class SubirReporteComponent implements OnInit, OnDestroy {
       }
 
       // Envía la petición al servidor
-      const response = await fetch(environment.apiBackend + '/api/reportes/crear', {
-        method: 'POST',
-        body: formData,
-        credentials: 'include',
-      });
-
-      const data = await response.json().catch(() => ({}));
-
-      // Verifica la respuesta
-      if (!response.ok) {
-        const errorMsg = data.error || 'Error al enviar el reporte';
+      let data: any = {};
+      try {
+        data = await firstValueFrom(
+          this.http.post(environment.apiBackend + '/api/reportes/crear', formData, {
+            withCredentials: true,
+          }),
+        );
+      } catch (error: any) { // TODO: tipar
+        const errorMsg = error?.error?.error || error.message || 'Error al enviar el reporte';
         throw new Error(errorMsg);
       }
 
@@ -631,7 +645,7 @@ export class SubirReporteComponent implements OnInit, OnDestroy {
       });
       
       this.resetFormulario();
-    } catch (error: any) {
+    } catch (error: any) { // TODO: tipar
       console.error('Error al enviar reporte:', error);
       await Swal.fire({
         icon: 'error',

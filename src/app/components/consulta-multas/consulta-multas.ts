@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ConsultaMultasService, DatosConsulta, ResultadoMultas, Multa } from '../../service/consulta-multas.service';
+import { SanitizeHtmlPipe } from '../../shared/sanitize-html.pipe';
 import { Nav } from '../../shared/nav/nav';
 import { Footer } from '../../shared/footer/footer';
 
 @Component({
   selector: 'app-consulta-multas',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, Nav, Footer],
+  imports: [CommonModule, FormsModule, RouterModule, SanitizeHtmlPipe, Nav, Footer],
   templateUrl: './consulta-multas.html',
   styleUrl: './consulta-multas.css'
 })

@@ -8,6 +8,8 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { AuthService } from '../../service/auth.service';
 import Swal from 'sweetalert2';
 import { VoiceChatBotComponent } from '../voice-chat-bot/voice-chat-bot';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 interface Mensaje {
@@ -21,6 +23,25 @@ interface Conversacion {
   titulo: string;
   created_at?: string;
   titulo_manual?: boolean;
+}
+
+interface MensajeChat {
+  id?: number;
+  id_conversacion?: number;
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  texto?: string;
+  emisor?: string;
+  contenido?: string;
+  created_at?: string;
+}
+
+interface RespuestaGemini {
+  candidates?: Array<{
+    content?: {
+      parts?: Array<{ text?: string }>;
+    };
+  }>;
 }
 
 @Component({
@@ -58,8 +79,7 @@ export class ChatBotComponent implements OnInit {
 
   // Manejar Enter para enviar (Shift+Enter = nueva línea sin enviar)
   onEnterPressed(event: any) {
-    const keyEvent = event as KeyboardEvent;
-    if (!keyEvent.shiftKey) {
+    if (!event.shiftKey) {
       event.preventDefault();
       this.enviarMensaje();
     }
@@ -248,7 +268,7 @@ export class ChatBotComponent implements OnInit {
   readonly UPDATE_TITLE_URL = environment.apiIA + "/conversations";
   userId: string | null = localStorage.getItem('userId') || null;
 
-  constructor(private router: Router, private avatarService: Avatar, private sanitizer: DomSanitizer, private authService: AuthService) {}
+  constructor(private http: HttpClient, private router: Router, private avatarService: Avatar, private sanitizer: DomSanitizer, private authService: AuthService) {}
 
   // =============================
   // HELPERS DE VALIDACIÓN
@@ -263,12 +283,7 @@ export class ChatBotComponent implements OnInit {
 
   private async fetchJson<T>(url: string): Promise<T | null> {
     try {
-      const res = await fetch(url);
-      if (!res.ok) {
-        console.error(`Error ${res.status}: ${res.statusText}`);
-        return null;
-      }
-      return res.json();
+      return await firstValueFrom(this.http.get<T>(url));
     } catch (err) {
       console.error("Fetch error:", err);
       return null;
@@ -301,22 +316,17 @@ async nuevoChat() {
 
   try {
     // 🔹 Llamar al backend para crear nueva conversación (el backend envía el saludo inicial)
-    const res = await fetch(this.API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        user_id: this.userId,
-        message: "",           // 🔹 mensaje vacío, no enviamos "hola"
-        conversation_id: null
-      })
-    });
-
-    if (!res.ok) {
-      console.error("Error creando conversación:", res.status);
-      return;
-    }
-
-    const data = await res.json();
+      let data: any;
+      try {
+        data = await firstValueFrom(this.http.post(this.API_URL, {
+          user_id: this.userId,
+          message: "",
+          conversation_id: null
+        }));
+      } catch (err) {
+        console.error("Error creando conversación:", err);
+        return;
+      }
 
     if (data.id_conversacion !== null && data.id_conversacion !== undefined) {
       // 🔹 Guardar id de conversación
@@ -414,12 +424,13 @@ async nuevoChat() {
     localStorage.setItem("conversationId", this.conversationId);
 
     try {
-      const convRes = await fetch(`${this.CONVERSATIONS_URL}/${id}`);
-      if (!convRes.ok) {
-        console.error("Error cargando conversación:", convRes.status);
+      let convData: any;
+      try {
+        convData = await firstValueFrom(this.http.get(`${this.CONVERSATIONS_URL}/${id}`));
+      } catch (err) {
+        console.error("Error cargando conversación:", err);
         return;
       }
-      const convData = await convRes.json();
 
       if (convData && convData.created_at) {
         const fecha = new Date(convData.created_at);
@@ -435,17 +446,18 @@ async nuevoChat() {
         this.fechaCreacionConversacion = '...';
       }
 
-      const res = await fetch(`${this.MESSAGES_URL}/${id}/messages`);
-      if (!res.ok) {
-        console.error("Error cargando mensajes:", res.status);
+      let data: any;
+      try {
+        data = await firstValueFrom(this.http.get(`${this.MESSAGES_URL}/${id}/messages`));
+      } catch (err) {
+        console.error("Error cargando mensajes:", err);
         return;
       }
-      const data = await res.json();
 
       if (Array.isArray(data)) {
-        this.mensajes = data.map((msg: any) => ({
+        this.mensajes = data.map((msg: MensajeChat) => ({
           tipo: msg.emisor === "ia" ? "bot" : "user",
-          texto: this.sanitizer.bypassSecurityTrustHtml(msg.contenido),
+          texto: this.sanitizer.bypassSecurityTrustHtml(msg.contenido || ''),
           hora: msg.created_at
             ? new Date(msg.created_at).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: true })
             : new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: true })
@@ -575,17 +587,11 @@ async nuevoChat() {
 
     try {
 
-      const res = await fetch(this.API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          user_id: this.userId,
-          message: texto,
-          conversation_id: this.conversationId ? Number(this.conversationId) : null
-        })
-      });
-
-      const data = await res.json();
+      const data: any = await firstValueFrom(this.http.post(this.API_URL, {
+        user_id: this.userId,
+        message: texto,
+        conversation_id: this.conversationId ? Number(this.conversationId) : null
+      }));
 
       if (data.navigation && data.navigation.route) {
 
@@ -691,18 +697,14 @@ async cambiarNombre(conv: Conversacion, event: Event) {
   if (!newName || !newName.trim()) return;
 
   try {
-    const res = await fetch(`${this.CONVERSATIONS_URL}/${conv.id_conversacion}/title?user_id=${this.userId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        titulo: newName.trim(),
-        manual: true
-      })
-    });
-
-    if (!res.ok) {
-      throw new Error('Error al actualizar');
-    }
+      try {
+        await firstValueFrom(this.http.patch(`${this.CONVERSATIONS_URL}/${conv.id_conversacion}/title?user_id=${this.userId}`, {
+          titulo: newName.trim(),
+          manual: true
+        }));
+      } catch (err) {
+        throw new Error('Error al actualizar');
+      }
 
     await this.cargarConversaciones();
 
@@ -784,13 +786,10 @@ onTouchEnd() {
     }
 
     try{
-      const res = await fetch(
-        `${this.CONVERSATIONS_URL}/${id}?user_id=${this.userId}`,
-        { method: "DELETE" }
-      );
-
-      if (!res.ok) {
-        console.error("Error eliminando conversación:", res.status);
+      try {
+        await firstValueFrom(this.http.delete(`${this.CONVERSATIONS_URL}/${id}?user_id=${this.userId}`));
+      } catch (err) {
+        console.error("Error eliminando conversación:", err);
         Swal.fire({ icon: 'error', title: 'No se pudo eliminar', text: 'Hubo un problema al eliminar la conversación. Intenta de nuevo.' });
         return;
       }
@@ -821,7 +820,7 @@ onTouchEnd() {
 // VARIABLES DE VOZ
 // -----------------------------
 isListening = false;
-recognition: any;
+recognition: any; // TODO: tipar SpeechRecognition
 lastTranscript = '';
 
 // -----------------------------

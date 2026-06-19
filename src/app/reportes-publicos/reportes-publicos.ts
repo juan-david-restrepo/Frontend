@@ -137,28 +137,31 @@ export class ReportesPublicos implements AfterViewInit, OnInit, OnDestroy {
   }
 
   private cargarReportesIniciales(): void {
-    this.reportesService.obtenerReportes().then((data: any) => {
-      if (!data?.content) return;
+    this.reportesService.obtenerReportes().subscribe({
+      next: (data: any) => {
+        if (!data?.content) return;
 
-      this.reportes = data.content.map((r: any) => ({
-        id: r.id,
-        tipo: r.tipoInfraccion,
-        descripcion: r.descripcion,
-        latitud: r.latitud,
-        longitud: r.longitud,
-        fechaIncidente: new Date(r.fechaIncidente),
-        horaIncidente: new Date(r.horaIncidente),
-        estado: r.estado.toUpperCase(),
-        direccion: r.direccion,
-      }));
+        this.reportes = data.content.map((r: any) => ({
+          id: r.id,
+          tipo: r.tipoInfraccion,
+          descripcion: r.descripcion,
+          latitud: r.latitud,
+          longitud: r.longitud,
+          fechaIncidente: new Date(r.fechaIncidente),
+          horaIncidente: new Date(r.horaIncidente),
+          estado: r.estado.toUpperCase(),
+          direccion: r.direccion,
+        }));
 
-      this.actualizarFiltros();
-      this.actualizarConteoPorTipo();
+        this.actualizarFiltros();
+        this.actualizarConteoPorTipo();
 
-      if (this.mapaListo) {
-        this.refrescarMapa();
-      }
-    }).catch(() => {});
+        if (this.mapaListo) {
+          this.refrescarMapa();
+        }
+      },
+      error: () => {}
+    });
   }
 
   private agregarReporte(reporte: Reporte): void {

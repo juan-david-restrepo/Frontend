@@ -5,6 +5,8 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import * as L from 'leaflet';
 import 'leaflet-routing-machine';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 
@@ -13,6 +15,45 @@ L.Icon.Default.mergeOptions({
   iconUrl: '',
   shadowUrl: ''
 });
+
+export interface ParkingLocation {
+  id: number;
+  nombre: string;
+  direccion: string;
+  latitud: number;
+  longitud: number;
+  telefono?: string;
+  horario?: string;
+  disponible?: boolean;
+  capacidad?: number;
+  tarifa?: string;
+}
+
+interface NearbyParking {
+  lat: number;
+  lng: number;
+  name: string;
+  address: string;
+  distanceKm: string;
+  durationMin: number;
+  coordinates: string;
+}
+
+interface OverpassElement {
+  lat?: number;
+  lon?: number;
+  center?: { lat: number; lon: number };
+  tags?: {
+    name?: string;
+    'addr:street'?: string;
+    'addr:housenumber'?: string;
+  };
+}
+
+interface RouteData {
+  coordinates: L.LatLng[];
+  instructions?: Array<{ text: string }>;
+}
 
 @Component({
   selector: 'app-parking',
@@ -25,7 +66,7 @@ export class Parking implements OnInit, OnDestroy {
 
   user = { name: '', lastname: '' };
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService, private http: HttpClient) {}
 
 private baseLayers: L.Layer[] = [];
 private currentLayerIndex = 0;
@@ -48,13 +89,13 @@ private parkingIcon = L.icon({
   sidebarOpen = true;
 
   map!: L.Map;
-  routeControl!: L.Routing.Control;
+  routeControl: L.Routing.Control | null = null;
 
   userCoords!: L.LatLng;
   userMarker!: L.Marker;
 
-  parkingData: any[] = [];
-  selectedParking: any = null;
+  parkingData: NearbyParking[] = [];
+  selectedParking: NearbyParking | null = null;
   errorMessage = '';
   locationAccuracy = 0;
   showAccuracyWarning = false;
@@ -206,8 +247,8 @@ private parkingIcon = L.icon({
         draggable: true
       }).addTo(this.map);
 
-      this.userMarker.on('dragend', (e: any) => {
-        const newCoords = e.target.getLatLng();
+      this.userMarker.on('dragend', (e: L.LeafletEvent) => {
+        const newCoords = (e.target as L.Marker).getLatLng();
         this.userCoords = L.latLng(newCoords.lat, newCoords.lng);
         
         
@@ -223,7 +264,7 @@ private parkingIcon = L.icon({
     }
 
     this.iniciarSeguimientoGPS();
-  } catch (error: any) {
+  } catch (error: any) { // TODO: tipar
     console.error('Error al obtener ubicación:', error);
     if (error.code === 1) {
       this.errorMessage = 'Permiso de ubicación denegado. Por favor habilita la ubicación en tu navegador.';
@@ -292,15 +333,9 @@ async obtenerUbicacion(): Promise<void> {
     this.errorMessage = '';
 
     try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(this.searchAddress)}&limit=1`
+      const data: any = await firstValueFrom( // TODO: tipar respuesta Nominatim
+        this.http.get(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(this.searchAddress)}&limit=1`)
       );
-
-      if (!response.ok) {
-        throw new Error('Error al buscar dirección');
-      }
-
-      const data = await response.json();
 
       if (!data || data.length === 0) {
         this.errorMessage = 'No se encontró la dirección. Intenta con otra.';
@@ -323,10 +358,9 @@ async obtenerUbicacion(): Promise<void> {
           draggable: true
         }).addTo(this.map);
 
-        this.userMarker.on('dragend', (e: any) => {
-          const newCoords = e.target.getLatLng();
+        this.userMarker.on('dragend', (e: L.LeafletEvent) => {
+          const newCoords = (e.target as L.Marker).getLatLng();
           this.userCoords = L.latLng(newCoords.lat, newCoords.lng);
-          console.log('Ubicación manual - Lat:', newCoords.lat, 'Lng:', newCoords.lng);
           
           if (this.selectedParking && this.routeControl) {
             this.routeControl.setWaypoints([
@@ -338,9 +372,7 @@ async obtenerUbicacion(): Promise<void> {
       }
 
       this.showAccuracyWarning = false;
-      console.log(`Dirección encontrada: ${result.display_name}`);
-
-    } catch (error: any) {
+    } catch (error: any) { // TODO: tipar
       this.errorMessage = 'Error al buscar dirección. Intenta más tarde.';
       console.error('Error buscando dirección:', error);
     } finally {
@@ -369,8 +401,6 @@ async obtenerUbicacion(): Promise<void> {
       this.locationAccuracy = pos.coords.accuracy;
       this.showAccuracyWarning = this.locationAccuracy > 100;
 
-      console.log(`Ubicación obtenida - Lat: ${pos.coords.latitude}, Lng: ${pos.coords.longitude}, Precisión: ${this.locationAccuracy}m`);
-
       this.userCoords = L.latLng(pos.coords.latitude, pos.coords.longitude);
 
       this.map.setView(this.userCoords, 16);
@@ -386,7 +416,7 @@ async obtenerUbicacion(): Promise<void> {
         ]);
       }
 
-    } catch (error: any) {
+    } catch (error: any) { // TODO: tipar
       console.error('Error al reintentar ubicación:', error);
       if (error.code === 1) {
         this.errorMessage = 'Permiso de ubicación denegado.';
@@ -407,28 +437,14 @@ async obtenerUbicacion(): Promise<void> {
 
   private readonly overpassApi = 'https://overpass-api.de/api/interpreter';
 
-  private async fetchWithRetry(url: string, maxRetries = 3): Promise<Response> {
+  private async fetchWithRetry(url: string, maxRetries = 3): Promise<any> { // TODO: tipar
     let lastError: Error | null = null;
     
     for (let attempt = 0; attempt < maxRetries; attempt++) {
       try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 30000);
-        
-        const res = await fetch(url, { signal: controller.signal });
-        clearTimeout(timeoutId);
-        
-        if (res.ok) return res;
-        
-        if (res.status === 504 || res.status === 503 || res.status >= 500) {
-          lastError = new Error(`Servidor ocupado: ${res.status}`);
-          console.log(`Intento ${attempt + 1} fallado, reintentando...`);
-        } else {
-          throw new Error(`HTTP ${res.status}`);
-        }
-      } catch (err: any) {
+        return await firstValueFrom(this.http.get(url));
+      } catch (err: any) { // TODO: tipar
         lastError = err;
-        console.log(`Intento ${attempt + 1} error: ${err.message}`);
       }
       
       if (attempt < maxRetries - 1) {
@@ -465,12 +481,11 @@ async buscarParqueaderos(): Promise<void> {
 
     
 
-    let data: any = null;
+    let data: any = null; // TODO: tipar
     
     try {
-      const res = await this.fetchWithRetry(`${this.overpassApi}?data=${encodedQuery}`);
-      data = await res.json();
-    } catch (err: any) {
+      data = await this.fetchWithRetry(`${this.overpassApi}?data=${encodedQuery}`);
+    } catch (err: any) { // TODO: tipar
       throw new Error('Overpass API ocupada. Intenta más tarde.');
     }
 
@@ -479,11 +494,11 @@ async buscarParqueaderos(): Promise<void> {
     }
 
     this.parkingData = data.elements
-      .filter((n: any) => n.lat || n.center)
-      .map((n: any) => {
+      .filter((n: OverpassElement) => n.lat || n.center)
+      .map((n: OverpassElement) => {
 
-        const lat = n.lat ?? n.center?.lat;
-        const lon = n.lon ?? n.center?.lon;
+        const lat = n.lat ?? n.center?.lat ?? 0;
+        const lon = n.lon ?? n.center?.lon ?? 0;
 
         const latLng = L.latLng(lat, lon);
 
@@ -518,7 +533,7 @@ async buscarParqueaderos(): Promise<void> {
 
     this.searchCompleted = true;
 
-  } catch (error: any) {
+  } catch (error: any) { // TODO: tipar
     console.error('Error buscando parqueaderos:', error);
     this.errorMessage = error.message || 'Error al buscar parqueaderos';
     this.searchCompleted = true;
@@ -541,9 +556,9 @@ async buscarParqueaderos(): Promise<void> {
   }
 
   /* ================= RUTA ================= */
-private simulationInterval: any;
+private simulationInterval: ReturnType<typeof setInterval> | undefined;
 
-trazarRuta(parking: any): void {
+trazarRuta(parking: NearbyParking): void {
 
   this.selectedParking = parking;
 
@@ -555,7 +570,7 @@ trazarRuta(parking: any): void {
   // Si no existe el control, lo creamos
   if (this.routeControl) {
     this.map.removeControl(this.routeControl);
-    this.routeControl = undefined as any;
+    this.routeControl = null;
   }
 
   this.map.eachLayer((layer) => {
@@ -578,7 +593,7 @@ trazarRuta(parking: any): void {
       })
     }).addTo(this.map);
 
-    this.routeControl.on('routesfound', (e: any) => {
+    this.routeControl?.on('routesfound', (e: { routes: RouteData[] }) => {
 
        const route = e.routes[0];
 
@@ -587,8 +602,9 @@ trazarRuta(parking: any): void {
       this.simularRecorrido(route.coordinates);
 
       this.routeInstructions =
-        route.instructions?.map((i: any) => i.text) || [];
+        route.instructions?.map((i: { text: string }) => i.text) || [];
   
+      if (!this.selectedParking) return;
       const bounds = L.latLngBounds([
         this.userCoords,
         L.latLng(this.selectedParking.lat, this.selectedParking.lng)
@@ -605,13 +621,13 @@ trazarRuta(parking: any): void {
     });
 }
 
-    private hablarIndicaciones(route: any): void {
+    private hablarIndicaciones(route: RouteData): void {
 
   if (!('speechSynthesis' in window)) return;
 
   const instrucciones = route.instructions;
 
-  instrucciones.forEach((inst: any, i: number) => {
+  instrucciones?.forEach((inst: { text: string }, i: number) => {
 
     setTimeout(() => {
 

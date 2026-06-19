@@ -2,44 +2,25 @@ import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth-guard';
 import { adminGuard } from './guards/admin-guard';
 import { agenteGuard } from './guards/agente-guard';
-
-// Rutas públicas ligeras — carga eager
-import { Home } from './components/home/home';
-import { Login } from './components/login/login';
-import { Recuperar } from './components/recuperar/recuperar';
-import { VerificarCorreo } from './components/verificar-correo/verificar-correo';
-import { Registro } from './components/registro/registro';
-import { Footer } from './shared/footer/footer';
-import { PicoPlaca } from './components/pico-placa/pico-placa';
-import { Normas } from './components/normas/normas';
-import { NoticiasComponent } from './components/noticias/noticias';
-import { SobreNosotros } from './components/sobre-nosotros/sobre-nosotros';
-import { ServiciosFooter } from './components/servicios-footer/servicios-footer';
-import { PreguntasFrecuentes } from './components/preguntas-frecuentes/preguntas-frecuentes';
-import { TerminosServicio } from './components/terminos-servicio/terminos-servicio';
-import { PoliticaPrivacidad } from './components/politica-privacidad/politica-privacidad';
-import { AvisoPrivacidad } from './components/aviso-privacidad/aviso-privacidad';
-import { PuntosAtencion } from './components/puntos-atencion/puntos-atencion';
-
 export const routes: Routes = [
   // ── Públicas ──────────────────────────────────────────────
-  { path: '', component: Home },
-  { path: 'home', component: Home },
-  { path: 'login', component: Login },
-  { path: 'recuperar', component: Recuperar },
-  { path: 'verificar-correo', component: VerificarCorreo },
-  { path: 'registro', component: Registro },
-  { path: 'footer', component: Footer },
-  { path: 'pico-placa', component: PicoPlaca },
-  { path: 'noticias', component: NoticiasComponent },
-  { path: 'normas', component: Normas },
-  { path: 'sobre-nosotros', component: SobreNosotros },
-  { path: 'servicios-footer', component: ServiciosFooter },
-  { path: 'preguntas-frecuentes', component: PreguntasFrecuentes },
-  { path: 'terminos-servicio', component: TerminosServicio },
-  { path: 'politica-privacidad', component: PoliticaPrivacidad },
-  { path: 'aviso-privacidad', component: AvisoPrivacidad },
-  { path: 'puntos-atencion', component: PuntosAtencion },
+  { path: '', loadComponent: () => import('./components/home/home').then(m => m.Home) },
+  { path: 'home', loadComponent: () => import('./components/home/home').then(m => m.Home) },
+  { path: 'login', loadComponent: () => import('./components/login/login').then(m => m.Login) },
+  { path: 'recuperar', loadComponent: () => import('./components/recuperar/recuperar').then(m => m.Recuperar) },
+  { path: 'verificar-correo', loadComponent: () => import('./components/verificar-correo/verificar-correo').then(m => m.VerificarCorreo) },
+  { path: 'registro', loadComponent: () => import('./components/registro/registro').then(m => m.Registro) },
+  { path: 'footer', loadComponent: () => import('./shared/footer/footer').then(m => m.Footer) },
+  { path: 'pico-placa', loadComponent: () => import('./components/pico-placa/pico-placa').then(m => m.PicoPlaca) },
+  { path: 'noticias', loadComponent: () => import('./components/noticias/noticias').then(m => m.NoticiasComponent) },
+  { path: 'normas', loadComponent: () => import('./components/normas/normas').then(m => m.Normas) },
+  { path: 'sobre-nosotros', loadComponent: () => import('./components/sobre-nosotros/sobre-nosotros').then(m => m.SobreNosotros) },
+  { path: 'servicios-footer', loadComponent: () => import('./components/servicios-footer/servicios-footer').then(m => m.ServiciosFooter) },
+  { path: 'preguntas-frecuentes', loadComponent: () => import('./components/preguntas-frecuentes/preguntas-frecuentes').then(m => m.PreguntasFrecuentes) },
+  { path: 'terminos-servicio', loadComponent: () => import('./components/terminos-servicio/terminos-servicio').then(m => m.TerminosServicio) },
+  { path: 'politica-privacidad', loadComponent: () => import('./components/politica-privacidad/politica-privacidad').then(m => m.PoliticaPrivacidad) },
+  { path: 'aviso-privacidad', loadComponent: () => import('./components/aviso-privacidad/aviso-privacidad').then(m => m.AvisoPrivacidad) },
+  { path: 'puntos-atencion', loadComponent: () => import('./components/puntos-atencion/puntos-atencion').then(m => m.PuntosAtencion) },
 
   // ── Requieren login (lazy) ────────────────────────────────
   {

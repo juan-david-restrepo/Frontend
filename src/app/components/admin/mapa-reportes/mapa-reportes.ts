@@ -241,7 +241,7 @@ export class MapaReportesComponent implements AfterViewInit, OnInit, OnDestroy {
 
   // Carga los reportes iniciales al abrir el componente
   private cargarReportesIniciales(): void {
-    this.reportesService.obtenerReportes().then((data: any) => {
+    this.reportesService.obtenerReportes().subscribe((data: any) => {
       // Transforma los datos del servidor al formato de la interfaz Reporte
       this.reportes = data.content.map((r: any) => {
         const estado = r.estado.toUpperCase();

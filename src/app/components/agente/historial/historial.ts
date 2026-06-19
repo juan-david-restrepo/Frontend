@@ -29,10 +29,6 @@ export class Historial implements OnInit {
   descargarPdf(r: Reporte, event: Event) {
     event.stopPropagation();
     
-    console.log('PDF - perfilAgenteNombre:', this.perfilAgenteNombre);
-    console.log('PDF - perfilAgentePlaca:', this.perfilAgentePlaca);
-    console.log('PDF - r.nombreAgente:', r.nombreAgente);
-    console.log('PDF - r.placaAgente:', r.placaAgente);
     
     const reporteConPerfil = {
       ...r,
@@ -40,7 +36,6 @@ export class Historial implements OnInit {
       placaAgente: this.perfilAgentePlaca || r.placaAgente || ''
     };
     
-    console.log('PDF - reporteConPerfil:', reporteConPerfil);
     
     this.agenteService.generarPdfOperativo(reporteConPerfil).subscribe({
       next: (blob) => {

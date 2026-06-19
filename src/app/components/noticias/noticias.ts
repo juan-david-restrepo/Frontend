@@ -1,19 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NoticiasService } from './noticias.service';
+import { NoticiasService, Noticia } from './noticias.service';
+import { SanitizeHtmlPipe } from '../../shared/sanitize-html.pipe';
 
 @Component({
   selector: 'app-noticias',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, SanitizeHtmlPipe],
   templateUrl: './noticias.html',
-  styleUrls: ['./noticias.css']
+  styleUrls: ['./noticias.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NoticiasComponent implements OnInit {
 
-  noticias: any[] = [];
-  noticiaSeleccionada: any = null;
+  noticias: Noticia[] = [];
+  noticiaSeleccionada: Noticia | null = null;
   paginaActual = 1;
+  cargando = false;
 
   startMap: Record<number, number> = {
     1: 0,
@@ -23,20 +26,41 @@ export class NoticiasComponent implements OnInit {
     5: 48
   };
 
-  constructor(private noticiasService: NoticiasService) {}
+  constructor(
+    private noticiasService: NoticiasService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     this.cargarNoticias(1);
   }
 
+  trackByIndex(index: number): number {
+    return index;
+  }
+
   cargarNoticias(pagina: number) {
     this.paginaActual = pagina;
     const start = this.startMap[pagina] ?? 0;
+    this.cargando = true;
+    this.cdr.markForCheck();
 
-    this.noticiasService.obtenerNoticias(start)
+    this.noticiasService.obtenerNoticias(start, pagina)
       .subscribe(data => {
         this.noticias = data;
+        this.cargando = false;
+        this.cdr.markForCheck();
       });
+
+    this.precargarSiguiente(pagina);
+  }
+
+  private precargarSiguiente(pagina: number) {
+    const siguiente = pagina + 1;
+    if (siguiente <= 5) {
+      const start = this.startMap[siguiente];
+      this.noticiasService.obtenerNoticias(start, siguiente).subscribe();
+    }
   }
 
   siguiente() {

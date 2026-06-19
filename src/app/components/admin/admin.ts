@@ -98,7 +98,7 @@ export class Admin implements OnInit, AfterViewInit, OnDestroy, OnChanges {
 
   /*------------------ 4. DASHBOARD Y GRÁFICOS ------------------*/
   dashboard: AdminDashboard | null = null;
-  chartBarras: any;                    // Instancia del gráfico de barras
+  chartBarras: Chart | null = null;    // Instancia del gráfico de barras
   cargando = true;                     // Indicador de carga
   errorCarga = '';                     // Mensaje de error
   debugInfo = '';                      // Info de depuración
@@ -138,7 +138,7 @@ export class Admin implements OnInit, AfterViewInit, OnDestroy, OnChanges {
     this.websocketService.connect('admin');
     
     // Suscripción a nuevos reportes
-    this.websocketService.reportes$.subscribe((reporte: any) => {
+    this.websocketService.reportes$.subscribe((reporte: any) => { // TODO: tipar
       this.cargarInfracciones();
       this.cdr.detectChanges();
     });
@@ -237,8 +237,8 @@ export class Admin implements OnInit, AfterViewInit, OnDestroy, OnChanges {
 
     // Obtiene las infracciones
     this.infraccionService.getInfraccionesSimple().subscribe({
-      next: (response: any) => {
-        
+      next: (response: any) => { // TODO: tipar
+        // TODO: tipar
         let items: any[] = [];
         
         // Maneja diferentes formatos de respuesta
@@ -256,7 +256,7 @@ export class Admin implements OnInit, AfterViewInit, OnDestroy, OnChanges {
         }
         
         // Transforma cada item al formato ReporteAdmin
-        this.infracciones = items.map((item: any) => this.transformarReporte(item));
+        this.infracciones = items.map((item: any) => this.transformarReporte(item)); // TODO: tipar
         this.infraccionesAMostrar = [...this.infracciones];
         this.cargando = false;
         
@@ -351,7 +351,7 @@ export class Admin implements OnInit, AfterViewInit, OnDestroy, OnChanges {
   /*------------------ 15. TRANSFORMACIÓN DE DATOS ------------------*/
   
   // Transforma los datos del servidor al formato ReporteAdmin
-  private transformarReporte(data: any): ReporteAdmin {
+  private transformarReporte(data: any): ReporteAdmin { // TODO: tipar
     // Extrae la URL de la foto
     let urlFoto = '';
     if (data.evidencias && data.evidencias.length > 0) {
@@ -418,7 +418,7 @@ export class Admin implements OnInit, AfterViewInit, OnDestroy, OnChanges {
   }
 
   // Extrae la fecha de varias posibles fuentes
-  private extraerFecha(data: any): string {
+  private extraerFecha(data: any): string { // TODO: tipar
     if (data.fechaIncidente) return data.fechaIncidente;
     if (data.fecha) return data.fecha;
     if (data.createdAt) {
@@ -433,7 +433,7 @@ export class Admin implements OnInit, AfterViewInit, OnDestroy, OnChanges {
   }
 
   // Normaliza el estado a un formato estándar
-  private normalizarEstado(estado: any): string {
+  private normalizarEstado(estado: string | null | undefined): string {
     if (!estado) return 'PENDIENTE';
     const estadoStr = String(estado).toUpperCase();
     if (estadoStr === 'PENDIENTE') return 'PENDIENTE';
@@ -518,7 +518,7 @@ export class Admin implements OnInit, AfterViewInit, OnDestroy, OnChanges {
   }
 
   // Retorna el nombre legible del tipo de infracción
-  getNombreTipo(tipo: any): string {
+  getNombreTipo(tipo: string | null | undefined): string {
     if (!tipo) return 'Otros';
     const nombres: Record<string, string> = {
       'Accidente de tránsito': 'Accidente de tránsito',
@@ -712,8 +712,8 @@ export class Admin implements OnInit, AfterViewInit, OnDestroy, OnChanges {
     ];
 
     // Aplica los colores
-    this.chartBarras.data.datasets[0].backgroundColor = labels.map((_: any, i: number) => colors[i % colors.length].bg);
-    this.chartBarras.data.datasets[0].borderColor = labels.map((_: any, i: number) => colors[i % colors.length].border);
+    this.chartBarras.data.datasets[0].backgroundColor = labels.map((_: string, i: number) => colors[i % colors.length].bg);
+    this.chartBarras.data.datasets[0].borderColor = labels.map((_: string, i: number) => colors[i % colors.length].border);
 
     this.chartBarras.update();
   }

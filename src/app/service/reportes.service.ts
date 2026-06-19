@@ -23,11 +23,8 @@ export class ReportesService {
     });
   }
 
-  obtenerReportes() {
-    return fetch(this.apiUrl).then((res) => {
-      if (!res.ok) return null;
-      return res.json();
-    });
+  obtenerReportes(): Observable<any> {
+    return this.http.get(this.apiUrl);
   }
 
 }

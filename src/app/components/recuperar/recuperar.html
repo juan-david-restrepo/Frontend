@@ -2,6 +2,9 @@
 
 <div class="container">
   <div class="reset-container">
+    <div class="icon-wrapper">
+      <i class='bx bx-lock-open-alt'></i>
+    </div>
     <h2>RECUPERAR CONTRASEÑA</h2>
 
     <p>
@@ -20,14 +23,16 @@
         <i class="fa-solid fa-envelope"></i>
       </div>
 
-      <button
-        type="submit"
+      <button 
+        type="submit" 
         class="btn-tercero"
         [disabled]="form.invalid || loading"
       >
-        <i *ngIf="loading" class="fa-solid fa-spinner fa-spin"></i>
         {{ loading ? 'Enviando...' : 'Enviar enlace' }}
+        <i class='bx bxs-send'></i>
       </button>
+
+      <hr class="divider">
 
       <a routerLink="/login">
         <i class="bx bx-arrow-back"></i> <span>Volver a login</span>

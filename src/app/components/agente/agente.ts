@@ -74,6 +74,30 @@ export interface Notificacion {
   idReferencia?: number;
 }
 
+export interface ReporteAsignado {
+  id: number;
+  tipoInfraccion: string;
+  direccion: string;
+  horaIncidente: string;
+  fechaIncidente: string;
+  descripcion: string;
+  urlFoto: string;
+  latitud: number;
+  longitud: number;
+  prioridad: string;
+  estado: string;
+  fechaAceptado?: string;
+  fechaFinalizado?: string;
+  fechaRechazado?: string;
+  resumenOperativo?: string;
+  acompanado?: boolean;
+  placaCompanero?: string;
+  nombreCompanero?: string;
+  placaAgente?: string;
+  nombreAgente?: string;
+  huboComparendo?: boolean | null;
+}
+
 type VistaAgente =
   | 'dashboard' | 'reportes' | 'tareas'
   | 'historial' | 'perfil'   | 'configuracion';
@@ -255,7 +279,7 @@ export class Agente implements OnInit, OnDestroy {
       : this.agenteService.tomarReporte(r.id);
 
     call.subscribe({
-      next: (respuesta: any) => {
+      next: (respuesta: ReporteAsignado) => {
         const idx = this.reportesEntrantes.findIndex(x => x.id === r.id);
         const actualizado: Reporte = {
           ...(idx !== -1 ? this.reportesEntrantes[idx] : r),
@@ -355,7 +379,7 @@ export class Agente implements OnInit, OnDestroy {
   // ================================
   cargarReportesDesdeBD() {
     this.agenteService.getReportesAgente().subscribe({
-      next: (data: any[]) => {
+      next: (data: ReporteAsignado[]) => {
         this.reportesEntrantes = data.map(r => this._mapearReporte(r));
         // Sincronizar estado del agente
         const enProceso = this.reportesEntrantes.some(
@@ -378,7 +402,7 @@ export class Agente implements OnInit, OnDestroy {
   // ================================
   cargarHistorialDesdeBD() {
     this.agenteService.getHistorialAgente().subscribe({
-      next: (data: any[]) => {
+      next: (data: ReporteAsignado[]) => {
         this.historialReportes = data.map(r => this._mapearReporte(r));
       },
       error: (err) => {
@@ -422,7 +446,7 @@ export class Agente implements OnInit, OnDestroy {
   // ================================
   // MAPEO BACKEND → Reporte
   // ================================
-  _mapearReporte(r: any): Reporte {
+  _mapearReporte(r: ReporteAsignado): Reporte {
     const placaActual = this.perfilAgente.placa?.toUpperCase() || '';
     const placaCompanero = r.placaCompanero?.toUpperCase() || '';
     const placaAgente = r.placaAgente?.toUpperCase() || '';
@@ -457,7 +481,7 @@ export class Agente implements OnInit, OnDestroy {
   // ================================
   // WEBSOCKET — cambios de estado
   // ================================
-  private _manejarReporteWebSocket(rb: any) {
+  private _manejarReporteWebSocket(rb: ReporteAsignado) {
     const nuevo = this._mapearReporte(rb);
     const idx   = this.reportesEntrantes.findIndex(r => r.id === nuevo.id);
 
@@ -649,7 +673,7 @@ export class Agente implements OnInit, OnDestroy {
     });
   }
 
-  abrirNotif(n: any) {
+  abrirNotif(n: Notificacion) {
     if (!n.leida) {
       n.leida = true;
       if (n.id) {
@@ -663,7 +687,7 @@ export class Agente implements OnInit, OnDestroy {
     this.mostrarNotificaciones = false;
   }
 
-  updateConfig(config: any) {
+  updateConfig(config: any) { // TODO: tipar
     // Los estilos ya se aplican desde el template via [class.dark], [class.cb] y [style.font-size.px]
   }
 
@@ -674,7 +698,7 @@ export class Agente implements OnInit, OnDestroy {
   reiniciarCronometroSignal: number = 0;
 
   tiempoActivoFormateado: string = '00:00:00';
-  private cronometroIntervalId: any;
+  private cronometroIntervalId: number | null = null;
   private tiempoInicialKey = 'tiempoInicialActivo';
   private tiempoInicial: number = 0;
 
@@ -779,12 +803,12 @@ export class Agente implements OnInit, OnDestroy {
           this._cargarNotificacionesNoLeidas();
           
           // SUSCRIBIRSE a WebSocket DENTRO de la conexión para asegurar que perfilAgente.placa esté configurado
-          this.websocketService.reportes$.subscribe((rb: any) => {
+          this.websocketService.reportes$.subscribe((rb: ReporteAsignado) => {
             this._manejarReporteWebSocket(rb);
           });
 
           // WS — asignado como compañero
-          this.websocketService.reporteAsignado$.subscribe((rb: any) => {
+          this.websocketService.reporteAsignado$.subscribe((rb: ReporteAsignado) => {
             const r = this._mapearReporte(rb);
             if (!this.reportesEntrantes.some(x => x.id === r.id)) {
               r.estado = EstadoReporte.EN_PROCESO;
@@ -800,7 +824,7 @@ export class Agente implements OnInit, OnDestroy {
           });
 
           // WS — nuevas tareas
-          this.websocketService.tareas$.subscribe((tb: any) => {
+          this.websocketService.tareas$.subscribe((tb: any) => { // TODO: tipar
             const t: Tarea = {
               id: tb.id, titulo: tb.titulo, descripcion: tb.descripcion,
               admin: 'Administrador', estado: tb.estado,
@@ -819,7 +843,7 @@ export class Agente implements OnInit, OnDestroy {
 
         // Cargar tareas
         this.agenteService.getTareasAgente().subscribe({
-          next: (tareas: any[]) => {
+          next: (tareas: any[]) => { // TODO: tipar
             this.tareasAdmin = tareas.map(t => ({
               id: t.id, titulo: t.titulo, descripcion: t.descripcion,
               admin: 'Administrador', estado: t.estado,
@@ -844,7 +868,7 @@ export class Agente implements OnInit, OnDestroy {
 
   private _cargarNotificacionesNoLeidas() {
     this.agenteService.getNotificacionesNoLeidas().subscribe({
-      next: (notificaciones: any[]) => {
+      next: (notificaciones: any[]) => { // TODO: tipar
         notificaciones.forEach(n => {
           const yaExiste = this.notificaciones.some(
             notif => notif.id === n.id

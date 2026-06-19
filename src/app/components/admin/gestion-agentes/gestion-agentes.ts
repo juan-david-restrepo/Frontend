@@ -61,7 +61,7 @@ export class GestionAgentes implements OnInit, OnDestroy {
   
   placaBuscada: string = '';      // Texto que el admin ingresa para buscar
   agente: Agente | null = null;   // Datos del agente encontrado (null si no hay búsqueda)
-  reportes: any[] = [];           // Lista de reportes del agente
+  reportes: Reporte[] = [];       // Lista de reportes del agente
   tareas: Tarea[] = [];           // Lista de tareas del agente
   
   /*------------------ ESTADOS DE INTERFAZ ------------------
@@ -92,7 +92,7 @@ export class GestionAgentes implements OnInit, OnDestroy {
   }
 
   // Retorna la lista de reportes (actualmente igual al array original)
-  get reportesHistorial(): any[] {
+  get reportesHistorial(): Reporte[] {
     return this.reportes; 
   }
 
@@ -210,7 +210,7 @@ export class GestionAgentes implements OnInit, OnDestroy {
       Escucha cambios de estado de los agentes en tiempo real
       Si el agente actual cambia de estado, lo actualiza en pantalla
     */
-    this.websocketService.estadosAgentes$.subscribe((estado:any)=>{
+    this.websocketService.estadosAgentes$.subscribe((estado: any) => { // TODO: tipar
       if(this.agente && this.agente.placa?.toUpperCase() === estado.placa?.toUpperCase()){
         this.agente.estado = estado.estado;
       }
@@ -220,7 +220,7 @@ export class GestionAgentes implements OnInit, OnDestroy {
       Escucha cuando una tarea cambia de estado (ej: PENDIENTE → EN PROCESO)
       Actualiza la tarea en la lista local
     */
-    this.websocketService.tareaEstado$.subscribe((tarea:any)=>{
+    this.websocketService.tareaEstado$.subscribe((tarea: any) => { // TODO: tipar
       const t = this.tareas.find(x => x.id === tarea.id);
       if(t){
         t.estado = tarea.estado;
@@ -231,7 +231,7 @@ export class GestionAgentes implements OnInit, OnDestroy {
       Escucha cuando se crea una nueva tarea para el agente actual
       Recarga la lista de tareas
     */
-    this.websocketService.tareas$.subscribe((tarea:any) => {
+    this.websocketService.tareas$.subscribe((tarea: any) => { // TODO: tipar
       if (this.agente && tarea.placaAgente === this.agente.placa) {
         this.cargarTareas();
       }
@@ -241,7 +241,7 @@ export class GestionAgentes implements OnInit, OnDestroy {
       Escucha cuando se crea un nuevo reporte para el agente actual
       Recarga la lista de reportes
     */
-    this.websocketService.reportes$.subscribe((reporte:any) => {
+    this.websocketService.reportes$.subscribe((reporte: any) => { // TODO: tipar
       if (this.agente && reporte.placaAgente === this.agente.placa) {
         this.cargarReportes();
       }
@@ -330,7 +330,7 @@ export class GestionAgentes implements OnInit, OnDestroy {
   private fetchTareas(silent = false): void {
     this.tareasService.obtenerTareasPorAgente(this.agente!.placa)
     .subscribe({
-      next: (data: any) => {
+      next: (data: any) => { // TODO: tipar
         // Maneja diferentes formatos de respuesta del servidor
         if (Array.isArray(data)) {
           this.tareas = data;
@@ -500,7 +500,7 @@ export class GestionAgentes implements OnInit, OnDestroy {
   }
 
   validarCampo(campo: string): void {
-    const valor = (this.nuevoAgente as any)[campo]?.trim() ?? '';
+    const valor = (this.nuevoAgente as any)[campo]?.trim() ?? ''; // TODO: tipar
     let error = '';
 
     switch (campo) {
@@ -603,13 +603,13 @@ export class GestionAgentes implements OnInit, OnDestroy {
 
   // Determina si una tarea puede eliminarse
   // Solo se puede eliminar si está PENDIENTE o RECHAZADA
-  puedeEliminar(tarea: any): boolean {
+  puedeEliminar(tarea: Tarea): boolean {
     return tarea.estado !== 'EN PROCESO' && 
            tarea.estado !== 'FINALIZADO';
   }
 
   // Verifica si hay tareas pendientes en la lista
-  hayTareasPendientes(tareas: any[]): boolean {
+  hayTareasPendientes(tareas: Tarea[]): boolean {
     return tareas.some(t => t.estado !== 'FINALIZADO');
   }
 

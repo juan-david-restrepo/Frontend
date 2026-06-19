@@ -1,10 +1,16 @@
 <h1  data-aos="fade-down" data-aos-duration="1000" data-aos-delay="100">Noticias de Tránsito - IDTQ</h1>
-<div *ngIf="!noticiaSeleccionada" id="noticias" class="grid">
 
-  <div class="noticia" *ngFor="let n of noticias; let i = index" data-aos="fade-up"
+<div *ngIf="cargando && !noticiaSeleccionada" class="spinner-container">
+  <div class="spinner"></div>
+  <p>Cargando noticias...</p>
+</div>
+
+<div *ngIf="!cargando && !noticiaSeleccionada" id="noticias" class="grid">
+
+  <div class="noticia" *ngFor="let n of noticias; let i = index; trackBy: trackByIndex" data-aos="fade-up"
        data-aos-duration="800"
        [attr.data-aos-delay]="i * 100">
-    <img *ngIf="n.imagen" [src]="n.imagen" [alt]="n.titulo" data-aos="zoom-in" data-aos-duration="800">
+    <img *ngIf="n.imagen" [src]="n.imagen" [alt]="n.titulo" loading="lazy" data-aos="zoom-in" data-aos-duration="800">
     <h3 data-aos="fade-left" data-aos-duration="800">{{ n.titulo }}</h3>
     <button data-aos="fade-right" data-aos-duration="800" (click)="verDetalle(i)">Ver noticia <span>→</span></button>
   </div>
@@ -18,9 +24,9 @@
   <p data-aos="fade-right" data-aos-duration="800">{{ noticiaSeleccionada.fecha }}</p>
 
   <img *ngIf="noticiaSeleccionada.imagen"
-       [src]="noticiaSeleccionada.imagen"  data-aos="zoom-in" data-aos-duration="800">
+       [src]="noticiaSeleccionada.imagen" loading="lazy" data-aos="zoom-in" data-aos-duration="800">
 
-  <div [innerHTML]="noticiaSeleccionada.contenido" data-aos="fade-up" data-aos-duration="800"></div>
+  <div [innerHTML]="noticiaSeleccionada.contenido | sanitizeHtml" data-aos="fade-up" data-aos-duration="800"></div>
 
 </div>
 
