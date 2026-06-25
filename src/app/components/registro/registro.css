@@ -357,3 +357,30 @@ select {
     font-size: 14px;
   }
 }
+
+.honeypot-field {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  opacity: 0;
+  height: 0;
+  width: 0;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.recaptcha-notice {
+  font-size: 11px;
+  color: #6b7280;
+  text-align: center;
+  margin: 10px 0;
+}
+
+.recaptcha-notice a {
+  color: #3b82f6;
+  text-decoration: none;
+}
+
+.recaptcha-notice a:hover {
+  text-decoration: underline;
+}

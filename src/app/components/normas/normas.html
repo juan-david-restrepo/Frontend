@@ -1,52 +1,573 @@
 <app-nav></app-nav>
 
 <div class="normas-container">
-  <h1 class="title">Normas de Tránsito – Armenia, Quindío</h1>
 
-  <p class="intro">
-    Aquí podrás consultar las normas locales de movilidad establecidas por el
-    <strong>SETTAQ</strong> y reguladas por el Código Nacional de Tránsito.
-  </p>
+  <section class="hero-section">
+    <div class="hero-glow"></div>
+    <div class="hero-content" data-aos="fade-down">
+      <div class="hero-icon">
+        <i class="fa-solid fa-scale-balanced"></i>
+      </div>
+      <h1>Normas de Tránsito</h1>
+      <p class="hero-subtitle">Armenia, Quindío — Normas locales de movilidad establecidas por el <strong>SETTAQ</strong></p>
+    </div>
+  </section>
 
-  <div class="card">
-    <h2>Normas Generales</h2>
-    <ul>
-      <li>Uso obligatorio del casco para conductor y pasajero de motocicleta.</li>
-      <li>SOAT, licencia y revisión técnico-mecánica deben estar vigentes.</li>
-      <li>Prohibido estacionar en zonas amarillas, andenes o pasos peatonales.</li>
-      <li>Respetar límites de velocidad según zona residencial o vía principal.</li>
-      <li>Obligatorio respetar la señalización vertical y horizontal del municipio.</li>
-    </ul>
-  </div>
+  <div class="content-area">
 
-  <div class="card">
-    <h2>Normas Específicas para Armenia</h2>
-    <ul>
-      <li>Cumplimiento estricto del pico y placa para vehículos particulares.</li>
-      <li>Vehículos mal estacionados podrán ser inmovilizados por agentes del tránsito o por medios electrónicos.</li>
-      <li>En zonas escolares la velocidad máxima es reducida y con vigilancia permanente.</li>
-      <li>En el centro de Armenia hay zonas de parqueo regulado (zonas azules).</li>
-    </ul>
-  </div>
+    <div class="cards-grid">
 
-  <div class="card">
-    <h2>Recomendaciones de Seguridad</h2>
-    <ul>
-      <li>Mantener distancia mínima de seguridad con otros vehículos.</li>
-      <li>No conducir bajo efectos de alcohol o sustancias psicoactivas.</li>
-      <li>Utilizar cinturón de seguridad en todo momento.</li>
-      <li>Antes de cruzar una intersección, validar ambos sentidos.</li>
-    </ul>
-  </div>
+      <section id="normas-generales" class="norma-card card-blue" data-aos="fade-up" data-aos-delay="0">
+        <div class="card-accent"></div>
+        <div class="card-inner">
+          <div class="card-header">
+            <div class="card-icon">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <div>
+              <h2>Normas Generales</h2>
+              <p class="card-subtitle">Disposiciones obligatorias para todos los conductores</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-helmet-safety"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Uso obligatorio del casco</strong>
+                <span class="item-desc">Es obligatorio para el conductor y el pasajero de motocicleta en todo momento. El casco debe estar certificado y correctamente ajustado. Su uso reduce significativamente el riesgo de traumatismos craneoencefálicos en caso de siniestro. Las autoridades realizan operativos permanentes para verificar su cumplimiento.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-file-lines"></i></div>
+              <div class="item-text">
+                <strong class="item-title">SOAT, licencia y revisión vigentes</strong>
+                <span class="item-desc">Circular sin el Seguro Obligatorio (SOAT), sin la licencia de conducción correspondiente o con la revisión técnico-mecánica vencida constituye una infracción grave. Las sanciones incluyen multas económicas significativas y la inmovilización inmediata del vehículo hasta que se subsane la falta.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-ban"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Prohibido estacionar en zonas amarillas</strong>
+                <span class="item-desc">Está totalmente prohibido estacionar en zonas demarcadas con color amarillo, sobre andenes peatonales, pasos de cebra, ciclovías y esquinas. Estas áreas están señalizadas para garantizar la movilidad segura de peatones, ciclistas y el flujo ordenado del tránsito vehicular.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-gauge-high"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Respetar límites de velocidad</strong>
+                <span class="item-desc">Los límites de velocidad varían según el tipo de vía: en zonas residenciales el máximo es 30 km/h, en vías urbanas principales 50 km/h y en vías rurales hasta 80 km/h. El exceso de velocidad es una de las principales causas de siniestros fatales en el municipio.</span>
+              </div>
+            </div>
+            <div class="norma-item span-2">
+              <div class="item-icon"><i class="fa-solid fa-signs-post"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Obligatorio respetar la señalización</strong>
+                <span class="item-desc">Todas las señales de tránsito verticales (letreros) y horizontales (pintura en el pavimento) son de carácter obligatorio. Su incumplimiento acarrea sanciones económicas establecidas en el Código Nacional de Tránsito. Respetar las señales es responsabilidad de todo conductor y peatón.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-  <div style="text-align:center; margin-top: 20px;">
-    <button type="button" class="volver-btn" (click)="volverInicio()">
-      Volver al inicio
-    </button>
+      <section id="normas-especificas" class="norma-card card-amber" data-aos="fade-up" data-aos-delay="100">
+        <div class="card-accent"></div>
+        <div class="card-inner">
+          <div class="card-header">
+            <div class="card-icon">
+              <i class="fa-solid fa-location-dot"></i>
+            </div>
+            <div>
+              <h2>Normas Específicas</h2>
+              <p class="card-subtitle">Regulaciones particulares de Armenia, Quindío</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-car-side"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Pico y placa vigente</strong>
+                <span class="item-desc">La medida de pico y placa para vehículos particulares aplica según el último dígito de la placa en horarios definidos por la alcaldía de Armenia. Su objetivo es reducir la congestión vehicular en horas de alta afluencia y mejorar la movilidad urbana en el municipio.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-truck"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Inmovilización por mal estacionamiento</strong>
+                <span class="item-desc">Los vehículos estacionados en sitios no autorizados pueden ser inmovilizados por agentes de tránsito o detectados automáticamente mediante cámaras de vigilancia electrónica municipal. La inmovilización conlleva el traslado del vehículo a patios oficiales autorizados.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-school"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Velocidad reducida en zonas escolares</strong>
+                <span class="item-desc">En los perímetros de instituciones educativas la velocidad máxima permitida es de 30 km/h durante los horarios de ingreso y salida de estudiantes. Estas zonas cuentan con señalización especial y vigilancia permanente de las autoridades de tránsito.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-square-parking"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Zonas de parqueo regulado</strong>
+                <span class="item-desc">En el centro de Armenia funcionan zonas de estacionamiento regulado (zonas azules) con tiempo máximo de uso. El conductor debe cancelar la tarifa establecida y respetar el límite de tiempo. El uso indebido genera multas y posible inmovilización del vehículo.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="recomendaciones" class="norma-card card-green" data-aos="fade-up" data-aos-delay="50">
+        <div class="card-accent"></div>
+        <div class="card-inner">
+          <div class="card-header">
+            <div class="card-icon">
+              <i class="fa-solid fa-lightbulb"></i>
+            </div>
+            <div>
+              <h2>Recomendaciones de Seguridad</h2>
+              <p class="card-subtitle">Consejos clave para una conducción segura y responsable</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-car"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Distancia mínima de seguridad</strong>
+                <span class="item-desc">Se recomienda mantener al menos 3 segundos de distancia con el vehículo que antecede, calculando el tiempo desde que el vehículo de adelante pasa un punto fijo hasta que usted pasa el mismo punto. En condiciones de lluvia, neblina o pavimento mojado, la distancia debe aumentarse considerablemente.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-wine-bottle"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Cero alcohol al conducir</strong>
+                <span class="item-desc">Conducir bajo los efectos del alcohol o sustancias psicoactivas está terminantemente prohibido. Las sanciones incluyen multas elevadas, suspensión o pérdida definitiva de la licencia y procesos penales. La tasa máxima de alcohol permitida en Colombia es 0.0% para conductores de transporte público y menores de edad.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-seat-belt"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Cinturón de seguridad obligatorio</strong>
+                <span class="item-desc">El uso del cinturón de seguridad reduce hasta en un 50% el riesgo de muerte en caso de colisión y previene lesiones graves. Es obligatorio para todos los ocupantes del vehículo, tanto en los asientos delanteros como traseros, en cualquier tipo de vía.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-eye"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Validar intersecciones</strong>
+                <span class="item-desc">Antes de cruzar una intersección, incluso cuando se tenga la vía preferencial, es indispensable observar ambos sentidos para asegurarse de que no se aproximan vehículos a alta velocidad o conductores que no respeten la señalización vial.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="sanciones" class="norma-card card-red" data-aos="fade-up" data-aos-delay="150">
+        <div class="card-accent"></div>
+        <div class="card-inner">
+          <div class="card-header">
+            <div class="card-icon">
+              <i class="fa-solid fa-circle-exclamation"></i>
+            </div>
+            <div>
+              <h2>Sanciones y Multas</h2>
+              <p class="card-subtitle">Infracciones comunes y montos actualizados según la ley</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-gauge-high"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Exceso de velocidad</strong>
+                <span class="item-desc">Las multas por exceso de velocidad varían entre 4 y 15 Salarios Mínimos Legales Diarios Vigentes (SMLDV) dependiendo del porcentaje de exceso sobre el límite permitido. Además de la sanción económica, puede aplicarse la suspensión de la licencia por períodos de hasta 3 años.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-ban"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Estacionar en zona prohibida</strong>
+                <span class="item-desc">La multa por estacionar en sitio prohibido es de 1 SMLDV y conlleva la inmovilización del vehículo. El automotor es trasladado a los patios oficiales donde permanecerá hasta que el propietario presente la documentación y pague la multa más los costos de grúa y almacenamiento.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-file-lines"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Conducir sin SOAT</strong>
+                <span class="item-desc">Circular sin el Seguro Obligatorio de Accidentes de Tránsito (SOAT) o con este vencido acarrea una multa de 30 SMLDV, además de la inmovilización del vehículo hasta que se adquiera la póliza. El SOAT cubre los gastos médicos de las personas lesionadas en accidentes de tránsito.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-id-card"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Conducir sin licencia</strong>
+                <span class="item-desc">Conducir un vehículo sin la licencia de conducción correspondiente constituye una infracción grave con multa de 8 SMLDV e inmovilización del vehículo. Conducir sin estar legalmente habilitado pone en riesgo la vida del conductor, sus acompañantes y los demás actores viales.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="documentacion" class="norma-card card-slate" data-aos="fade-up" data-aos-delay="0">
+        <div class="card-accent"></div>
+        <div class="card-inner">
+          <div class="card-header">
+            <div class="card-icon">
+              <i class="fa-solid fa-folder-open"></i>
+            </div>
+            <div>
+              <h2>Documentación Obligatoria</h2>
+              <p class="card-subtitle">Documentos que todo conductor debe portar al circular</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-id-card"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Licencia de conducción vigente</strong>
+                <span class="item-desc">Todo conductor debe portar su licencia de conducción vigente y correspondiente a la categoría del vehículo que opera: A1 para motos hasta 125cc, A2 para motos mayores, B1 para automóviles, B2 para vehículos de servicio público y C para vehículos de carga. Conducir con licencia vencida o de categoría incorrecta es causal de multa e inmovilización.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-file-shield"></i></div>
+              <div class="item-text">
+                <strong class="item-title">SOAT al día</strong>
+                <span class="item-desc">El Seguro Obligatorio de Accidentes de Tránsito (SOAT) cubre los gastos médicos de las personas lesionadas en accidentes de tránsito. Debe renovarse anualmente y las autoridades verifican su vigencia electrónicamente mediante sistemas de lectura de placas. Su vencimiento impide circular legalmente.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-wrench"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Revisión técnico-mecánica vigente</strong>
+                <span class="item-desc">La revisión técnico-mecánica certifica que el vehículo cumple con las condiciones mínimas de seguridad vial y emisión de gases contaminantes. Esta revisión debe realizarse anualmente en centros de diagnóstico autorizados por el Ministerio de Transporte. Su vencimiento acarrea sanciones económicas.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-scroll"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Tarjeta de propiedad</strong>
+                <span class="item-desc">La tarjeta de propiedad acredita legalmente la titularidad del vehículo. Este documento debe portarse físicamente o en formato digital durante la circulación y es exigido por las autoridades en cualquier control de tránsito rutinario o en caso de accidente.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="motociclistas" class="norma-card card-purple" data-aos="fade-up" data-aos-delay="100">
+        <div class="card-accent"></div>
+        <div class="card-inner">
+          <div class="card-header">
+            <div class="card-icon">
+              <i class="fa-solid fa-motorcycle"></i>
+            </div>
+            <div>
+              <h2>Normas para Motociclistas</h2>
+              <p class="card-subtitle">Regulaciones específicas para conductores de moto</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-helmet-safety"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Casco certificado y ajustado</strong>
+                <span class="item-desc">El casco debe contar con certificación de seguridad y cubrir completamente la cabeza, incluyendo la mandíbula. Su uso es obligatorio tanto para el conductor como para el pasajero. El casco debe estar correctamente ajustado y abrochado en todo momento mientras se conduce.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-arrow-right"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Adelantamiento por la izquierda</strong>
+                <span class="item-desc">Las motocicletas deben realizar los adelantamientos siempre por el carril izquierdo, respetando la distancia de seguridad con los demás vehículos. Está prohibido adelantar por la derecha, entre carriles o realizando maniobras zigzagueantes que pongan en riesgo la integridad del conductor.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-person-walking"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Prohibido circular en andenes</strong>
+                <span class="item-desc">Las motocicletas deben transitar exclusivamente por las vías vehiculares autorizadas. Circular por andenes peatonales, ciclovías, zonas verdes o espacios peatonales constituye una infracción sancionable con multa económica.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-users"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Solo conductor y un pasajero</strong>
+                <span class="item-desc">Está prohibido transportar más de un pasajero en la motocicleta. El pasajero debe ir sentado en el asiento designado, con ambos pies colocados en los reposapiés laterales y utilizando el casco de seguridad correctamente ajustado.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="senales" class="norma-card card-brown" data-aos="fade-up" data-aos-delay="50">
+        <div class="card-accent"></div>
+        <div class="card-inner">
+          <div class="card-header">
+            <div class="card-icon">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div>
+              <h2>Señales de Tránsito</h2>
+              <p class="card-subtitle">Clasificación y significado de las señales viales</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-stop"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Señales reglamentarias</strong>
+                <span class="item-desc">Son señales de forma circular con borde rojo que indican obligaciones o prohibiciones que los conductores deben cumplir estrictamente. Ejemplos comunes: señal de pare (stop), ceda el paso, no estacionar, velocidad máxima permitida y prohibido girar en U.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Señales preventivas</strong>
+                <span class="item-desc">Son señales de forma cuadrada con fondo amarillo que advierten al conductor sobre condiciones peligrosas o cambios en la vía. Al aproximarse a una de estas señales, se debe reducir la velocidad y estar atento. Ejemplos: curva pronunciada, cruce escolar, superficie irregular y resalto.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-circle-info"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Señales informativas</strong>
+                <span class="item-desc">Son señales de forma cuadrada con fondo azul o verde que guían al conductor proporcionando información sobre destinos, distancias, direcciones y servicios disponibles. Son fundamentales para la navegación segura dentro del municipio y en las carreteras nacionales.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-traffic-light"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Semáforos y pasos peatonales</strong>
+                <span class="item-desc">Los semáforos regulan el paso vehicular y peatonal en las intersecciones. Cruzar con luz roja es una infracción grave que pone en riesgo la vida del conductor y los peatones. Los pasos peatonales (cebras) tienen prioridad de cruce sobre los vehículos en todo momento.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="emergencias" class="norma-card card-charcoal" data-aos="fade-up" data-aos-delay="150">
+        <div class="card-accent"></div>
+        <div class="card-inner">
+          <div class="card-header">
+            <div class="card-icon">
+              <i class="fa-solid fa-phone"></i>
+            </div>
+            <div>
+              <h2>Emergencias y Asistencia</h2>
+              <p class="card-subtitle">Contactos y procedimientos ante siniestros viales</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-phone"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Línea de emergencia 123</strong>
+                <span class="item-desc">Es el número único nacional para reportar accidentes de tránsito y cualquier otra emergencia. Está disponible las 24 horas del día, los 365 días del año. Al llamar, debe proporcionar la ubicación exacta del siniestro, el número de vehículos involucrados y el estado de las personas lesionadas.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-building"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Contacto SETTAQ</strong>
+                <span class="item-desc">La Secretaría de Tránsito y Transporte de Armenia (SETTAQ) es la autoridad local encargada de la gestión del tránsito, la imposición de comparendos y la atención al ciudadano. Puede contactarla para realizar consultas, presentar denuncias por infracciones y solicitar información sobre movilidad en el municipio.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-truck-medical"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Ambulancias: 125</strong>
+                <span class="item-desc">En caso de lesionados en un accidente de tránsito, la prioridad absoluta es la atención médica. Active el servicio de ambulancias marcando el 125. No movilice a los heridos a menos que se encuentren en peligro inminente de incendio, colapso estructural u otro riesgo vital.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-truck"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Grúas y patios oficiales</strong>
+                <span class="item-desc">Los vehículos inmovilizados son remitidos a los patios oficiales autorizados por la alcaldía. Para recuperar el vehículo, el propietario debe presentar la documentación al día (licencia, SOAT, revisión técnico-mecánica) y pagar las multas, grúa y días de almacenamiento correspondientes.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="comparendo" class="norma-card card-stone" data-aos="fade-up" data-aos-delay="0">
+        <div class="card-accent"></div>
+        <div class="card-inner">
+          <div class="card-header">
+            <div class="card-icon">
+              <i class="fa-solid fa-file-pen"></i>
+            </div>
+            <div>
+              <h2>Proceso de Comparendo</h2>
+              <p class="card-subtitle">Cómo funciona el sistema de infracciones y multas de tránsito</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-clipboard"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Imposición del comparendo</strong>
+                <span class="item-desc">Cuando un conductor comete una infracción, la autoridad de tránsito impone el comparendo en el lugar de los hechos mediante un formato oficial. El conductor debe firmar la notificación como constancia de recibido, sin que esto implique aceptación de la falta cometida.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Derecho a presentar descargos</strong>
+                <span class="item-desc">El infractor tiene derecho a presentar su defensa dentro de los 5 días hábiles siguientes a la imposición del comparendo. Los descargos deben presentarse por escrito ante la autoridad de tránsito correspondiente, aportando las pruebas documentales, fotográficas o testimoniales que considere necesarias.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-percent"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Pago voluntario con descuento</strong>
+                <span class="item-desc">Si el infractor realiza el pago de la multa dentro de los primeros 5 días hábiles contados desde la imposición del comparendo, tiene derecho a un descuento del 50% sobre el valor total de la sanción. Pasado este plazo, el beneficio se pierde y debe pagarse el valor completo de la multa.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-file-invoice"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Cobro coactivo por no pago</strong>
+                <span class="item-desc">Si la multa no es pagada voluntariamente dentro de los plazos establecidos, la autoridad de tránsito inicia un proceso de cobro coactivo. Esto implica el cobro de intereses moratorios sobre la deuda, recargos adicionales y la posibilidad de embargo de bienes del infractor.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="contacto" class="norma-card card-teal" data-aos="fade-up" data-aos-delay="100">
+        <div class="card-accent"></div>
+        <div class="card-inner">
+          <div class="card-header">
+            <div class="card-icon">
+              <i class="fa-solid fa-building-columns"></i>
+            </div>
+            <div>
+              <h2>Datos Útiles y Contacto</h2>
+              <p class="card-subtitle">Canales oficiales de atención y trámites de tránsito en Armenia</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-location-dot"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Dirección SETTAQ Armenia</strong>
+                <span class="item-desc">La Secretaría de Tránsito y Transporte de Armenia se encuentra ubicada en la Carrera 14 entre calles 18 y 19, en el Centro Administrativo Municipal. En esta sede puede realizar trámites de licencias de conducción, matriculación de vehículos, consulta de comparendos y pago de multas.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-clock"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Horario de atención</strong>
+                <span class="item-desc">La atención al público es de lunes a viernes en jornada continua de 8:00 a.m. a 5:00 p.m. Los días sábados se atiende de 8:00 a.m. a 12:00 m. exclusivamente para consultas de comparendos y pagos voluntarios con descuento.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-globe"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Portal web oficial</strong>
+                <span class="item-desc">La página web oficial de la alcaldía de Armenia pone a disposición de los ciudadanos un portal de consulta de comparendos, descarga de formularios para trámites de tránsito e información actualizada sobre las normas de movilidad, campañas viales y cierres de vías programados.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-mobile-screen"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Reportelo! — Reporta infracciones</strong>
+                <span class="item-desc">Es una aplicación ciudadana diseñada para que cualquier persona pueda reportar incidentes de tránsito, vehículos mal estacionados, semáforos dañados y emergencias viales directamente a las autoridades competentes, contribuyendo a una mejor movilidad en Armenia.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="ciclistas" class="norma-card card-rose" data-aos="fade-up" data-aos-delay="50">
+        <div class="card-accent"></div>
+        <div class="card-inner">
+          <div class="card-header">
+            <div class="card-icon">
+              <i class="fa-solid fa-bicycle"></i>
+            </div>
+            <div>
+              <h2>Normas para Ciclistas</h2>
+              <p class="card-subtitle">Regulaciones y derechos de los ciclistas en Armenia, Quindío</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-helmet-safety"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Uso obligatorio del casco y elementos reflectivos</strong>
+                <span class="item-desc">Todo ciclista debe usar casco de seguridad certificado al circular en vías urbanas y rurales. Además, se recomienda portar prendas reflectivas, luces delantera y trasera, y timbre o bocina, especialmente durante la noche o en condiciones de baja visibilidad. Estos elementos reducen significativamente el riesgo de accidentes.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-road"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Circular por ciclovías y carriles exclusivos</strong>
+                <span class="item-desc">Los ciclistas deben transitar obligatoriamente por las ciclovías, ciclobandas y carriles exclusivos señalizados para bicicletas. En ausencia de infraestructura ciclista, deben circular por el carril derecho de la vía vehicular, manteniendo una distancia segura de los vehículos estacionados y respetando todas las señales de tránsito.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-hand"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Señalización de maniobras con las manos</strong>
+                <span class="item-desc">Al girar, detenerse o cambiar de carril, el ciclista debe indicar su intención extendiendo el brazo correspondiente. Esta señalización manual permite que los conductores de vehículos anticipen los movimientos del ciclista, reduciendo el riesgo de colisiones y mejorando la convivencia vial entre todos los actores de la vía.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-ban"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Prohibido circular en andenes y vías de alta velocidad</strong>
+                <span class="item-desc">Está terminantemente prohibido que los ciclistas transiten por andenes peatonales, zonas verdes o vías de alta velocidad como autopistas y avenidas principales donde la velocidad máxima supere los 60 km/h. En caso de requerir cruzar un andén, el ciclista debe descender de la bicicleta y caminar a pie.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="transporte-publico" class="norma-card card-navy" data-aos="fade-up" data-aos-delay="150">
+        <div class="card-accent"></div>
+        <div class="card-inner">
+          <div class="card-header">
+            <div class="card-icon">
+              <i class="fa-solid fa-bus"></i>
+            </div>
+            <div>
+              <h2>Transporte Público</h2>
+              <p class="card-subtitle">Normativa para conductores y usuarios del servicio público en Armenia</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-signs-post"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Paraderos autorizados para subir y bajar pasajeros</strong>
+                <span class="item-desc">Los vehículos de transporte público deben detenerse exclusivamente en los paraderos autorizados y debidamente señalizados. Está prohibido recoger o dejar pasajeros en sitios no habilitados, en intersecciones, curvas, puentes, túneles o zonas de prohibido estacionar. El incumplimiento de esta norma acarrea sanciones económicas y la suspensión de la ruta.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-route"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Cumplimiento de rutas y horarios establecidos</strong>
+                <span class="item-desc">Los conductores de transporte público deben cumplir estrictamente las rutas y horarios asignados por la autoridad de tránsito municipal. Desviarse de la ruta autorizada o modificar los horarios de operación sin autorización constituye una infracción grave que puede resultar en multas, suspensión temporal o cancelación definitiva de la concesión de la ruta.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-file-shield"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Revisión técnico-mecánica y documentación al día</strong>
+                <span class="item-desc">Los vehículos de servicio público deben someterse a revisiones técnico-mecánicas más rigurosas y frecuentes que los vehículos particulares. Es obligatorio portar la licencia de conducción categoría C, el SOAT vigente, la tarjeta de operación y el certificado de revisión técnico-mecánica. Circular sin esta documentación completa acarrea la inmovilización inmediata del vehículo.</span>
+              </div>
+            </div>
+            <div class="norma-item">
+              <div class="item-icon"><i class="fa-solid fa-users"></i></div>
+              <div class="item-text">
+                <strong class="item-title">Prohibido el sobrecupo y la conducción temeraria</strong>
+                <span class="item-desc">Está terminantemente prohibido transportar pasajeros por encima de la capacidad autorizada del vehículo. El sobrecupo pone en grave riesgo la integridad de los ocupantes y es causal de inmovilización inmediata. Asimismo, la conducción temeraria, el adelantamiento indebido y el exceso de velocidad en servicio público son faltas graves con sanciones severas.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
   </div>
 
 </div>
-
-
 
 <app-footer></app-footer>

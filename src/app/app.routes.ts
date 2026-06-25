@@ -17,6 +17,7 @@ export const routes: Routes = [
   { path: 'sobre-nosotros', loadComponent: () => import('./components/sobre-nosotros/sobre-nosotros').then(m => m.SobreNosotros) },
   { path: 'servicios-footer', loadComponent: () => import('./components/servicios-footer/servicios-footer').then(m => m.ServiciosFooter) },
   { path: 'preguntas-frecuentes', loadComponent: () => import('./components/preguntas-frecuentes/preguntas-frecuentes').then(m => m.PreguntasFrecuentes) },
+  { path: 'password', loadComponent: () => import('./password/password').then(m => m.Password) },
   { path: 'terminos-servicio', loadComponent: () => import('./components/terminos-servicio/terminos-servicio').then(m => m.TerminosServicio) },
   { path: 'politica-privacidad', loadComponent: () => import('./components/politica-privacidad/politica-privacidad').then(m => m.PoliticaPrivacidad) },
   { path: 'aviso-privacidad', loadComponent: () => import('./components/aviso-privacidad/aviso-privacidad').then(m => m.AvisoPrivacidad) },

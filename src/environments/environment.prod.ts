@@ -5,5 +5,8 @@ export const environment = {
   apiScrappi: 'https://scrappi-simit.onrender.com',
   apiSenales: 'https://senales-backend1-1.onrender.com',
   apiIA: 'https://backend-ia-8in0.onrender.com',
-  apiRoute: 'https://reporteloya-backend.onrender.com/api/route'
+  apiRoute: 'https://reporteloya-backend.onrender.com/api/route',
+  recaptcha: {
+    siteKey: '6LfVTzQtAAAAAJG5t5o4gVmBP7x6A0kKAjpllvYC'
+  }
 };

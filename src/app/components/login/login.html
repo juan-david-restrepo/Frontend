@@ -35,6 +35,14 @@
     ¿Olvidaste tu Contraseña?
   </a>
 
+  <p class="recaptcha-notice">
+    Este sitio está protegido por reCAPTCHA y se aplican la
+    <a href="https://policies.google.com/privacy" target="_blank">Política de Privacidad</a>
+    y los
+    <a href="https://policies.google.com/terms" target="_blank">Términos del Servicio</a>
+    de Google.
+  </p>
+
   <button type="submit" class="btn" [disabled]="loading || formLogin.invalid">
     <i *ngIf="loading" class="fa-solid fa-spinner fa-spin"></i>
     <span *ngIf="!loading">Iniciar Sesión <i class="fa-solid fa-arrow-right-to-bracket"></i></span>

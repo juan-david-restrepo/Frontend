@@ -326,3 +326,19 @@ a {
     font-size: 13px;
   }
 }
+
+.recaptcha-notice {
+  font-size: 11px;
+  color: #6b7280;
+  text-align: center;
+  margin: 10px 0;
+}
+
+.recaptcha-notice a {
+  color: #3b82f6;
+  text-decoration: none;
+}
+
+.recaptcha-notice a:hover {
+  text-decoration: underline;
+}

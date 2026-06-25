@@ -11,6 +11,12 @@ import {
 import Swal from 'sweetalert2';
 import { AuthService, AuthUser } from '../../service/auth.service';
 import { Avatar } from '../../service/avatar';
+import { environment } from '../../../environments/environment';
+
+declare const grecaptcha: {
+  ready: (callback: () => void) => void;
+  execute: (siteKey: string, options: { action: string }) => Promise<string>;
+};
 
 @Component({
   selector: 'app-registro',
@@ -34,6 +40,8 @@ export class Registro {
   mostrarContrasena = false;
   mostrarConfirmarContrasena = false;
   loading = false;
+  recaptchaToken = '';
+  formLoadedAt = 0;
 
   get placeholderDocumento(): string {
     return this.tipoDocumentoSeleccionado === 'PASAPORTE' 
@@ -83,8 +91,10 @@ export class Registro {
           Validators.maxLength(10),
         ],
       ],
+      honeypot: [''],
       rol: ['CIUDADANO', Validators.required],
     }, { validators: this.passwordMatchValidator });
+    this.formLoadedAt = Date.now();
   }
 
   passwordMatchValidator(form: FormGroup) {
@@ -162,7 +172,7 @@ export class Registro {
     }
   }
 
-  /** Enviar formulario */
+  /** Enviar formulario con todas las capas de seguridad */
   onSubmit(): void {
     if (this.registroForm.invalid) {
       this.marcarCamposInvalidos();
@@ -184,47 +194,76 @@ export class Registro {
       return;
     }
 
-    const data = {
-      nombreCompleto: this.registroForm.value.nombre,
-      email: this.registroForm.value.correo,
-      password: this.registroForm.value.contrasena,
-      tipoDocumento: this.registroForm.value.tipoDocumento,
-      numeroDocumento: this.registroForm.value.numeroDocumento,
-      rol: this.registroForm.value.rol,
-    };
+    const elapsed = (Date.now() - this.formLoadedAt) / 1000;
+    if (elapsed < 3) {
+      Swal.fire('Demasiado rápido', 'Por favor espera unos segundos antes de enviar el formulario.', 'warning');
+      return;
+    }
+
+    const honeypotValue = this.registroForm.get('honeypot')?.value;
+    if (honeypotValue) {
+      console.warn('Posible bot detectado por honeypot');
+      Swal.fire({
+        icon: 'success',
+        title: '¡Registro exitoso!',
+        text: 'Hemos enviado un correo de verificación.',
+        confirmButtonText: 'Entendido',
+      }).then(() => {
+        this.router.navigate(['/login']);
+      });
+      return;
+    }
 
     this.loading = true;
-    this.authService.register(data).subscribe({
-      next: (response: any) => {
-        this.loading = false;
-        const body = response.body || response;
-        localStorage.setItem('pendingEmail', data.email);
-        
-        Swal.fire({
-          icon: 'success',
-          title: '¡Registro exitoso!',
-          html: `
-            <p>Hemos enviado un correo de verificación a <strong>${data.email}</strong>.</p>
-            <p>Por favor, revisa tu bandeja de entrada y verifica tu correo para activar tu cuenta.</p>
-          `,
-          confirmButtonText: 'Entendido',
-          showCancelButton: true,
-          cancelButtonText: 'Reenviar correo',
-          cancelButtonColor: '#6b7280'
-        }).then((result) => {
-          if (result.isDismissed) {
-            this.reenviarCorreo(data.email);
-          } else {
-            this.router.navigate(['/login']);
-          }
+
+    this.obtenerRecaptchaToken()
+      .then(() => {
+        const data = {
+          nombreCompleto: this.registroForm.value.nombre,
+          email: this.registroForm.value.correo,
+          password: this.registroForm.value.contrasena,
+          tipoDocumento: this.registroForm.value.tipoDocumento,
+          numeroDocumento: this.registroForm.value.numeroDocumento,
+          rol: this.registroForm.value.rol,
+          recaptchaToken: this.recaptchaToken,
+        };
+
+        this.authService.register(data).subscribe({
+          next: (response: any) => {
+            this.loading = false;
+            const body = response.body || response;
+            localStorage.setItem('pendingEmail', data.email);
+
+            Swal.fire({
+              icon: 'success',
+              title: '¡Registro exitoso!',
+              html: `
+                <p>Hemos enviado un correo de verificación a <strong>${data.email}</strong>.</p>
+                <p>Por favor, revisa tu bandeja de entrada y verifica tu correo para activar tu cuenta.</p>
+              `,
+              confirmButtonText: 'Entendido',
+              showCancelButton: true,
+              cancelButtonText: 'Reenviar correo',
+              cancelButtonColor: '#6b7280'
+            }).then((result) => {
+              if (result.isDismissed) {
+                this.reenviarCorreo(data.email);
+              } else {
+                this.router.navigate(['/login']);
+              }
+            });
+          },
+          error: (err) => {
+            this.loading = false;
+            console.error('Error en registro:', err);
+            this.manejarErrorRegistro(err);
+          },
         });
-      },
-      error: (err) => {
+      })
+      .catch(() => {
         this.loading = false;
-        console.error('Error en registro:', err);
-        this.manejarErrorRegistro(err);
-      },
-    });
+        Swal.fire('Error de seguridad', 'No se pudo completar la verificación de seguridad. Por favor, recarga la página e intenta de nuevo.', 'error');
+      });
   }
 
   private manejarErrorRegistro(err: any): void {
@@ -270,6 +309,25 @@ export class Registro {
       icon: 'error',
       title: 'Error al registrar',
       text: mensaje,
+    });
+  }
+
+  /** Obtener token de reCAPTCHA v3 */
+  private obtenerRecaptchaToken(): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      if (typeof grecaptcha === 'undefined' || !environment.recaptcha?.siteKey) {
+        reject(new Error('reCAPTCHA no disponible'));
+        return;
+      }
+      grecaptcha.ready(() => {
+        grecaptcha
+          .execute(environment.recaptcha.siteKey, { action: 'register' })
+          .then((token: string) => {
+            this.recaptchaToken = token;
+            resolve(token);
+          })
+          .catch(reject);
+      });
     });
   }
 

@@ -6,7 +6,13 @@ import { Avatar } from '../../service/avatar';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { switchMap } from 'rxjs/operators';
 import { AuthService, AuthUser } from '../../service/auth.service';
+import { environment } from '../../../environments/environment';
 import Swal from 'sweetalert2';
+
+declare const grecaptcha: {
+  ready: (callback: () => void) => void;
+  execute: (siteKey: string, options: { action: string }) => Promise<string>;
+};
 
 @Component({
   selector: 'app-login',
@@ -19,6 +25,8 @@ export class Login {
   formLogin: FormGroup;
   mostrarPassword = false;
   loading = false;
+  recaptchaToken = '';
+  formLoadedAt = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -29,8 +37,8 @@ export class Login {
     this.formLogin = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
-      
     });
+    this.formLoadedAt = Date.now();
   }
 
   onSubmit(): void {
@@ -44,47 +52,61 @@ export class Login {
       return;
     }
 
-    const { email, password } = this.formLogin.value;
+    const elapsed = (Date.now() - this.formLoadedAt) / 1000;
+    if (elapsed < 2) {
+      Swal.fire('Demasiado rápido', 'Por favor espera unos segundos.', 'warning');
+      return;
+    }
+
     this.loading = true;
 
-    this.authService.login(email, password).pipe(
-      switchMap(() => this.authService.refreshUser())
-    ).subscribe({
-      next: () => {
-        const userId = localStorage.getItem('userId');
-        const userEmail = localStorage.getItem('email');
-        const role = localStorage.getItem('role')?.toUpperCase() || '';
+    this.obtenerRecaptchaToken()
+      .then(() => {
+        const { email, password } = this.formLogin.value;
 
-        this.loading = false;
-        if (!userId) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Usuario o contraseña incorrectos',
-          });
-          return;
-        }
+        this.authService.login(email, password, this.recaptchaToken).pipe(
+          switchMap(() => this.authService.refreshUser())
+        ).subscribe({
+          next: () => {
+            const userId = localStorage.getItem('userId');
+            const userEmail = localStorage.getItem('email');
+            const role = localStorage.getItem('role')?.toUpperCase() || '';
 
-        this.avatarService.loadAvatarForUser(userId);
+            this.loading = false;
+            if (!userId) {
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Usuario o contraseña incorrectos',
+              });
+              return;
+            }
 
-        Swal.fire({
-          icon: 'success',
-          title: 'Bienvenido!',
-          text: 'Inicio de sesión exitoso',
-          timer: 1500,
-          showConfirmButton: false,
+            this.avatarService.loadAvatarForUser(userId);
+
+            Swal.fire({
+              icon: 'success',
+              title: 'Bienvenido!',
+              text: 'Inicio de sesión exitoso',
+              timer: 1500,
+              showConfirmButton: false,
+            });
+
+            if (role === 'CIUDADANO') this.router.navigate(['/home']);
+            else if (role === 'AGENTE') this.router.navigate(['/agente']);
+            else if (role === 'ADMIN') this.router.navigate(['/admin']);
+          },
+          error: (err) => {
+            this.loading = false;
+            console.error('Error login:', err);
+            this.manejarErrorLogin(err);
+          },
         });
-
-        if (role === 'CIUDADANO') this.router.navigate(['/home']);
-        else if (role === 'AGENTE') this.router.navigate(['/agente']);
-        else if (role === 'ADMIN') this.router.navigate(['/admin']);
-      },
-      error: (err) => {
+      })
+      .catch(() => {
         this.loading = false;
-        console.error('Error login:', err);
-        this.manejarErrorLogin(err);
-      },
-    });
+        Swal.fire('Error de seguridad', 'No se pudo completar la verificación de seguridad.', 'error');
+      });
   }
 
   private manejarErrorLogin(err: any): void {
@@ -139,6 +161,24 @@ export class Login {
       if (control?.invalid) {
         control.markAsTouched();
       }
+    });
+  }
+
+  private obtenerRecaptchaToken(): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      if (typeof grecaptcha === 'undefined' || !environment.recaptcha?.siteKey) {
+        reject(new Error('reCAPTCHA no disponible'));
+        return;
+      }
+      grecaptcha.ready(() => {
+        grecaptcha
+          .execute(environment.recaptcha.siteKey, { action: 'login' })
+          .then((token: string) => {
+            this.recaptchaToken = token;
+            resolve(token);
+          })
+          .catch(reject);
+      });
     });
   }
 

@@ -20,8 +20,8 @@ export class ScrollTopComponent implements OnInit {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
-        // Verifica si la ruta actual es '' o 'home'
-        this.showOnHome = event.urlAfterRedirects === '/' || event.urlAfterRedirects === '/home';
+        // Verifica si la ruta actual está permitida
+        this.showOnHome = ['/', '/home', '/normas'].includes(event.urlAfterRedirects);
 
         // Hacemos scroll al top cuando cambiamos de ruta
         window.scrollTo({ top: 0, behavior: 'smooth' });

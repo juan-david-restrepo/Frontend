@@ -109,6 +109,23 @@
     </label>
   </div>
 
+  <input
+    type="text"
+    formControlName="honeypot"
+    class="honeypot-field"
+    tabindex="-1"
+    autocomplete="off"
+    aria-hidden="true"
+  />
+
+  <p class="recaptcha-notice">
+    Este sitio está protegido por reCAPTCHA y se aplican la
+    <a href="https://policies.google.com/privacy" target="_blank">Política de Privacidad</a>
+    y los
+    <a href="https://policies.google.com/terms" target="_blank">Términos del Servicio</a>
+    de Google.
+  </p>
+
   <button type="submit" class="btn-secundary" [disabled]="loading">
     <i *ngIf="loading" class="fa-solid fa-spinner fa-spin"></i>
     <span *ngIf="!loading">Crear cuenta</span>

@@ -31,11 +31,11 @@ export class AuthService {
     this.refreshUser().subscribe(() => this.loading.next(false));
   }
 
-  login(email: string, password: string): Observable<any> {
+  login(email: string, password: string, recaptchaToken?: string): Observable<any> {
     return this.http
       .post(
         `${this.apiUrl}/login`,
-        { email, password },
+        { email, password, ...(recaptchaToken ? { recaptchaToken } : {}) },
         { withCredentials: true },
       )
       .pipe(
