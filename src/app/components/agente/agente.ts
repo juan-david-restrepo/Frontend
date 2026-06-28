@@ -16,8 +16,6 @@ import { AuthService } from '../../service/auth.service';
 import { signal } from '@angular/core';
 import { EstadoReporte, Reporte, Tarea, Notificacion, ReporteAsignado } from './agente.types';
 
-export { EstadoReporte, Reporte, Tarea, Notificacion, ReporteAsignado };
-
 type VistaAgente =
   | 'dashboard' | 'reportes' | 'tareas'
   | 'historial' | 'perfil'   | 'configuracion';
