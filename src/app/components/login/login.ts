@@ -122,7 +122,7 @@ export class Login {
       }
     }
 
-    if (errorMessage.includes('verificar') || errorMessage.includes('correo')) {
+    if ((errorMessage.includes('verificar') || errorMessage.includes('correo')) && !errorMessage.toLowerCase().includes('token')) {
       errorTitle = 'Correo no verificado';
       icon = 'warning';
       Swal.fire({
