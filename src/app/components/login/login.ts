@@ -68,16 +68,15 @@ export class Login {
           switchMap(() => this.authService.refreshUser())
         ).subscribe({
           next: () => {
-            const userId = localStorage.getItem('userId');
-            const userEmail = localStorage.getItem('email');
-            const role = localStorage.getItem('role')?.toUpperCase() || '';
-
             this.loading = false;
+            const userId = this.authService.getUserId();
+            const role = (this.authService.getUserRole() || '').toUpperCase();
+
             if (!userId) {
               Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'Usuario o contraseña incorrectos',
+                text: 'No se pudo obtener el perfil. Intenta de nuevo.',
               });
               return;
             }
