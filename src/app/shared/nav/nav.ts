@@ -37,6 +37,7 @@ export class Nav implements OnInit, OnDestroy {
   currentAvatar = 'assets/images/images (3).png';
   isLoggedIn = false;
   isMobileMenuOpen = false;
+  userRole: string | null = null;
   private activeDropdown: HTMLElement | null = null;
 
   private userId: string | null = null;
@@ -70,6 +71,7 @@ export class Nav implements OnInit, OnDestroy {
         this.userId = user.userId;
         this.email = user.email;
         this.isLoggedIn = true;
+        this.userRole = user.role;
         this.avatarService.loadAvatarForUser(this.userId);
 
         if (user.role === 'CIUDADANO') {
@@ -81,6 +83,7 @@ export class Nav implements OnInit, OnDestroy {
         this.userId = null;
         this.email = null;
         this.isLoggedIn = false;
+        this.userRole = null;
         this.currentAvatar = 'assets/images/images (3).png';
         this.notificaciones = [];
       }

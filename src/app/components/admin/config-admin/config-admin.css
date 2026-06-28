@@ -159,17 +159,54 @@ input:checked + .slider:before { transform: translateX(22px); }
 }
 
 /* ====================================================
-   5. RESPONSIVE (Móvil)
+   5. BOTÓN HAMBURGUESA Y OVERLAY
+   ==================================================== */
+.mobile-menu-btn {
+  display: none;
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 1100;
+  background: #0a2540;
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  font-size: 20px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1050;
+}
+
+/* ====================================================
+   6. RESPONSIVE (Móvil)
    ==================================================== */
 @media (max-width: 768px) {
   .main-content { padding: 20px; }
   .config-card { padding: 20px; }
   .details-grid { grid-template-columns: 1fr; }
-  
+  .mobile-menu-btn { display: flex; }
+
   app-sidebar-admin {
-    position: absolute;
+    position: fixed;
     left: -260px;
-    transition: 0.3s;
+    top: 0;
+    height: 100vh;
+    z-index: 1060;
+    transition: left 0.3s;
+  }
+
+  app-sidebar-admin.active {
+    left: 0;
   }
 }
 

@@ -29,6 +29,12 @@ export const routes: Routes = [
     loadComponent: () => import('./components/subir-reporte/subir-reporte').then(m => m.SubirReporteComponent),
     canActivate: [authGuard]
   },
+
+
+  {
+    path: 'pico-placa',
+    loadComponent: () => import('./components/pico-placa/pico-placa').then(m => m.PicoPlaca),
+  }, 
   {
     path: 'parking',
     loadComponent: () => import('./components/parking/parking').then(m => m.Parking),
@@ -62,7 +68,6 @@ export const routes: Routes = [
   {
     path: 'senales',
     loadComponent: () => import('./components/senales/senales').then(m => m.SenalesComponent),
-    canActivate: [authGuard]
   },
   {
     path: 'reportes-publicos',

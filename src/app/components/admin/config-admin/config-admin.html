@@ -6,9 +6,15 @@
 
 <!-- CONTENEDOR PRINCIPAL -->
 <div class="admin-layout">
-  
+
+  <!-- BOTÓN MENÚ MÓVIL -->
+  <button class="mobile-menu-btn" (click)="menuAbierto = !menuAbierto">☰</button>
+
+  <!-- OVERLAY SEMITRANSPARENTE -->
+  <div class="sidebar-overlay" *ngIf="menuAbierto" (click)="menuAbierto = false"></div>
+
   <!-- SIDEBAR DEL ADMINISTRADOR -->
-  <app-sidebar-admin></app-sidebar-admin>
+  <app-sidebar-admin [class.active]="menuAbierto"></app-sidebar-admin>
 
   <!-- ÁREA DE CONTENIDO PRINCIPAL -->
   <div class="main-content">

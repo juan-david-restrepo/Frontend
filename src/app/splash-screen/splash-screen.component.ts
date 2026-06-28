@@ -53,10 +53,30 @@ export class SplashScreenComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {}
 
   ngAfterViewInit(): void {
-    this.initThreeJS();
-    this.createParticles();
-    this.startAnimation();
+    if (this.isWebGLAvailable()) {
+      this.initThreeJS();
+      this.createParticles();
+      this.startAnimation();
+    }
     this.startGsapTimeline();
+  }
+
+  private isWebGLAvailable(): boolean {
+    try {
+      const canvas = document.createElement('canvas');
+      const gl = canvas.getContext('webgl') as WebGLRenderingContext | null
+             ?? canvas.getContext('experimental-webgl') as WebGLRenderingContext | null;
+      if (!gl) return false;
+      // Confirm the GPU is actually usable, not just sandboxed/disabled
+      const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+      if (debugInfo) {
+        const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) as string;
+        if (!renderer || renderer === 'Disabled') return false;
+      }
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   ngOnDestroy(): void {
@@ -154,6 +174,7 @@ export class SplashScreenComponent implements OnInit, AfterViewInit, OnDestroy {
         this.lastFrameTime = timestamp - (delta % this.FRAME_INTERVAL);
         this.time += delta * 0.001;
 
+        if (!this.renderer) return;
         this.updateParticles();
         this.updateCamera();
         this.renderer.render(this.scene, this.camera);
@@ -301,6 +322,7 @@ export class SplashScreenComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private onResize(): void {
+    if (!this.renderer) return;
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(window.innerWidth, window.innerHeight);

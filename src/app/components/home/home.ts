@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { Nav } from '../../shared/nav/nav';
 import { Footer } from '../../shared/footer/footer';
 import { interval, Subject, Subscription } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { NoticiasComponent } from '../noticias/noticias';
 import { AuthService } from '../../service/auth.service';
 
@@ -208,6 +208,23 @@ export class Home implements OnInit, OnDestroy, AfterViewInit {
   ------------------------------------------- */
 
   ngOnInit() {
+    // Redirigir al panel correspondiente si ya hay sesión activa
+    this.authService.loading$.pipe(
+      filter(loading => !loading),
+      take(1),
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      const role = this.authService.getUserRole();
+      if (role === 'ADMIN') {
+        this.router.navigate(['/admin']);
+        return;
+      }
+      if (role === 'AGENTE') {
+        this.router.navigate(['/agente']);
+        return;
+      }
+    });
+
     this.authService.authState$
       .pipe(takeUntil(this.destroy$))
       .subscribe((state) => { this.isLoggedIn = state; });

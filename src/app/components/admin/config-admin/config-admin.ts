@@ -12,6 +12,7 @@
   FormsModule: Para usar ngModel (two-way binding)
 */
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { SidebarAdmin } from '../sidebar-admin/sidebar-admin';
 import { FormsModule } from '@angular/forms';
@@ -26,7 +27,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './config-admin.html',  // Plantilla HTML
   styleUrls: ['./config-admin.css'],   // Estilos CSS
   standalone: true,                   // Componente independiente
-  imports: [RouterModule, SidebarAdmin, FormsModule]  // Módulos necesarios
+  imports: [CommonModule, RouterModule, SidebarAdmin, FormsModule]
 })
 
 /*========================================================
@@ -35,11 +36,8 @@ import { FormsModule } from '@angular/forms';
 =========================================================*/
 export class ConfigAdminComponent implements OnInit {
 
-  /*------------------ 1. PROPIEDADES PÚBLICAS ------------------
-    Variables accesibles desde la plantilla HTML
-  */
-  
-  fontSizeValue: number = 15;  // Tamaño de fuente actual (default: 15px)
+  menuAbierto = false;
+  fontSizeValue: number = 15;
 
 
   /*------------------ 2. ngOnInit - INICIALIZACIÓN ------------------

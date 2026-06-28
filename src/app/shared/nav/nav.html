@@ -147,15 +147,19 @@
                         <img [src]="currentAvatar" alt="Perfil" class="mobile-avatar">
                         <div class="mobile-profile-info">
                             <span class="mobile-profile-name">Mi Perfil</span>
-                            <a routerLink="/perfil" (click)="closeMobileMenu()" class="mobile-profile-link">Ver
-                                perfil</a>
+                            <a [routerLink]="userRole === 'ADMIN' ? '/admin' : userRole === 'AGENTE' ? '/agente' : '/perfil'"
+                               (click)="closeMobileMenu()" class="mobile-profile-link">
+                                {{ userRole === 'ADMIN' ? 'Ir al panel' : userRole === 'AGENTE' ? 'Ir al panel' : 'Ver perfil' }}
+                            </a>
                         </div>
                     </div>
                     <div class="mobile-profile-menu">
-                        <a routerLink="/perfil" (click)="closeMobileMenu()">
-                            <i class="bx bx-user-circle"></i> Mi Perfil
+                        <a [routerLink]="userRole === 'ADMIN' ? '/admin' : userRole === 'AGENTE' ? '/agente' : '/perfil'"
+                           (click)="closeMobileMenu()">
+                            <i class="bx bx-user-circle"></i>
+                            {{ userRole === 'ADMIN' ? 'Panel Admin' : userRole === 'AGENTE' ? 'Panel Agente' : 'Mi Perfil' }}
                         </a>
-                        <a routerLink="/mensajes" (click)="closeMobileMenu()">
+                        <a routerLink="/mensajes" (click)="closeMobileMenu()" *ngIf="userRole === 'CIUDADANO' || !userRole">
                             <i class="fas fa-bell"></i> Notificaciones
                         </a>
                         <a (click)="logout(); closeMobileMenu()" class="mobile-logout">
@@ -252,25 +256,25 @@
 
             <ul class="menu-list">
                 <li>
-                    <a routerLink="/home" class="menu-item">
+                    <a [routerLink]="userRole === 'ADMIN' ? '/admin' : userRole === 'AGENTE' ? '/agente' : '/home'" class="menu-item">
                         <i class="bx bx-home-alt-2"></i>
                         <span>Inicio</span>
                     </a>
                 </li>
                 <li>
-                    <a routerLink="/perfil" class="menu-item">
+                    <a [routerLink]="userRole === 'ADMIN' ? '/admin' : userRole === 'AGENTE' ? '/agente' : '/perfil'" class="menu-item">
                         <i class="bx bx-user-circle"></i>
-                        <span>Perfil</span>
+                        <span>{{ userRole === 'ADMIN' ? 'Panel Admin' : userRole === 'AGENTE' ? 'Panel Agente' : 'Perfil' }}</span>
                     </a>
                 </li>
 
-                <li>
+                <li *ngIf="userRole === 'CIUDADANO' || !userRole">
                     <a routerLink="/mis-reportes" class="menu-item">
                         <i class="bx bx-file"></i>
                         <span>Mis Reportes</span>
                     </a>
                 </li>
-                <li>
+                <li *ngIf="userRole === 'CIUDADANO' || !userRole">
                     <a routerLink="/mensajes" class="menu-item">
                         <i class="fas fa-bell"></i>
                         <span>Notificaciones</span>
