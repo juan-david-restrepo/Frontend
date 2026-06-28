@@ -617,6 +617,17 @@ export class SubirReporteComponent implements OnInit, OnDestroy {
       const data = await response.json().catch(() => ({}));
 
       // Verifica la respuesta
+      if (response.status === 429) {
+        const errorMsg = data.error || 'Has alcanzado el límite de reportes por día.';
+        await Swal.fire({
+          icon: 'warning',
+          title: 'Límite alcanzado',
+          text: errorMsg,
+          confirmButtonColor: '#f59e0b'
+        });
+        return;
+      }
+
       if (!response.ok) {
         const errorMsg = data.error || 'Error al enviar el reporte';
         throw new Error(errorMsg);
@@ -629,7 +640,7 @@ export class SubirReporteComponent implements OnInit, OnDestroy {
         text: 'Tu reporte ha sido recibido y está pendiente de atención.',
         confirmButtonColor: '#1e40af'
       });
-      
+
       this.resetFormulario();
     } catch (error: any) {
       console.error('Error al enviar reporte:', error);
