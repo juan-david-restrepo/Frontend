@@ -277,8 +277,8 @@ export class ChatBotComponent implements OnInit {
     if (!this.userId || this.userId === 'null' || this.userId === 'undefined') {
       return false;
     }
-    const parsed = parseInt(this.userId, 10);
-    return !isNaN(parsed) && parsed > 0;
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    return uuidRegex.test(this.userId);
   }
 
   private async fetchJson<T>(url: string): Promise<T | null> {
