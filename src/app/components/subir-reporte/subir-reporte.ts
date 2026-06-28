@@ -624,15 +624,28 @@ export class SubirReporteComponent implements OnInit, OnDestroy {
       }
 
       // Envía la petición al servidor
-      let data: any = {};
-      try {
-        data = await firstValueFrom(
-          this.http.post(environment.apiBackend + '/api/reportes/crear', formData, {
-            withCredentials: true,
-          }),
-        );
-      } catch (error: any) { // TODO: tipar
-        const errorMsg = error?.error?.error || error.message || 'Error al enviar el reporte';
+      const response = await fetch(environment.apiBackend + '/api/reportes/crear', {
+        method: 'POST',
+        body: formData,
+        credentials: 'include',
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      // Verifica la respuesta
+      if (response.status === 429) {
+        const errorMsg = data.error || 'Has alcanzado el límite de reportes por día.';
+        await Swal.fire({
+          icon: 'warning',
+          title: 'Límite alcanzado',
+          text: errorMsg,
+          confirmButtonColor: '#f59e0b'
+        });
+        return;
+      }
+
+      if (!response.ok) {
+        const errorMsg = data.error || 'Error al enviar el reporte';
         throw new Error(errorMsg);
       }
 
@@ -643,7 +656,7 @@ export class SubirReporteComponent implements OnInit, OnDestroy {
         text: 'Tu reporte ha sido recibido y está pendiente de atención.',
         confirmButtonColor: '#1e40af'
       });
-      
+
       this.resetFormulario();
     } catch (error: any) { // TODO: tipar
       console.error('Error al enviar reporte:', error);
