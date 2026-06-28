@@ -8,7 +8,7 @@
 <div class="admin-layout">
   
   <!-- BOTÓN MENÚ MÓVIL -->
-  <button class="mobile-menu-btn" (click)="menuAbierto = !menuAbierto">☰</button>
+  <button class="mobile-menu-btn" *ngIf="!menuAbierto" (click)="menuAbierto = true">☰</button>
   
   <!-- OVERLAY SEMITRANSPARENTE -->
   <div class="sidebar-overlay" *ngIf="menuAbierto" (click)="menuAbierto = false"></div>
