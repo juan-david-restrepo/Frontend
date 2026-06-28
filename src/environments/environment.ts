@@ -7,6 +7,6 @@ export const environment = {
   apiIA: 'http://127.0.0.1:8000',
   apiRoute: 'http://localhost:8080/api/route',
   recaptcha: {
-    siteKey: '6LfVTzQtAAAAAJG5t5o4gVmBP7x6A0kKAjpllvYC'
+    siteKey: '6Le7BTstAAAAADPR0hUTMTnFX_hkAbtmDrXubTsB'
   }
 };

@@ -7,6 +7,6 @@ export const environment = {
   apiIA: 'https://backend-ia-8in0.onrender.com',
   apiRoute: 'https://reporteloya-backend.onrender.com/api/route',
   recaptcha: {
-    siteKey: '6LfVTzQtAAAAAJG5t5o4gVmBP7x6A0kKAjpllvYC'
+    siteKey: '6Le7BTstAAAAADPR0hUTMTnFX_hkAbtmDrXubTsB'
   }
 };
