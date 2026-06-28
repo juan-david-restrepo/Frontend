@@ -1,7 +1,7 @@
 import { Component, EventEmitter, HostListener, Input, OnChanges, OnDestroy, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Reporte, EstadoReporte, ReporteAsignado } from '../agente';
+import { Reporte, EstadoReporte, ReporteAsignado } from '../agente.types';
 import { AgenteServiceTs } from '../../../service/agente.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 import * as L from 'leaflet';

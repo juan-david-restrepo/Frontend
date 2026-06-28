@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
-import { Reporte, EstadoReporte } from '../agente';
+import { Reporte, EstadoReporte } from '../agente.types';
 import { CommonModule } from '@angular/common';
 import { AgenteServiceTs } from '../../../service/agente.service';
 

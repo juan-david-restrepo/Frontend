@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { AfterViewInit } from '@angular/core';
 import { Chart } from 'chart.js/auto';
 import { AgenteServiceTs } from '../../../service/agente.service';
-import { Reporte, EstadoReporte, Tarea } from '../agente';
+import { Reporte, EstadoReporte, Tarea } from '../agente.types';
 
 
 @Component({

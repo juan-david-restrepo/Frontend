@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
-import { Tarea } from '../agente';
+import { Tarea } from '../agente.types';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
