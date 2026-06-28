@@ -87,7 +87,7 @@ export class WebsocketService {
 
     this.stompClient = new Client({
       webSocketFactory: () => socket,
-      reconnectDelay: 5000
+      reconnectDelay: 0
     });
 
     this.stompClient.onConnect = () => {

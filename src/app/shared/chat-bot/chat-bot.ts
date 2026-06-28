@@ -304,7 +304,7 @@ export class ChatBotComponent implements OnInit {
 
 async nuevoChat() {
   if (!this.isValidUserId()) {
-    console.warn("userId no válido para nuevo chat");
+    console.debug("chat: sin sesión activa");
     return;
   }
 
@@ -392,7 +392,7 @@ async nuevoChat() {
   // =============================
   async cargarConversaciones() {
     if (!this.isValidUserId()) {
-      console.warn("userId no válido, saltando carga de conversaciones");
+      console.debug("chat: sin sesión activa");
       this.conversaciones = [];
       this.conversacionesCache = [];
       return;
@@ -504,7 +504,7 @@ async nuevoChat() {
     }
 
     if (!this.isValidUserId()) {
-      console.warn("userId no válido para búsqueda");
+      console.debug("chat: sin sesión activa");
       return;
     }
 
