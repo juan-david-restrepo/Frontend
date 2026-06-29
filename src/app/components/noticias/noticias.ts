@@ -1,17 +1,20 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { NoticiasService, Noticia } from './noticias.service';
 import { SanitizeHtmlPipe } from '../../shared/sanitize-html.pipe';
 
 @Component({
   selector: 'app-noticias',
   standalone: true,
-  imports: [CommonModule, SanitizeHtmlPipe],
+  imports: [CommonModule, RouterModule, SanitizeHtmlPipe],
   templateUrl: './noticias.html',
   styleUrls: ['./noticias.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NoticiasComponent implements OnInit {
+
+  @Input() modoPreview = false;
 
   noticias: Noticia[] = [];
   noticiaSeleccionada: Noticia | null = null;
@@ -39,6 +42,14 @@ export class NoticiasComponent implements OnInit {
     return index;
   }
 
+  get noticiasMostradas(): Noticia[] {
+    return this.modoPreview ? this.noticias.slice(0, 4) : this.noticias;
+  }
+
+  get skeletonItems(): number[] {
+    return this.modoPreview ? [1, 2, 3, 4] : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  }
+
   cargarNoticias(pagina: number) {
     this.paginaActual = pagina;
     const start = this.startMap[pagina] ?? 0;
@@ -52,7 +63,9 @@ export class NoticiasComponent implements OnInit {
         this.cdr.markForCheck();
       });
 
-    this.precargarSiguiente(pagina);
+    if (!this.modoPreview) {
+      this.precargarSiguiente(pagina);
+    }
   }
 
   private precargarSiguiente(pagina: number) {
@@ -72,7 +85,10 @@ export class NoticiasComponent implements OnInit {
   }
 
   verDetalle(index: number) {
-    this.noticiaSeleccionada = this.noticias[index];
+    this.noticiaSeleccionada = this.noticiasMostradas[index];
+    if (!this.modoPreview) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 
   volver() {

@@ -1,46 +1,179 @@
-<h1  data-aos="fade-down" data-aos-duration="1000" data-aos-delay="100">Noticias de Tránsito - IDTQ</h1>
+<!-- MODO PÁGINA COMPLETA -->
+<ng-container *ngIf="!modoPreview">
 
-<div *ngIf="cargando && !noticiaSeleccionada" class="spinner-container">
-  <div class="spinner"></div>
-  <p>Cargando noticias...</p>
-</div>
-
-<div *ngIf="!cargando && !noticiaSeleccionada" id="noticias" class="grid">
-
-  <div class="noticia" *ngFor="let n of noticias; let i = index; trackBy: trackByIndex" data-aos="fade-up"
-       data-aos-duration="800"
-       [attr.data-aos-delay]="i * 100">
-    <img *ngIf="n.imagen" [src]="n.imagen" [alt]="n.titulo" loading="lazy" data-aos="zoom-in" data-aos-duration="800">
-    <h3 data-aos="fade-left" data-aos-duration="800">{{ n.titulo }}</h3>
-    <button data-aos="fade-right" data-aos-duration="800" (click)="verDetalle(i)">Ver noticia <span>→</span></button>
+  <!-- HERO HEADER -->
+  <div class="noticias-hero">
+    <div class="noticias-hero-content">
+      <span class="noticias-badge">
+        <i class="fa-solid fa-newspaper"></i> IDTQ
+      </span>
+      <h1>Noticias de Tránsito</h1>
+      <p>Mantente informado con las últimas novedades de la Institución de Tránsito del Quindío</p>
+    </div>
   </div>
 
-</div>
-<div *ngIf="noticiaSeleccionada" id="detalle-noticia"  data-aos="fade-up" data-aos-duration="800">
+  <!-- CONTENIDO -->
+  <div class="noticias-page-wrapper">
 
-  <button data-aos="fade-left" (click)="volver()">⬅ Volver</button>
+    <!-- DETALLE DE NOTICIA -->
+    <div *ngIf="noticiaSeleccionada" class="detalle-page" data-aos="fade-up" data-aos-duration="600">
+      <button class="btn-volver" (click)="volver()">
+        <i class="fa-solid fa-arrow-left"></i> Volver a noticias
+      </button>
+      <div class="detalle-contenido">
+        <img *ngIf="noticiaSeleccionada.imagen"
+             [src]="noticiaSeleccionada.imagen"
+             [alt]="noticiaSeleccionada.titulo"
+             loading="lazy"
+             class="detalle-imagen">
+        <div class="detalle-cuerpo">
+          <p class="detalle-fecha">
+            <i class="fa-solid fa-calendar-days"></i>
+            {{ noticiaSeleccionada.fecha }}
+          </p>
+          <h2 class="detalle-titulo">{{ noticiaSeleccionada.titulo }}</h2>
+          <div class="detalle-html" [innerHTML]="noticiaSeleccionada.contenido | sanitizeHtml"></div>
+        </div>
+      </div>
+    </div>
 
-  <h2 data-aos="fade-down" data-aos-duration="800">{{ noticiaSeleccionada.titulo }}</h2>
-  <p data-aos="fade-right" data-aos-duration="800">{{ noticiaSeleccionada.fecha }}</p>
+    <!-- LISTA DE NOTICIAS -->
+    <ng-container *ngIf="!noticiaSeleccionada">
 
-  <img *ngIf="noticiaSeleccionada.imagen"
-       [src]="noticiaSeleccionada.imagen" loading="lazy" data-aos="zoom-in" data-aos-duration="800">
+      <!-- SKELETON LOADING -->
+      <div *ngIf="cargando" class="noticias-grid">
+        <div class="skeleton-card" *ngFor="let s of skeletonItems">
+          <div class="skeleton-img"></div>
+          <div class="skeleton-body">
+            <div class="skeleton-line largo"></div>
+            <div class="skeleton-line medio"></div>
+            <div class="skeleton-btn"></div>
+          </div>
+        </div>
+      </div>
 
-  <div [innerHTML]="noticiaSeleccionada.contenido | sanitizeHtml" data-aos="fade-up" data-aos-duration="800"></div>
+      <!-- AVISO SERVER DORMIDO -->
+      <div *ngIf="cargando" class="server-notice">
+        <i class="fa-solid fa-clock"></i>
+        El servidor de noticias puede tardar unos segundos en despertar...
+      </div>
 
-</div>
+      <!-- GRID DE NOTICIAS -->
+      <div *ngIf="!cargando" class="noticias-grid">
+        <div class="noticia-card"
+             *ngFor="let n of noticiasMostradas; let i = index; trackBy: trackByIndex"
+             data-aos="fade-up"
+             data-aos-duration="600"
+             [attr.data-aos-delay]="(i % 4) * 80">
+          <div class="noticia-img-wrap">
+            <img *ngIf="n.imagen" [src]="n.imagen" [alt]="n.titulo" loading="lazy">
+            <div *ngIf="!n.imagen" class="noticia-img-placeholder">
+              <i class="fa-solid fa-newspaper"></i>
+            </div>
+          </div>
+          <div class="noticia-body">
+            <p class="noticia-fecha" *ngIf="n.fecha">
+              <i class="fa-solid fa-calendar-days"></i> {{ n.fecha }}
+            </p>
+            <h3 class="noticia-titulo">{{ n.titulo }}</h3>
+            <button class="btn-ver-noticia" (click)="verDetalle(i)">
+              Leer más <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
 
-<div class="paginacion" *ngIf="!noticiaSeleccionada" data-aos="fade-up" data-aos-duration="800">
+      <!-- PAGINACIÓN -->
+      <div *ngIf="!cargando" class="paginacion">
+        <button class="pag-btn" (click)="anterior()" [disabled]="paginaActual === 1">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <button class="pag-btn pag-num"
+          *ngFor="let p of [1,2,3,4,5]"
+          (click)="cargarNoticias(p)"
+          [class.active]="p === paginaActual">
+          {{ p }}
+        </button>
+        <button class="pag-btn" (click)="siguiente()" [disabled]="paginaActual === 5">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
 
-  <button (click)="anterior()">Anterior</button>
+    </ng-container>
+  </div>
+</ng-container>
 
-  <button
-    *ngFor="let p of [1,2,3,4,5]"
-    (click)="cargarNoticias(p)"
-    [class.active]="p === paginaActual">
-    {{ p }}
-  </button>
+<!-- MODO PREVIEW (en home) -->
+<ng-container *ngIf="modoPreview">
+  <div class="preview-wrapper">
+    <div class="preview-header">
+      <div class="preview-header-text">
+        <span class="preview-badge"><i class="fa-solid fa-newspaper"></i> Actualidad</span>
+        <h2>Noticias de Tránsito</h2>
+        <p>Las últimas novedades del IDTQ</p>
+      </div>
+      <a routerLink="/noticias" class="btn-ver-todas">
+        Ver todas <i class="fa-solid fa-arrow-right"></i>
+      </a>
+    </div>
 
-  <button (click)="siguiente()">Siguiente</button>
+    <!-- SKELETON PREVIEW -->
+    <div *ngIf="cargando" class="noticias-grid preview-grid">
+      <div class="skeleton-card" *ngFor="let s of skeletonItems">
+        <div class="skeleton-img"></div>
+        <div class="skeleton-body">
+          <div class="skeleton-line largo"></div>
+          <div class="skeleton-line medio"></div>
+          <div class="skeleton-btn"></div>
+        </div>
+      </div>
+    </div>
 
-</div>
+    <!-- GRID PREVIEW -->
+    <div *ngIf="!cargando && !noticiaSeleccionada" class="noticias-grid preview-grid">
+      <div class="noticia-card"
+           *ngFor="let n of noticiasMostradas; let i = index; trackBy: trackByIndex"
+           data-aos="fade-up"
+           data-aos-duration="600"
+           [attr.data-aos-delay]="i * 80">
+        <div class="noticia-img-wrap">
+          <img *ngIf="n.imagen" [src]="n.imagen" [alt]="n.titulo" loading="lazy">
+          <div *ngIf="!n.imagen" class="noticia-img-placeholder">
+            <i class="fa-solid fa-newspaper"></i>
+          </div>
+        </div>
+        <div class="noticia-body">
+          <p class="noticia-fecha" *ngIf="n.fecha">
+            <i class="fa-solid fa-calendar-days"></i> {{ n.fecha }}
+          </p>
+          <h3 class="noticia-titulo">{{ n.titulo }}</h3>
+          <a routerLink="/noticias" class="btn-ver-noticia">
+            Leer más <i class="fa-solid fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- DETALLE PREVIEW -->
+    <div *ngIf="noticiaSeleccionada" class="detalle-page" data-aos="fade-up">
+      <button class="btn-volver" (click)="volver()">
+        <i class="fa-solid fa-arrow-left"></i> Volver
+      </button>
+      <div class="detalle-contenido">
+        <img *ngIf="noticiaSeleccionada.imagen" [src]="noticiaSeleccionada.imagen" loading="lazy" class="detalle-imagen">
+        <div class="detalle-cuerpo">
+          <p class="detalle-fecha"><i class="fa-solid fa-calendar-days"></i> {{ noticiaSeleccionada.fecha }}</p>
+          <h2 class="detalle-titulo">{{ noticiaSeleccionada.titulo }}</h2>
+          <div class="detalle-html" [innerHTML]="noticiaSeleccionada.contenido | sanitizeHtml"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VER TODAS (footer preview) -->
+    <div *ngIf="!cargando && !noticiaSeleccionada" class="preview-footer">
+      <a routerLink="/noticias" class="btn-ver-todas-grande">
+        <i class="fa-solid fa-newspaper"></i> Ver todas las noticias
+      </a>
+    </div>
+  </div>
+</ng-container>
