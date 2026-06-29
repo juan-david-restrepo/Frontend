@@ -40,12 +40,13 @@ export class SplashScreenComponent implements OnInit, AfterViewInit, OnDestroy {
   private instancedMesh!: THREE.InstancedMesh;
   private animationId!: number;
 
-  private readonly PARTICLE_COUNT = 150;
+  private readonly isMobile = window.innerWidth <= 768 || ('ontouchstart' in window);
+  private readonly PARTICLE_COUNT = this.isMobile ? 60 : 150;
   private readonly dummy = new THREE.Object3D();
 
   private time = 0;
   private lastFrameTime = 0;
-  private readonly TARGET_FPS = 60;
+  private readonly TARGET_FPS = this.isMobile ? 30 : 60;
   private readonly FRAME_INTERVAL = 1000 / this.TARGET_FPS;
 
   constructor(private ngZone: NgZone) {}
@@ -53,7 +54,7 @@ export class SplashScreenComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {}
 
   ngAfterViewInit(): void {
-    if (this.isWebGLAvailable()) {
+    if (!this.isMobile && this.isWebGLAvailable()) {
       this.initThreeJS();
       this.createParticles();
       this.startAnimation();
@@ -216,6 +217,7 @@ export class SplashScreenComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private startGsapTimeline(): void {
+    const m = this.isMobile;
     const tl = gsap.timeline({
       onComplete: () => this.onAnimationComplete(),
     });
@@ -224,101 +226,50 @@ export class SplashScreenComponent implements OnInit, AfterViewInit, OnDestroy {
     gsap.set('.bg-gradient', { opacity: 0, scale: 1.1 });
     gsap.set('.particle-canvas', { opacity: 0 });
     gsap.set('.logo-fragment', {
-      opacity: 0,
-      scale: 0,
-      x: () => Math.random() * 100 - 50,
-      y: () => Math.random() * 100 - 50,
+      opacity: 0, scale: 0,
+      x: () => Math.random() * 60 - 30,
+      y: () => Math.random() * 60 - 30,
     });
-    gsap.set('.logo-core', {
-      opacity: 0,
-      scale: 0,
-      filter: 'blur(20px)',
-    });
+    gsap.set('.logo-core', { opacity: 0, scale: 0, ...(m ? {} : { filter: 'blur(20px)' }) });
     gsap.set('.logo-glow-ring', { opacity: 0, scale: 0 });
     gsap.set('.energy-ring', { opacity: 0, scale: 0 });
     gsap.set('.orbit-ring', { opacity: 0, scale: 0 });
-    gsap.set('.title-char', {
-      opacity: 0,
-      y: 40,
-      filter: 'blur(8px)',
-    });
-    gsap.set('.tagline', { opacity: 0, y: 20, filter: 'blur(5px)' });
-    gsap.set('.subtitle', { opacity: 0, y: 15 });
+    gsap.set('.title-char', { opacity: 0, y: 30, ...(m ? {} : { filter: 'blur(8px)' }) });
+    gsap.set('.tagline', { opacity: 0, y: 15, ...(m ? {} : { filter: 'blur(5px)' }) });
+    gsap.set('.subtitle', { opacity: 0, y: 10 });
     gsap.set('.scan-line', { scaleX: 0, opacity: 0 });
     gsap.set('.corner-frame', { opacity: 0, scale: 0.5 });
 
-    tl.to('.bg-gradient', { opacity: 1, scale: 1, duration: 0.8, ease: 'power2.out' }, 0);
-
-    tl.to('.particle-canvas', { opacity: 1, duration: 0.6, ease: 'power2.out' }, 0.2);
-
-    tl.to('.scan-line', { scaleX: 1, opacity: 0.5, duration: 0.5, ease: 'power2.out' }, 0.4);
-
-    tl.to(
-      '.corner-frame',
-      { opacity: 1, scale: 1, duration: 0.6, stagger: 0.08, ease: 'back.out(1.5)' },
-      0.6,
-    );
-
-    tl.to('.logo-glow-ring', { opacity: 1, scale: 1, duration: 1.5, ease: 'power2.out' }, 0.5);
-
-    tl.to(
-      '.logo-fragment',
-      {
-        opacity: 1,
-        scale: 1,
-        x: 0,
-        y: 0,
-        duration: 0.6,
-        stagger: { each: 0.05, from: 'random' },
-        ease: 'back.out(1.2)',
-      },
-      0.6,
-    );
-
-    tl.to('.energy-ring', { opacity: 1, scale: 1, duration: 0.6, ease: 'power2.out' }, 0.9);
-
-    tl.to(
-      '.orbit-ring',
-      { opacity: 0.5, scale: 1, duration: 0.6, stagger: 0.08, ease: 'back.out(1.5)' },
-      0.9,
-    );
-
-    tl.to(
-      '.logo-core',
-      { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 0.8, ease: 'power2.out' },
-      1,
-    );
-
-    tl.to(
-      '.title-char',
-      {
-        opacity: 1,
-        y: 0,
-        filter: 'blur(0px)',
-        duration: 0.4,
-        stagger: { each: 0.05, from: 'start' },
-        ease: 'power2.out',
-      },
-      1.4,
-    );
-
-    tl.to('.tagline', { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.4, ease: 'power2.out' }, 1.8);
-
-    tl.to('.subtitle', { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, 2);
-
-    tl.to('.splash-container', { scale: 1.01, duration: 0.5, ease: 'power2.inOut' }, 3.5);
-
-    tl.to(
-      '.splash-container',
-      {
-        opacity: 0,
-        scale: 1.1,
-        filter: 'blur(20px)',
-        duration: 0.6,
-        ease: 'power2.in',
-      },
-      3.8,
-    );
+    tl.to('.bg-gradient', { opacity: 1, scale: 1, duration: 0.6, ease: 'power2.out' }, 0);
+    tl.to('.particle-canvas', { opacity: 1, duration: 0.5, ease: 'power2.out' }, 0.2);
+    tl.to('.scan-line', { scaleX: 1, opacity: 0.5, duration: 0.4, ease: 'power2.out' }, 0.3);
+    tl.to('.corner-frame', { opacity: 1, scale: 1, duration: 0.5, stagger: 0.07, ease: 'back.out(1.5)' }, 0.5);
+    tl.to('.logo-glow-ring', { opacity: m ? 0.5 : 1, scale: 1, duration: 1, ease: 'power2.out' }, 0.4);
+    tl.to('.logo-fragment', {
+      opacity: 1, scale: 1, x: 0, y: 0, duration: 0.5,
+      stagger: { each: 0.04, from: 'random' }, ease: 'back.out(1.2)',
+    }, 0.5);
+    tl.to('.energy-ring', { opacity: m ? 0.4 : 1, scale: 1, duration: 0.5, ease: 'power2.out' }, 0.8);
+    tl.to('.orbit-ring', { opacity: m ? 0.3 : 0.5, scale: 1, duration: 0.5, stagger: 0.07, ease: 'back.out(1.5)' }, 0.8);
+    tl.to('.logo-core', {
+      opacity: 1, scale: 1, duration: 0.7, ease: 'power2.out',
+      ...(m ? {} : { filter: 'blur(0px)' }),
+    }, 0.9);
+    tl.to('.title-char', {
+      opacity: 1, y: 0, duration: 0.35,
+      stagger: { each: 0.04, from: 'start' }, ease: 'power2.out',
+      ...(m ? {} : { filter: 'blur(0px)' }),
+    }, 1.3);
+    tl.to('.tagline', {
+      opacity: 1, y: 0, duration: 0.35, ease: 'power2.out',
+      ...(m ? {} : { filter: 'blur(0px)' }),
+    }, 1.7);
+    tl.to('.subtitle', { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, 1.9);
+    tl.to('.splash-container', { scale: 1.01, duration: 0.4, ease: 'power2.inOut' }, 3.3);
+    tl.to('.splash-container', {
+      opacity: 0, scale: 1.05, duration: 0.5, ease: 'power2.in',
+      ...(m ? {} : { filter: 'blur(20px)' }),
+    }, 3.6);
   }
 
   private onResize(): void {

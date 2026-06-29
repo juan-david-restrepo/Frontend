@@ -359,6 +359,14 @@
 }
 
 @media (max-width: 768px) {
+  /* Desactivar animaciones CSS pesadas en mobile */
+  .logo-glow-ring { animation: none !important; }
+  .energy-ring::before,
+  .energy-ring::after { animation: none !important; }
+  .orbit-ring { animation: none !important; }
+  .logo-img { animation: none !important; }
+  .corner-dot { animation: none !important; }
+
   .logo-container { width: 240px; height: 240px; }
   .logo-img { max-width: 130px; max-height: 130px; }
   .logo-glow-ring { width: 220px; height: 220px; }
