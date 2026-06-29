@@ -63,7 +63,9 @@ export class GestionAgentes implements OnInit, OnDestroy {
   agente: Agente | null = null;   // Datos del agente encontrado (null si no hay búsqueda)
   reportes: Reporte[] = [];       // Lista de reportes del agente
   tareas: Tarea[] = [];           // Lista de tareas del agente
-  
+  listaAgentes: Agente[] = [];    // Lista de todos los agentes para selección rápida
+  cargandoLista = false;
+
   /*------------------ ESTADOS DE INTERFAZ ------------------
     Controlan qué se muestra en pantalla
   */
@@ -202,6 +204,7 @@ export class GestionAgentes implements OnInit, OnDestroy {
     // Carga configuraciones guardadas
     this.loadSettings();
     this.setFechaMinima();
+    this.cargarListaAgentes();
     
     // Conecta al servicio WebSocket como administrador
     this.websocketService.connect('admin');
@@ -269,6 +272,25 @@ export class GestionAgentes implements OnInit, OnDestroy {
   /*------------------ 9. BÚSQUEDA DE AGENTES ------------------
     Métodos para buscar y obtener datos de un agente
   */
+
+  cargarListaAgentes(): void {
+    this.cargandoLista = true;
+    this.adminService.obtenerAgentes().subscribe({
+      next: (data) => {
+        this.listaAgentes = data;
+        this.cargandoLista = false;
+      },
+      error: () => { this.cargandoLista = false; }
+    });
+  }
+
+  seleccionarAgenteDeLista(agente: Agente): void {
+    this.placaBuscada = agente.placa;
+    this.buscarAgente();
+    setTimeout(() => {
+      document.querySelector('.agente-info')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 600);
+  }
 
   // Busca un agente por su número de placa
   buscarAgente(): void {

@@ -48,7 +48,38 @@
       <p class="cargando" *ngIf="cargando">Buscando agente...</p>
     </div>
 
-    <!-- ==================== 2. CREAR AGENTE ==================== -->
+    <!-- ==================== 2. LISTA RÁPIDA DE AGENTES ==================== -->
+    <div class="card lista-agentes-card">
+      <h2>Agentes registrados</h2>
+
+      <p class="cargando" *ngIf="cargandoLista">Cargando agentes...</p>
+
+      <p class="mensaje-vacio" *ngIf="!cargandoLista && listaAgentes.length === 0">
+        No hay agentes registrados.
+      </p>
+
+      <div class="agentes-grid" *ngIf="!cargandoLista && listaAgentes.length > 0">
+        <button
+          class="agente-chip"
+          *ngFor="let a of listaAgentes"
+          (click)="seleccionarAgenteDeLista(a)"
+          [class.activo]="agente?.placa === a.placa"
+          type="button">
+          <img
+            class="chip-foto"
+            [src]="a.foto || 'assets/images/images (3).png'"
+            [alt]="a.nombre"
+            (error)="$any($event.target).src='assets/images/images (3).png'" />
+          <div class="chip-info">
+            <span class="chip-nombre">{{ a.nombre }}</span>
+            <span class="chip-placa">{{ a.placa }}</span>
+          </div>
+          <span class="chip-estado" [ngClass]="getClaseEstado(a.estado)">{{ a.estado }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ==================== 3. CREAR AGENTE ==================== -->
     <div class="card">
       <button class="btn-crear-agente" (click)="toggleCrearAgente()">
         <i class="fa-solid fa-plus"></i> {{ mostrarCrearAgente ? 'Cancelar' : 'Crear nuevo agente' }}
