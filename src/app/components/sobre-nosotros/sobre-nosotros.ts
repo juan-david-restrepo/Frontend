@@ -17,11 +17,11 @@ export class SobreNosotros implements OnInit, AfterViewInit {
   activeTab: 'mision' | 'vision' | 'equipo' = 'mision';
 
   equipo = [
-    { nombre: 'Nombre 1', rol: 'Líder de Proyecto', imagen: 'assets/images/equipo1.jpg' },
-    { nombre: 'Nombre 2', rol: 'Desarrollador Full Stack', imagen: 'assets/images/equipo2.jpg' },
-    { nombre: 'Nombre 3', rol: 'Diseñador UI/UX', imagen: 'assets/images/equipo3.jpg' },
-    { nombre: 'Nombre 4', rol: 'Analista de Datos', imagen: 'assets/images/equipo4.jpg' },
-    { nombre: 'Nombre 5', rol: 'Especialista en Seguridad', imagen: 'assets/images/equipo5.jpg' },
+    { nombre: 'Juan David Restrepo Betancur', rol: 'Desarrollador Full Stack', imagen: 'assets/images/equipo1.jpg' },
+    { nombre: 'Juan Jose Cardenas', rol: 'Desarrollador Full Stack', imagen: 'assets/images/equipo2.jpg' },
+    { nombre: 'Miguel Angel Reyes', rol: 'Desarrollador', imagen: 'assets/images/equipo3.jpg' },
+    { nombre: 'Juan Mateo Salgado', rol: 'Desarrollador backend', imagen: 'assets/images/equipo4.jpg' },
+    { nombre: 'Michael Londoño', rol: 'Documentacion', imagen: 'assets/images/equipo5.jpg' },
   ];
 
   constructor(private route: ActivatedRoute) {}
