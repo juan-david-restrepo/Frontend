@@ -161,14 +161,14 @@ export class Home implements OnInit, OnDestroy, AfterViewInit {
       image: 'https://res.cloudinary.com/dcmdvvxv5/image/upload/v1782695567/principal_yppt4q.png',
       text: `"La seguridad vial empieza contigo.<br>
               Reporta, participa, mejora tu ciudad."`,
-      buttonText: 'SUBIR RESPORTE',
+      buttonText: 'SUBIR REPORTE',
       buttonLink: '/subir-reporte',
     },
     {
       image: 'https://res.cloudinary.com/dcmdvvxv5/image/upload/v1782695621/secundario_gpajzn.png',
       text: `"Reporta infracciones fácilmente.<br>
               Solo sube una foto o video."`,
-      buttonText: 'REPORTES PUBLICOS',
+      buttonText: 'REPORTES PÚBLICOS',
       buttonLink: '/reportes-publicos',
     },
     {
@@ -177,6 +177,20 @@ export class Home implements OnInit, OnDestroy, AfterViewInit {
               Cada reporte cuenta."`,
       buttonText: 'MIS REPORTES',
       buttonLink: '/mis-reportes',
+    },
+    {
+      image: 'https://res.cloudinary.com/dcmdvvxv5/image/upload/v1782697718/se%C3%B1ales-de-transito_h1si4p.webp',
+      text: `"Aprende las señales de tránsito.<br>
+              Conduce con seguridad y conocimiento."`,
+      buttonText: 'VER SEÑALES',
+      buttonLink: '/senales',
+    },
+    {
+      image: 'https://res.cloudinary.com/dcmdvvxv5/image/upload/v1782697830/hq720_ahso2e.jpg',
+      text: `"Mantente informado.<br>
+              Noticias de tránsito del Quindío."`,
+      buttonText: 'VER NOTICIAS',
+      buttonLink: '/noticias',
     },
   ];
 
