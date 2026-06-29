@@ -39,13 +39,13 @@ export class Home implements OnInit, OnDestroy, AfterViewInit {
       title: 'Reporta una Foto Multa',
       description:
         'Sube evidencias de infracciones y contribuye a mejorar la movilidad en tu ciudad.',
-      image: 'assets/images/foto_multaslegales_carroya.webp',
+      image: 'https://res.cloudinary.com/dcmdvvxv5/image/upload/v1782695880/foto_multaslegales_carroya_pj4ilo.webp',
     },
     'consulta-multas': {
       title: 'Consulta tus Multas',
       description:
         'Revisa fácilmente el estado de tus infracciones de tránsito.',
-      image: 'assets/images/multas-de-transito.webp',
+      image: 'https://res.cloudinary.com/dcmdvvxv5/image/upload/v1782695914/multas-de-transito_avvwi8.webp',
     },
     'pico-placa': {
       title: 'Consulta del Pico y Placa',
