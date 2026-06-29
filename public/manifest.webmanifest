@@ -2,8 +2,8 @@
   "name": "Reportelo!",
   "short_name": "Reportelo",
   "description": "Reporta incidentes viales y ciudadanos de tu ciudad",
-  "theme_color": "#1565C0",
-  "background_color": "#ffffff",
+  "theme_color": "#0a0e1a",
+  "background_color": "#0a0e1a",
   "display": "standalone",
   "scope": "/",
   "start_url": "/",
@@ -20,7 +20,7 @@
       "src": "assets/images/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "any"
     }
   ]
 }
