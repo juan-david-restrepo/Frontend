@@ -57,11 +57,21 @@
       <!-- AVISO SERVER DORMIDO -->
       <div *ngIf="cargando" class="server-notice">
         <i class="fa-solid fa-clock"></i>
-        El servidor de noticias puede tardar unos segundos en despertar...
+        {{ mensajeEspera }}
+      </div>
+
+      <!-- ERROR STATE -->
+      <div *ngIf="hayError && !cargando" class="error-state">
+        <div class="error-icon"><i class="fa-solid fa-satellite-dish"></i></div>
+        <h3>El servidor no respondió</h3>
+        <p>El servidor de noticias estaba dormido y no pudo despertar a tiempo. Intenta de nuevo.</p>
+        <button class="btn-reintentar" (click)="reintentar()">
+          <i class="fa-solid fa-rotate-right"></i> Reintentar
+        </button>
       </div>
 
       <!-- GRID DE NOTICIAS -->
-      <div *ngIf="!cargando" class="noticias-grid">
+      <div *ngIf="!cargando && !hayError" class="noticias-grid">
         <div class="noticia-card"
              *ngFor="let n of noticiasMostradas; let i = index; trackBy: trackByIndex"
              data-aos="fade-up"
@@ -86,7 +96,7 @@
       </div>
 
       <!-- PAGINACIÓN -->
-      <div *ngIf="!cargando" class="paginacion">
+      <div *ngIf="!cargando && !hayError" class="paginacion">
         <button class="pag-btn" (click)="anterior()" [disabled]="paginaActual === 1">
           <i class="fa-solid fa-chevron-left"></i>
         </button>

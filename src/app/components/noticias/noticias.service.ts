@@ -27,11 +27,7 @@ export class NoticiasService {
     }
 
     return this.http.get<Noticia[]>(`${this.API}/api/noticias?start=${start}`).pipe(
-      tap(data => this.cache.set(pagina, data)),
-      catchError(err => {
-        console.error('Error al obtener noticias:', err);
-        return of([]);
-      })
+      tap(data => this.cache.set(pagina, data))
     );
   }
 

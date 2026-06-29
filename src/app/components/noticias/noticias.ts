@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NoticiasService, Noticia } from './noticias.service';
@@ -13,7 +13,7 @@ import { Nav } from '../../shared/nav/nav';
   styleUrls: ['./noticias.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NoticiasComponent implements OnInit {
+export class NoticiasComponent implements OnInit, OnDestroy {
 
   @Input() modoPreview = false;
 
@@ -21,13 +21,16 @@ export class NoticiasComponent implements OnInit {
   noticiaSeleccionada: Noticia | null = null;
   paginaActual = 1;
   cargando = false;
+  hayError = false;
+  intentoActual = 0;
+  readonly maxIntentos = 3;
+
+  private retryTimer?: ReturnType<typeof setTimeout>;
+  private pendingStart = 0;
+  private pendingPagina = 1;
 
   startMap: Record<number, number> = {
-    1: 0,
-    2: 12,
-    3: 24,
-    4: 36,
-    5: 48
+    1: 0, 2: 12, 3: 24, 4: 36, 5: 48
   };
 
   constructor(
@@ -37,6 +40,10 @@ export class NoticiasComponent implements OnInit {
 
   ngOnInit() {
     this.cargarNoticias(1);
+  }
+
+  ngOnDestroy() {
+    clearTimeout(this.retryTimer);
   }
 
   trackByIndex(index: number): number {
@@ -51,29 +58,59 @@ export class NoticiasComponent implements OnInit {
     return this.modoPreview ? [1, 2, 3, 4] : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   }
 
+  get mensajeEspera(): string {
+    if (this.intentoActual === 1) return 'El servidor está despertando, esto puede tardar unos segundos...';
+    return `Reintentando... (${this.intentoActual} de ${this.maxIntentos})`;
+  }
+
   cargarNoticias(pagina: number) {
+    clearTimeout(this.retryTimer);
     this.paginaActual = pagina;
-    const start = this.startMap[pagina] ?? 0;
+    this.pendingStart = this.startMap[pagina] ?? 0;
+    this.pendingPagina = pagina;
     this.cargando = true;
+    this.hayError = false;
+    this.intentoActual = 0;
+    this.cdr.markForCheck();
+    this.intentarCarga();
+  }
+
+  private intentarCarga() {
+    this.intentoActual++;
     this.cdr.markForCheck();
 
-    this.noticiasService.obtenerNoticias(start, pagina)
-      .subscribe(data => {
+    this.noticiasService.obtenerNoticias(this.pendingStart, this.pendingPagina).subscribe({
+      next: (data) => {
         this.noticias = data;
         this.cargando = false;
+        this.hayError = false;
+        if (!this.modoPreview) this.precargarSiguiente(this.pendingPagina);
         this.cdr.markForCheck();
-      });
+      },
+      error: () => {
+        if (this.intentoActual < this.maxIntentos) {
+          this.retryTimer = setTimeout(() => {
+            this.intentarCarga();
+          }, 8000);
+          this.cdr.markForCheck();
+        } else {
+          this.cargando = false;
+          this.hayError = true;
+          this.cdr.markForCheck();
+        }
+      }
+    });
+  }
 
-    if (!this.modoPreview) {
-      this.precargarSiguiente(pagina);
-    }
+  reintentar() {
+    this.cargarNoticias(this.paginaActual);
   }
 
   private precargarSiguiente(pagina: number) {
     const siguiente = pagina + 1;
     if (siguiente <= 5) {
       const start = this.startMap[siguiente];
-      this.noticiasService.obtenerNoticias(start, siguiente).subscribe();
+      this.noticiasService.obtenerNoticias(start, siguiente).subscribe({ error: () => {} });
     }
   }
 
