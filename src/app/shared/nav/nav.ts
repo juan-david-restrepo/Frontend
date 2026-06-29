@@ -276,7 +276,7 @@ export class Nav implements OnInit, OnDestroy {
     this.authService.logout().subscribe({
       next: () => {
         this.currentAvatar = 'assets/images/images (3).png';
-        this.router.navigate(['/login'], { replaceUrl: true });
+        this.router.navigate(['/home'], { replaceUrl: true });
       },
       error: (err) => {
         console.error('Error al cerrar sesión', err);

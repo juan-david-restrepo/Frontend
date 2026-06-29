@@ -90,8 +90,8 @@ export class App implements OnInit, OnDestroy {
     this.showIdleModal = false;
 
     this.authService.logout().subscribe({
-      complete: () => this.router.navigate(['/login']),
-      error: () => this.router.navigate(['/login'])
+      complete: () => this.router.navigate(['/home']),
+      error: () => this.router.navigate(['/home'])
     });
   }
 
