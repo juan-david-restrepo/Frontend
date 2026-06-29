@@ -71,11 +71,6 @@
                     <i class='bx bx-chevron-right'></i>
                 </button>
 
-                <!-- NOTICIAS -->
-                <a class="menu-item" routerLinkActive="active" routerLink="/noticias" (click)="closeMobileMenu()">
-                    <i class="fa-solid fa-newspaper"></i> Noticias
-                </a>
-
                 <!-- REPORTES -->
                 <div class="menu-item-container" routerLinkActive="active">
                     <a class="menu-item" (click)="toggleDropdown($event)">
@@ -128,6 +123,10 @@
                         <div class="dropdown-section">
                             <a routerLink="/puntos-atencion" (click)="closeMobileMenu()">Puntos de Atención</a>
                             <p>Direcciones y horarios de atención</p>
+                        </div>
+                        <div class="dropdown-section">
+                            <a routerLink="/noticias" (click)="closeMobileMenu()">Noticias</a>
+                            <p>Últimas novedades del IDTQ</p>
                         </div>
                     </div>
                 </div>
