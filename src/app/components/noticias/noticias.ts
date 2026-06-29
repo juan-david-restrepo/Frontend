@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NoticiasService, Noticia } from './noticias.service';
 import { SanitizeHtmlPipe } from '../../shared/sanitize-html.pipe';
+import { Nav } from '../../shared/nav/nav';
 
 @Component({
   selector: 'app-noticias',
   standalone: true,
-  imports: [CommonModule, RouterModule, SanitizeHtmlPipe],
+  imports: [CommonModule, RouterModule, SanitizeHtmlPipe, Nav],
   templateUrl: './noticias.html',
   styleUrls: ['./noticias.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
