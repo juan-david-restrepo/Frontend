@@ -560,6 +560,13 @@
   }
 }
 
+@media (max-width: 1024px) {
+  /* nav pasa a hamburguesa ~54px de alto */
+  .noticias-hero {
+    padding-top: 110px;
+  }
+}
+
 @media (max-width: 900px) {
   .noticias-grid,
   .preview-grid {
@@ -580,9 +587,19 @@
   }
 }
 
+@media (max-width: 768px) {
+  /* nav con padding 8px + logo 45px ≈ 61px */
+  .noticias-hero {
+    padding-top: 100px;
+  }
+}
+
 @media (max-width: 600px) {
   .noticias-hero {
-    padding: 56px 20px 40px;
+    padding-top: 95px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 40px;
   }
 
   .noticias-grid,
