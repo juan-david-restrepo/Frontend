@@ -158,21 +158,21 @@ export class Home implements OnInit, OnDestroy, AfterViewInit {
 
   headerSlides = [
     {
-      image: 'assets/images/principal.png',
-      text: `"La seguridad vial empieza contigo.<br> 
+      image: 'https://res.cloudinary.com/dcmdvvxv5/image/upload/v1782695567/principal_yppt4q.png',
+      text: `"La seguridad vial empieza contigo.<br>
               Reporta, participa, mejora tu ciudad."`,
       buttonText: 'SUBIR RESPORTE',
       buttonLink: '/subir-reporte',
     },
     {
-      image: 'assets/images/secundario.png',
+      image: 'https://res.cloudinary.com/dcmdvvxv5/image/upload/v1782695621/secundario_gpajzn.png',
       text: `"Reporta infracciones fácilmente.<br>
               Solo sube una foto o video."`,
       buttonText: 'REPORTES PUBLICOS',
       buttonLink: '/reportes-publicos',
     },
     {
-      image: 'assets/images/Armenia.webp',
+      image: 'https://res.cloudinary.com/dcmdvvxv5/image/upload/v1782695588/Armenia_rmu7c8.webp',
       text: `"Mejora tu ciudad.<br>
               Cada reporte cuenta."`,
       buttonText: 'MIS REPORTES',
