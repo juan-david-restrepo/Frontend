@@ -104,14 +104,21 @@ export class Login {
       })
       .catch(() => {
         this.loading = false;
-        Swal.fire('Error de seguridad', 'No se pudo completar la verificación de seguridad.', 'error');
+        Swal.fire({
+          icon: 'warning',
+          title: 'Algo salió mal',
+          text: 'Hubo un problema al procesar tu solicitud. Por favor recarga la página e intenta de nuevo.',
+          confirmButtonText: 'Recargar página',
+          showCancelButton: true,
+          cancelButtonText: 'Cancelar',
+        }).then((result) => {
+          if (result.isConfirmed) window.location.reload();
+        });
       });
   }
 
   private manejarErrorLogin(err: any): void {
-    let errorMessage = 'Credenciales incorrectas';
-    let errorTitle = 'Error al iniciar sesión';
-    let icon: 'error' | 'warning' = 'error';
+    let errorMessage = '';
 
     if (err.error) {
       if (typeof err.error === 'string') {
@@ -121,13 +128,34 @@ export class Login {
       }
     }
 
-    if ((errorMessage.includes('verificar') || errorMessage.includes('correo')) && !errorMessage.toLowerCase().includes('token')) {
-      errorTitle = 'Correo no verificado';
-      icon = 'warning';
+    // reCAPTCHA falló: el ciudadano no tiene que saber qué es eso
+    if (
+      errorMessage.includes('seguridad') ||
+      errorMessage.includes('humano') ||
+      errorMessage.includes('reCAPTCHA')
+    ) {
       Swal.fire({
-        icon: icon,
-        title: errorTitle,
-        html: `<p>${errorMessage}</p><p>¿Deseas reenviar el correo de verificación?</p>`,
+        icon: 'warning',
+        title: 'Algo salió mal',
+        text: 'Hubo un problema al procesar tu solicitud. Por favor recarga la página e intenta de nuevo.',
+        confirmButtonText: 'Recargar página',
+        showCancelButton: true,
+        cancelButtonText: 'Cancelar',
+      }).then((result) => {
+        if (result.isConfirmed) window.location.reload();
+      });
+      return;
+    }
+
+    // Correo no verificado
+    if (
+      (errorMessage.includes('verificar') || errorMessage.includes('verificación')) &&
+      !errorMessage.toLowerCase().includes('token')
+    ) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Correo sin verificar',
+        html: `<p>Debes confirmar tu correo electrónico antes de ingresar.</p><p>¿Quieres que te reenviemos el enlace de confirmación?</p>`,
         showCancelButton: true,
         confirmButtonText: 'Reenviar correo',
         cancelButtonText: 'Cancelar',
@@ -139,18 +167,33 @@ export class Login {
       return;
     }
 
-    if (errorMessage.includes('correo') && errorMessage.includes('no existe')) {
+    // Correo no registrado
+    if (errorMessage.includes('no existe') || errorMessage.includes('No existe')) {
       this.formLogin.get('email')?.setErrors({ notFound: true });
+      Swal.fire({
+        icon: 'error',
+        title: 'Correo no encontrado',
+        text: 'No encontramos una cuenta con ese correo. Revísalo o regístrate.',
+      });
+      return;
     }
 
-    if (errorMessage.includes('contraseña') && (errorMessage.includes('incorrecta') || errorMessage.includes('inválida'))) {
+    // Contraseña incorrecta
+    if (errorMessage.includes('contraseña') || errorMessage.includes('Contraseña')) {
       this.formLogin.get('password')?.setErrors({ incorrect: true });
+      Swal.fire({
+        icon: 'error',
+        title: 'Contraseña incorrecta',
+        text: 'La contraseña que ingresaste no es correcta. Inténtalo de nuevo.',
+      });
+      return;
     }
 
+    // Fallback genérico
     Swal.fire({
-      icon: icon,
-      title: errorTitle,
-      text: errorMessage,
+      icon: 'error',
+      title: 'No pudimos ingresar',
+      text: 'El correo o la contraseña son incorrectos. Verifica tus datos e intenta de nuevo.',
     });
   }
 
