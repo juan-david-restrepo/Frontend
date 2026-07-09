@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Nav } from '../../shared/nav/nav';
 import { Avatar } from '../../service/avatar';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, retry, timer } from 'rxjs';
 import { AuthService, AuthUser } from '../../service/auth.service';
 import { environment } from '../../../environments/environment';
 import Swal from 'sweetalert2';
@@ -65,10 +65,31 @@ export class Login {
         const { email, password } = this.formLogin.value;
 
         this.authService.login(email, password, this.recaptchaToken).pipe(
+          retry({
+            count: 2,
+            delay: (error, attempt) => {
+              if (error.status === 504 || error.status === 503 || error.status === 0) {
+                if (attempt === 1) {
+                  Swal.fire({
+                    icon: 'info',
+                    title: 'El servidor está iniciando',
+                    text: 'Esto puede tardar unos segundos. Reintentando automáticamente...',
+                    timer: 8000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                  });
+                }
+                return timer(8000);
+              }
+              throw error;
+            },
+          }),
           switchMap(() => this.authService.refreshUser())
         ).subscribe({
           next: () => {
             this.loading = false;
+            Swal.close();
             const userId = this.authService.getUserId();
             const role = (this.authService.getUserRole() || '').toUpperCase();
 
@@ -85,7 +106,7 @@ export class Login {
 
             Swal.fire({
               icon: 'success',
-              title: 'Bienvenido!',
+              title: '¡Bienvenido!',
               text: 'Inicio de sesión exitoso',
               timer: 1500,
               showConfirmButton: false,
@@ -97,6 +118,7 @@ export class Login {
           },
           error: (err) => {
             this.loading = false;
+            Swal.close();
             console.error('Error login:', err);
             this.manejarErrorLogin(err);
           },
@@ -126,6 +148,17 @@ export class Login {
       } else if (err.error.message) {
         errorMessage = err.error.message;
       }
+    }
+
+    // Servidor caído / timeout (Render cold start)
+    if (err.status === 504 || err.status === 503 || err.status === 0) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'El servidor tardó demasiado',
+        text: 'El sistema está iniciando. Por favor espera unos segundos e intenta de nuevo.',
+        confirmButtonText: 'Intentar de nuevo',
+      });
+      return;
     }
 
     // reCAPTCHA falló: el ciudadano no tiene que saber qué es eso
